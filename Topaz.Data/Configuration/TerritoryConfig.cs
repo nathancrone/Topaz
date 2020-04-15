@@ -1,0 +1,20 @@
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Topaz.Common.Models;
+
+namespace Topaz.Data.Configuration
+{
+    internal class TerritoryConfig : IEntityTypeConfiguration<Territory>
+    {
+        public void Configure(EntityTypeBuilder<Territory> builder)
+        {
+            builder.HasKey(x => x.TerritoryId);
+            builder.Property(x => x.TerritoryId).ValueGeneratedOnAdd();
+
+            builder.HasMany(x => x.Activity)
+            .WithOne(x => x.Territory)
+            .HasForeignKey(x => x.TerritoryId);
+        }
+    }
+}

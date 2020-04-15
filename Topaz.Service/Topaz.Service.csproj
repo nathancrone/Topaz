@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Topaz.Common\Topaz.Common.csproj" />
+    <ProjectReference Include="..\Topaz.Common.Interfaces\Topaz.Common.Interfaces.csproj" />
+    <ProjectReference Include="..\Topaz.Common.Models\Topaz.Common.Models.csproj" />
+    <ProjectReference Include="..\Topaz.Data\Topaz.Data.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+</Project>
