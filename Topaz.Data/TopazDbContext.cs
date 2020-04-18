@@ -7,13 +7,11 @@ namespace Topaz.Data
 {
     public class TopazDbContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite("Data Source=TopazDb.db");
-
+        //protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite("Data Source=TopazDb.db");
+        public TopazDbContext(DbContextOptions<TopazDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasDefaultSchema("dbo");
-
             modelBuilder.ApplyConfiguration(new ApartmentTerritoryConfig());
             modelBuilder.ApplyConfiguration(new BusinessTerritoryConfig());
             modelBuilder.ApplyConfiguration(new InaccessibleAddressConfig());
@@ -28,7 +26,6 @@ namespace Topaz.Data
             modelBuilder.ApplyConfiguration(new StreetTerritoryConfig());
             modelBuilder.ApplyConfiguration(new TerritoryActivityConfig());
             modelBuilder.ApplyConfiguration(new TerritoryConfig());
-
             base.OnModelCreating(modelBuilder);
         }
 

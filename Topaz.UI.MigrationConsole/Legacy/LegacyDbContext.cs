@@ -6,7 +6,7 @@ namespace Topaz.UI.MigrationConsole.Legacy
 {
     public class LegacyDbContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite("Data Source=JasperDB.db");
+        public LegacyDbContext(DbContextOptions<LegacyDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
