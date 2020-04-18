@@ -1,0 +1,54 @@
+@page
+@model Topaz.UI.Razor.Pages.StreetTerritory.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StreetTerritory[0].MapLocation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StreetTerritory[0].TerritoryCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StreetTerritory[0].Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StreetTerritory[0].InActive)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.StreetTerritory) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MapLocation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TerritoryCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InActive)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.TerritoryId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.TerritoryId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.TerritoryId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
