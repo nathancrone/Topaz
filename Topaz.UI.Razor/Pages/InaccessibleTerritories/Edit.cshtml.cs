@@ -11,7 +11,7 @@ using Topaz.Data;
 
 namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
 {
-    public class EditModel : PageModel
+    public class EditModel : InaccessibleTerritoryFormModel
     {
         private readonly Topaz.Data.TopazDbContext _context;
 
@@ -30,12 +30,14 @@ namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
                 return NotFound();
             }
 
-            InaccessibleTerritory = await _context.InaccessibleTerritories.FirstOrDefaultAsync(m => m.TerritoryId == id);
+            InaccessibleTerritory = await _context.InaccessibleTerritories.Include(x => x.StreetTerritory).FirstOrDefaultAsync(m => m.TerritoryId == id);
 
             if (InaccessibleTerritory == null)
             {
                 return NotFound();
             }
+
+            PopulateStreetTerritory(_context, InaccessibleTerritory.StreetTerritoryId);
             return Page();
         }
 
@@ -45,6 +47,7 @@ namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
         {
             if (!ModelState.IsValid)
             {
+                PopulateStreetTerritory(_context, InaccessibleTerritory.StreetTerritoryId);
                 return Page();
             }
 

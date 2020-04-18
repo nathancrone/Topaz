@@ -10,7 +10,7 @@ using Topaz.Data;
 
 namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
 {
-    public class CreateModel : PageModel
+    public class CreateModel : InaccessibleTerritoryFormModel
     {
         private readonly Topaz.Data.TopazDbContext _context;
 
@@ -21,6 +21,7 @@ namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
 
         public IActionResult OnGet()
         {
+            PopulateStreetTerritory(_context);
             return Page();
         }
 
@@ -33,12 +34,11 @@ namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
         {
             if (!ModelState.IsValid)
             {
+                PopulateStreetTerritory(_context);
                 return Page();
             }
-
             _context.InaccessibleTerritories.Add(InaccessibleTerritory);
             await _context.SaveChangesAsync();
-
             return RedirectToPage("./Index");
         }
     }

@@ -14,10 +14,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.InaccessibleTerritory[0].StreetTerritoryId)
+                @Html.DisplayNameFor(model => model.InaccessibleTerritory[0].TerritoryCode)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InaccessibleTerritory[0].TerritoryCode)
+                @Html.DisplayNameFor(model => model.InaccessibleTerritory[0].StreetTerritory)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.InaccessibleTerritory[0].Notes)
@@ -32,10 +32,10 @@
 @foreach (var item in Model.InaccessibleTerritory) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.StreetTerritoryId)
+                @Html.DisplayFor(modelItem => item.TerritoryCode)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TerritoryCode)
+                @Html.DisplayFor(modelItem => item.StreetTerritory.TerritoryCode)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Notes)

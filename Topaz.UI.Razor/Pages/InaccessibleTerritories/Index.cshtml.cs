@@ -19,11 +19,14 @@ namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
             _context = context;
         }
 
-        public IList<InaccessibleTerritory> InaccessibleTerritory { get;set; }
+        public IList<InaccessibleTerritory> InaccessibleTerritory { get; set; }
 
         public async Task OnGetAsync()
         {
-            InaccessibleTerritory = await _context.InaccessibleTerritories.ToListAsync();
+            InaccessibleTerritory = await _context.InaccessibleTerritories
+                .Include(x => x.StreetTerritory)
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }
