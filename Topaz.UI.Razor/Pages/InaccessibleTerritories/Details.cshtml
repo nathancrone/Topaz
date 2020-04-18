@@ -1,0 +1,43 @@
+@page
+@model Topaz.UI.Razor.Pages.InaccessibleTerritories.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>InaccessibleTerritory</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleTerritory.StreetTerritoryId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleTerritory.StreetTerritoryId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleTerritory.TerritoryCode)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleTerritory.TerritoryCode)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleTerritory.Notes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleTerritory.Notes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleTerritory.InActive)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleTerritory.InActive)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.InaccessibleTerritory.TerritoryId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

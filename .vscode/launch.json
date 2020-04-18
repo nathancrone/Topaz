@@ -36,9 +36,9 @@
       "request": "launch",
       "preLaunchTask": "build (Razor)",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/Topaz.UI.MigrationConsole/bin/Debug/netcoreapp3.1/Topaz.UI.Razor.dll",
+      "program": "${workspaceFolder}/Topaz.UI.Razor/bin/Debug/netcoreapp3.1/Topaz.UI.Razor.dll",
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/Topaz.UI.Razor",
       "stopAtEntry": false,
       // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
       "serverReadyAction": {

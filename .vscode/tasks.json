@@ -81,7 +81,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/Topaz.UI.MigrationConsole/Topaz.UI.Razor.csproj",
+        "${workspaceFolder}/Topaz.UI.Razor/Topaz.UI.Razor.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -93,7 +93,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/Topaz.UI.MigrationConsole/Topaz.UI.Razor.csproj",
+        "${workspaceFolder}/Topaz.UI.Razor/Topaz.UI.Razor.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -106,7 +106,7 @@
       "args": [
         "watch",
         "run",
-        "${workspaceFolder}/Topaz.UI.MigrationConsole/Topaz.UI.Razor.csproj",
+        "${workspaceFolder}/Topaz.UI.Razor/Topaz.UI.Razor.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],

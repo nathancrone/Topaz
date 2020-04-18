@@ -1,0 +1,60 @@
+@page
+@model Topaz.UI.Razor.Pages.Addresses.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>InaccessibleAddress</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="InaccessibleAddress.InaccessibleAddressId" />
+            <div class="form-group">
+                <label asp-for="InaccessibleAddress.TerritoryId" class="control-label"></label>
+                <select asp-for="InaccessibleAddress.TerritoryId" class="form-control" asp-items="ViewBag.TerritoryId"></select>
+                <span asp-validation-for="InaccessibleAddress.TerritoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InaccessibleAddress.CurrentContactListId" class="control-label"></label>
+                <input asp-for="InaccessibleAddress.CurrentContactListId" class="form-control" />
+                <span asp-validation-for="InaccessibleAddress.CurrentContactListId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InaccessibleAddress.StreetAddress" class="control-label"></label>
+                <input asp-for="InaccessibleAddress.StreetAddress" class="form-control" />
+                <span asp-validation-for="InaccessibleAddress.StreetAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InaccessibleAddress.EstimatedDwellingCount" class="control-label"></label>
+                <input asp-for="InaccessibleAddress.EstimatedDwellingCount" class="form-control" />
+                <span asp-validation-for="InaccessibleAddress.EstimatedDwellingCount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InaccessibleAddress.PropertyName" class="control-label"></label>
+                <input asp-for="InaccessibleAddress.PropertyName" class="form-control" />
+                <span asp-validation-for="InaccessibleAddress.PropertyName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InaccessibleAddress.Notes" class="control-label"></label>
+                <input asp-for="InaccessibleAddress.Notes" class="form-control" />
+                <span asp-validation-for="InaccessibleAddress.Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
