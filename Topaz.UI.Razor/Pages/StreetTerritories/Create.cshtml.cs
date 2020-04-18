@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Topaz.Common.Models;
 using Topaz.Data;
 
-namespace Topaz.UI.Razor.Pages.StreetTerritory
+namespace Topaz.UI.Razor.Pages.StreetTerritories
 {
     public class CreateModel : PageModel
     {

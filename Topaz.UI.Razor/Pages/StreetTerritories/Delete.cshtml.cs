@@ -8,17 +8,18 @@ using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
 
-namespace Topaz.UI.Razor.Pages.StreetTerritory
+namespace Topaz.UI.Razor.Pages.StreetTerritories
 {
-    public class DetailsModel : PageModel
+    public class DeleteModel : PageModel
     {
         private readonly Topaz.Data.TopazDbContext _context;
 
-        public DetailsModel(Topaz.Data.TopazDbContext context)
+        public DeleteModel(Topaz.Data.TopazDbContext context)
         {
             _context = context;
         }
 
+        [BindProperty]
         public StreetTerritory StreetTerritory { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -35,6 +36,24 @@ namespace Topaz.UI.Razor.Pages.StreetTerritory
                 return NotFound();
             }
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            StreetTerritory = await _context.StreetTerritories.FindAsync(id);
+
+            if (StreetTerritory != null)
+            {
+                _context.StreetTerritories.Remove(StreetTerritory);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToPage("./Index");
         }
     }
 }
