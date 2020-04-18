@@ -22,5 +22,6 @@ namespace Topaz.Common.Models
         public InaccessibleContactList ContactList { get; set; }
         public List<InaccessibleContactActivity> ContactActivity { get; set; }
         public PhoneType PhoneType { get; set; }
+        public bool IsCompleted { get; set; }
     }
 }

@@ -3,7 +3,8 @@ namespace Topaz.Common.Enums
     public enum PhoneTypeEnum
     {
         Mobile = 1,
-        Landline = 2
+        Landline = 2,
+        Voip = 3
     }
 
     public enum ContactActivityTypeEnum
@@ -17,10 +18,16 @@ namespace Topaz.Common.Enums
         VoicemailNoName = 1,
         VoicemaiNameMatches = 2,
         VoicemailDifferentName = 3,
-        FaxModem = 4,
-        BusySignal = 5,
-        RingNoAnswer = 6,
-        AnsweredNotInterested = 7,
-        AnsweredDoNotContact = 8
+        VoicemailBusiness = 4,
+        NoResponseFaxModem = 5,
+        NoResponseBusySignal = 6,
+        NoResponseNotWorkingNumber = 7,
+        NoResponseRingNoAnswer = 8,
+        AnsweredRespondedFavorably = 9,
+        AnsweredImmediateHangup = 10,
+        AnsweredNotInterested = 11,
+        AnsweredDoNotContact = 12,
+        AnsweredProfanityOrThreatening = 13
+
     }
 }

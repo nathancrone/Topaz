@@ -8,11 +8,12 @@ namespace Topaz.Common.Models
         public int InaccessibleContactId { get; set; }
         public DateTime? ActivityDate { get; set; }
         public int ContactActivityTypeId { get; set; }
-        public int PhoneResponseTypeId { get; set; }
         public bool LetterReturned { get; set; }
         public string Notes { get; set; }
         public InaccessibleContact Contact { get; set; }
         public ContactActivityType ContactActivityType { get; set; }
+        public bool PhoneCallerIdBlocked { get; set; }
+        public int PhoneResponseTypeId { get; set; }
         public PhoneResponseType PhoneResponseType { get; set; }
 
     }

@@ -28,7 +28,10 @@ namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
                 return NotFound();
             }
 
-            InaccessibleTerritory = await _context.InaccessibleTerritories.FirstOrDefaultAsync(m => m.TerritoryId == id);
+            InaccessibleTerritory = await _context.InaccessibleTerritories
+                .Include(x => x.InaccessibleAddresses)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.TerritoryId == id);
 
             if (InaccessibleTerritory == null)
             {

@@ -22,6 +22,11 @@ namespace Topaz.Data.Configuration
                 {
                     PhoneTypeId = (int)PhoneTypeEnum.Landline,
                     Name = "Landline"
+                },
+                new PhoneType
+                {
+                    PhoneTypeId = (int)PhoneTypeEnum.Voip,
+                    Name = "VOIP"
                 }
             );
         }

@@ -16,42 +16,67 @@ namespace Topaz.Data.Configuration
                 new PhoneResponseType
                 {
                     PhoneResponseTypeId = (int)PhoneReponseTypeEnum.VoicemailNoName,
-                    Name = "Voicemail (no name)"
+                    Name = "Voicemail (No Name)"
                 },
                 new PhoneResponseType
                 {
                     PhoneResponseTypeId = (int)PhoneReponseTypeEnum.VoicemaiNameMatches,
-                    Name = "Voicemail (name matches)"
+                    Name = "Voicemail (Name Matches)"
                 },
                 new PhoneResponseType
                 {
                     PhoneResponseTypeId = (int)PhoneReponseTypeEnum.VoicemailDifferentName,
-                    Name = "Voicemail (different name)"
+                    Name = "Voicemail (Different Name)"
                 },
                 new PhoneResponseType
                 {
-                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.FaxModem,
-                    Name = "Fax / Modem"
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.VoicemailBusiness,
+                    Name = "Voicemail (Business Number)"
                 },
                 new PhoneResponseType
                 {
-                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.BusySignal,
-                    Name = "Busy Signal"
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.NoResponseFaxModem,
+                    Name = "No Response (Fax / Modem)"
                 },
                 new PhoneResponseType
                 {
-                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.RingNoAnswer,
-                    Name = "Ring no answer"
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.NoResponseBusySignal,
+                    Name = "No Response (Busy Signal)"
+                },
+                new PhoneResponseType
+                {
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.NoResponseNotWorkingNumber,
+                    Name = "No Response (Not a working number)"
+                },
+                new PhoneResponseType
+                {
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.NoResponseRingNoAnswer,
+                    Name = "No Response (Ring no answer)"
+                },
+                new PhoneResponseType
+                {
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredRespondedFavorably,
+                    Name = "Answered (Responded favorably)"
+                },
+                new PhoneResponseType
+                {
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredImmediateHangup,
+                    Name = "Answered (Hung up immediately)"
                 },
                 new PhoneResponseType
                 {
                     PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredNotInterested,
-                    Name = "Answered (\"not interested\")"
+                    Name = "Answered (\"Not Interested\")"
                 },
                 new PhoneResponseType
                 {
                     PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredDoNotContact,
-                    Name = "Answered (\"take me off your list\")"
+                    Name = "Answered (\"Take me off your list\")"
+                },
+                new PhoneResponseType
+                {
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredProfanityOrThreatening,
+                    Name = "Answered (profanity or threatening)"
                 }
             );
         }
