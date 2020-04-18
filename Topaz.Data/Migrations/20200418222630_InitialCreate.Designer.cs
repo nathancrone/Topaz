@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.Migrations
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20200418004402_InitialCreate")]
+    [Migration("20200418222630_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -157,6 +157,9 @@ namespace Topaz.Data.Migrations
                     b.Property<int>("InaccessibleContactListId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .HasColumnType("TEXT");
 
@@ -201,6 +204,9 @@ namespace Topaz.Data.Migrations
 
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("PhoneCallerIdBlocked")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("PhoneResponseTypeId")
                         .HasColumnType("INTEGER");
@@ -251,42 +257,67 @@ namespace Topaz.Data.Migrations
                         new
                         {
                             PhoneResponseTypeId = 1,
-                            Name = "Voicemail (no name)"
+                            Name = "Voicemail (No Name)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 2,
-                            Name = "Voicemail (name matches)"
+                            Name = "Voicemail (Name Matches)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 3,
-                            Name = "Voicemail (different name)"
+                            Name = "Voicemail (Different Name)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 4,
-                            Name = "Fax / Modem"
+                            Name = "Voicemail (Business Number)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 5,
-                            Name = "Busy Signal"
+                            Name = "No Response (Fax / Modem)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 6,
-                            Name = "Ring no answer"
+                            Name = "No Response (Busy Signal)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 7,
-                            Name = "Answered (\"not interested\")"
+                            Name = "No Response (Not a working number)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 8,
-                            Name = "Answered (\"take me off your list\")"
+                            Name = "No Response (Ring no answer)"
+                        },
+                        new
+                        {
+                            PhoneResponseTypeId = 9,
+                            Name = "Answered (Responded favorably)"
+                        },
+                        new
+                        {
+                            PhoneResponseTypeId = 10,
+                            Name = "Answered (Hung up immediately)"
+                        },
+                        new
+                        {
+                            PhoneResponseTypeId = 11,
+                            Name = "Answered (\"Not Interested\")"
+                        },
+                        new
+                        {
+                            PhoneResponseTypeId = 12,
+                            Name = "Answered (\"Take me off your list\")"
+                        },
+                        new
+                        {
+                            PhoneResponseTypeId = 13,
+                            Name = "Answered (profanity or threatening)"
                         });
                 });
 
@@ -312,6 +343,11 @@ namespace Topaz.Data.Migrations
                         {
                             PhoneTypeId = 2,
                             Name = "Landline"
+                        },
+                        new
+                        {
+                            PhoneTypeId = 3,
+                            Name = "VOIP"
                         });
                 });
 
@@ -411,6 +447,8 @@ namespace Topaz.Data.Migrations
                         .HasColumnName("Apartment_StreetTerritoryId")
                         .HasColumnType("INTEGER");
 
+                    b.HasIndex("StreetTerritoryId");
+
                     b.HasDiscriminator().HasValue("ApartmentTerritory");
                 });
 
@@ -432,6 +470,8 @@ namespace Topaz.Data.Migrations
                     b.Property<int>("StreetTerritoryId")
                         .HasColumnName("Inaccessible_StreetTerritoryId")
                         .HasColumnType("INTEGER");
+
+                    b.HasIndex("StreetTerritoryId");
 
                     b.HasDiscriminator().HasValue("InaccessibleTerritory");
                 });
@@ -521,6 +561,24 @@ namespace Topaz.Data.Migrations
                     b.HasOne("Topaz.Common.Models.Territory", "Territory")
                         .WithMany("Activity")
                         .HasForeignKey("TerritoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Topaz.Common.Models.ApartmentTerritory", b =>
+                {
+                    b.HasOne("Topaz.Common.Models.StreetTerritory", "StreetTerritory")
+                        .WithMany("ApartmentTerritories")
+                        .HasForeignKey("StreetTerritoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Topaz.Common.Models.InaccessibleTerritory", b =>
+                {
+                    b.HasOne("Topaz.Common.Models.StreetTerritory", "StreetTerritory")
+                        .WithMany("InaccessibleTerritories")
+                        .HasForeignKey("StreetTerritoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

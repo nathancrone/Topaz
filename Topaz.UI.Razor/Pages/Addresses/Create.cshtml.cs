@@ -21,7 +21,7 @@ namespace Topaz.UI.Razor.Pages.Addresses
 
         public IActionResult OnGet()
         {
-        ViewData["TerritoryId"] = new SelectList(_context.InaccessibleTerritories, "TerritoryId", "Discriminator");
+            //ViewData["TerritoryId"] = new SelectList(_context.InaccessibleTerritories, "TerritoryId", "Discriminator");
             return Page();
         }
 

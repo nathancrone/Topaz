@@ -109,6 +109,18 @@ namespace Topaz.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Territories", x => x.TerritoryId);
+                    table.ForeignKey(
+                        name: "FK_Territories_Territories_Apartment_StreetTerritoryId",
+                        column: x => x.Apartment_StreetTerritoryId,
+                        principalTable: "Territories",
+                        principalColumn: "TerritoryId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Territories_Territories_Inaccessible_StreetTerritoryId",
+                        column: x => x.Inaccessible_StreetTerritoryId,
+                        principalTable: "Territories",
+                        principalColumn: "TerritoryId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -220,7 +232,8 @@ namespace Topaz.Data.Migrations
                     Age = table.Column<int>(nullable: true),
                     MailingAddress = table.Column<string>(nullable: true),
                     PhoneTypeId = table.Column<int>(nullable: false),
-                    PhoneNumber = table.Column<string>(nullable: true)
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    IsCompleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -248,9 +261,10 @@ namespace Topaz.Data.Migrations
                     InaccessibleContactId = table.Column<int>(nullable: false),
                     ActivityDate = table.Column<DateTime>(nullable: true),
                     ContactActivityTypeId = table.Column<int>(nullable: false),
-                    PhoneResponseTypeId = table.Column<int>(nullable: false),
                     LetterReturned = table.Column<bool>(nullable: false),
-                    Notes = table.Column<string>(nullable: true)
+                    Notes = table.Column<string>(nullable: true),
+                    PhoneCallerIdBlocked = table.Column<bool>(nullable: false),
+                    PhoneResponseTypeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -288,42 +302,67 @@ namespace Topaz.Data.Migrations
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 1, "Voicemail (no name)" });
+                values: new object[] { 13, "Answered (profanity or threatening)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 2, "Voicemail (name matches)" });
+                values: new object[] { 12, "Answered (\"Take me off your list\")" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 3, "Voicemail (different name)" });
+                values: new object[] { 11, "Answered (\"Not Interested\")" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 4, "Fax / Modem" });
+                values: new object[] { 10, "Answered (Hung up immediately)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 5, "Busy Signal" });
+                values: new object[] { 9, "Answered (Responded favorably)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 6, "Ring no answer" });
+                values: new object[] { 8, "No Response (Ring no answer)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 7, "Answered (\"not interested\")" });
+                values: new object[] { 7, "No Response (Not a working number)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 8, "Answered (\"take me off your list\")" });
+                values: new object[] { 6, "No Response (Busy Signal)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Name" },
+                values: new object[] { 5, "No Response (Fax / Modem)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Name" },
+                values: new object[] { 4, "Voicemail (Business Number)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Name" },
+                values: new object[] { 3, "Voicemail (Different Name)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Name" },
+                values: new object[] { 2, "Voicemail (Name Matches)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Name" },
+                values: new object[] { 1, "Voicemail (No Name)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",
@@ -334,6 +373,11 @@ namespace Topaz.Data.Migrations
                 table: "PhoneType",
                 columns: new[] { "PhoneTypeId", "Name" },
                 values: new object[] { 2, "Landline" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneType",
+                columns: new[] { "PhoneTypeId", "Name" },
+                values: new object[] { 3, "VOIP" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DoNotContactStreets_TerritoryId",
@@ -374,6 +418,16 @@ namespace Topaz.Data.Migrations
                 name: "IX_InaccessibleContacts_PhoneTypeId",
                 table: "InaccessibleContacts",
                 column: "PhoneTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Territories_Apartment_StreetTerritoryId",
+                table: "Territories",
+                column: "Apartment_StreetTerritoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Territories_Inaccessible_StreetTerritoryId",
+                table: "Territories",
+                column: "Inaccessible_StreetTerritoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TerritoryActivities_PublisherId",

@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using Topaz.Data;
-using Topaz.Common.Models;
-using Topaz.UI.MigrationConsole.Legacy;
-using Topaz.UI.MigrationConsole.Legacy.Models;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Topaz.Common.Models;
+using Topaz.Data;
+using Topaz.UI.MigrationConsole.Legacy;
+using Topaz.UI.MigrationConsole.Legacy.Models;
 
 namespace Topaz.UI.MigrationConsole
 {
@@ -20,6 +21,8 @@ namespace Topaz.UI.MigrationConsole
             var serviceProvider = services.BuildServiceProvider();
             // Kick off our actual code
             serviceProvider.GetService<MigrationApp>().Run();
+            Console.WriteLine("done");
+            Console.ReadLine();
         }
 
         private static IServiceCollection ConfigureServices()
@@ -65,7 +68,8 @@ namespace Topaz.UI.MigrationConsole
             //create the street territories
             foreach (var t in legacyTerritories.OrderBy(a => a.TerritoryCode))
             {
-                var street = new StreetTerritory { TerritoryCode = t.TerritoryCode, InActive = t.InActive };
+                var territoryCode = $"{t.TerritoryCode.Substring(0, 1).ToUpper()}-{int.Parse(t.TerritoryCode.Substring(1)):000}";
+                var street = new StreetTerritory { TerritoryCode = territoryCode, InActive = t.InActive };
                 _db.Add(street);
                 _db.SaveChanges();
                 foreach (var entry in t.LedgerEntries.OrderBy(x => x.CheckOutDate))
