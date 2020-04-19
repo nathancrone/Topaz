@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.Migrations
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20200419022058_InitialCreate")]
+    [Migration("20200419201748_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -220,8 +220,8 @@ namespace Topaz.Data.Migrations
                     b.Property<int>("InaccessibleContactId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("LetterReturned")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateTime?>("LetterReturned")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
@@ -323,21 +323,26 @@ namespace Topaz.Data.Migrations
                         new
                         {
                             PhoneResponseTypeId = 10,
-                            Name = "Answered (Hung up immediately)"
+                            Name = "Answered (\"Not a good time\")"
                         },
                         new
                         {
                             PhoneResponseTypeId = 11,
-                            Name = "Answered (\"Not Interested\")"
+                            Name = "Answered (Hung up immediately)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 12,
-                            Name = "Answered (\"Take me off your list\")"
+                            Name = "Answered (\"Not Interested\")"
                         },
                         new
                         {
                             PhoneResponseTypeId = 13,
+                            Name = "Answered (\"Take me off your list\")"
+                        },
+                        new
+                        {
+                            PhoneResponseTypeId = 14,
                             Name = "Answered (profanity or threatening)"
                         });
                 });

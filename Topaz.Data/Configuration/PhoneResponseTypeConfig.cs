@@ -60,6 +60,11 @@ namespace Topaz.Data.Configuration
                 },
                 new PhoneResponseType
                 {
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredNotGoodTime,
+                    Name = "Answered (\"Not a good time\")"
+                },
+                new PhoneResponseType
+                {
                     PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredImmediateHangup,
                     Name = "Answered (Hung up immediately)"
                 },

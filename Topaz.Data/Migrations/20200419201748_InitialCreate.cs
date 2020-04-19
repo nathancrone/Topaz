@@ -268,10 +268,10 @@ namespace Topaz.Data.Migrations
                     InaccessibleContactId = table.Column<int>(nullable: false),
                     ActivityDate = table.Column<DateTime>(nullable: true),
                     ContactActivityTypeId = table.Column<int>(nullable: false),
-                    LetterReturned = table.Column<bool>(nullable: false),
-                    Notes = table.Column<string>(nullable: true),
                     PhoneCallerIdBlocked = table.Column<bool>(nullable: false),
-                    PhoneResponseTypeId = table.Column<int>(nullable: false)
+                    PhoneResponseTypeId = table.Column<int>(nullable: false),
+                    LetterReturned = table.Column<DateTime>(nullable: true),
+                    Notes = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -309,22 +309,27 @@ namespace Topaz.Data.Migrations
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 13, "Answered (profanity or threatening)" });
+                values: new object[] { 14, "Answered (profanity or threatening)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 12, "Answered (\"Take me off your list\")" });
+                values: new object[] { 13, "Answered (\"Take me off your list\")" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 11, "Answered (\"Not Interested\")" });
+                values: new object[] { 12, "Answered (\"Not Interested\")" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 10, "Answered (Hung up immediately)" });
+                values: new object[] { 11, "Answered (Hung up immediately)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Name" },
+                values: new object[] { 10, "Answered (\"Not a good time\")" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
@@ -335,11 +340,6 @@ namespace Topaz.Data.Migrations
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
                 values: new object[] { 8, "No Response (Ring no answer)" });
-
-            migrationBuilder.InsertData(
-                table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 7, "No Response (Not a working number)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
@@ -372,14 +372,19 @@ namespace Topaz.Data.Migrations
                 values: new object[] { 1, "Voicemail (No Name)" });
 
             migrationBuilder.InsertData(
-                table: "PhoneType",
-                columns: new[] { "PhoneTypeId", "Name" },
-                values: new object[] { 1, "Mobile" });
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Name" },
+                values: new object[] { 7, "No Response (Not a working number)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",
                 columns: new[] { "PhoneTypeId", "Name" },
                 values: new object[] { 2, "Landline" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneType",
+                columns: new[] { "PhoneTypeId", "Name" },
+                values: new object[] { 1, "Mobile" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",

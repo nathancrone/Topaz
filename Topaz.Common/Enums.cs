@@ -24,10 +24,11 @@ namespace Topaz.Common.Enums
         NoResponseNotWorkingNumber = 7,
         NoResponseRingNoAnswer = 8,
         AnsweredRespondedFavorably = 9,
-        AnsweredImmediateHangup = 10,
-        AnsweredNotInterested = 11,
-        AnsweredDoNotContact = 12,
-        AnsweredProfanityOrThreatening = 13
+        AnsweredNotGoodTime = 10,
+        AnsweredImmediateHangup = 11,
+        AnsweredNotInterested = 12,
+        AnsweredDoNotContact = 13,
+        AnsweredProfanityOrThreatening = 14
 
     }
 }
