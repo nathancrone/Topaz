@@ -11,7 +11,7 @@ using Topaz.Data;
 
 namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
 {
-    public class EditModel : InaccessibleTerritoryFormModel
+    public class EditModel : FormModel
     {
         private readonly Topaz.Data.TopazDbContext _context;
 

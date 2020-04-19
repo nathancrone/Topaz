@@ -11,7 +11,7 @@ using Topaz.Data;
 
 namespace Topaz.UI.Razor.Pages.Addresses
 {
-    public class EditModel : PageModel
+    public class EditModel : FormModel
     {
         private readonly Topaz.Data.TopazDbContext _context;
 
@@ -37,7 +37,7 @@ namespace Topaz.UI.Razor.Pages.Addresses
             {
                 return NotFound();
             }
-           ViewData["TerritoryId"] = new SelectList(_context.InaccessibleTerritories, "TerritoryId", "Discriminator");
+            PopulateTerritory(_context);
             return Page();
         }
 
@@ -47,6 +47,7 @@ namespace Topaz.UI.Razor.Pages.Addresses
         {
             if (!ModelState.IsValid)
             {
+                PopulateTerritory(_context);
                 return Page();
             }
 

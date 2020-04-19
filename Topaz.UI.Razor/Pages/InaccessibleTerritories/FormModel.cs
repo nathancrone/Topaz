@@ -11,7 +11,7 @@ using Topaz.Data;
 
 namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
 {
-    public class InaccessibleTerritoryFormModel : PageModel
+    public class FormModel : PageModel
     {
         public SelectList SelectListStreetTerritory { get; set; }
 

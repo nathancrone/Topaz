@@ -14,13 +14,11 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="InaccessibleAddress.TerritoryId" class="control-label"></label>
-                <select asp-for="InaccessibleAddress.TerritoryId" class ="form-control" asp-items="ViewBag.TerritoryId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="InaccessibleAddress.CurrentContactListId" class="control-label"></label>
-                <input asp-for="InaccessibleAddress.CurrentContactListId" class="form-control" />
-                <span asp-validation-for="InaccessibleAddress.CurrentContactListId" class="text-danger"></span>
+                <label asp-for="InaccessibleAddress.Territory" class="control-label"></label>
+                <select asp-for="InaccessibleAddress.TerritoryId" class="form-control" asp-items="@Model.SelectListTerritory">
+                    <option value="">-- Select Street Territory --</option>
+                </select>
+                <span asp-validation-for="InaccessibleAddress.TerritoryId" class="text-danger" />
             </div>
             <div class="form-group">
                 <label asp-for="InaccessibleAddress.StreetAddress" class="control-label"></label>
@@ -28,14 +26,14 @@
                 <span asp-validation-for="InaccessibleAddress.StreetAddress" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="InaccessibleAddress.EstimatedDwellingCount" class="control-label"></label>
-                <input asp-for="InaccessibleAddress.EstimatedDwellingCount" class="form-control" />
-                <span asp-validation-for="InaccessibleAddress.EstimatedDwellingCount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="InaccessibleAddress.PropertyName" class="control-label"></label>
                 <input asp-for="InaccessibleAddress.PropertyName" class="form-control" />
                 <span asp-validation-for="InaccessibleAddress.PropertyName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InaccessibleAddress.EstimatedDwellingCount" class="control-label"></label>
+                <input asp-for="InaccessibleAddress.EstimatedDwellingCount" class="form-control" />
+                <span asp-validation-for="InaccessibleAddress.EstimatedDwellingCount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="InaccessibleAddress.Notes" class="control-label"></label>

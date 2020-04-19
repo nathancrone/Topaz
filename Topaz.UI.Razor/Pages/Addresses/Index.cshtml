@@ -14,22 +14,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.InaccessibleAddress[0].CurrentContactListId)
+                @Html.DisplayNameFor(model => model.InaccessibleAddress[0].Territory)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.InaccessibleAddress[0].StreetAddress)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InaccessibleAddress[0].EstimatedDwellingCount)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.InaccessibleAddress[0].PropertyName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InaccessibleAddress[0].Notes)
+                @Html.DisplayNameFor(model => model.InaccessibleAddress[0].EstimatedDwellingCount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InaccessibleAddress[0].Territory)
+                @Html.DisplayNameFor(model => model.InaccessibleAddress[0].Notes)
             </th>
             <th></th>
         </tr>
@@ -38,16 +35,16 @@
 @foreach (var item in Model.InaccessibleAddress) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.CurrentContactListId)
+                @Html.DisplayFor(modelItem => item.Territory.TerritoryCode)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StreetAddress)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.EstimatedDwellingCount)
+                @Html.DisplayFor(modelItem => item.PropertyName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PropertyName)
+                @Html.DisplayFor(modelItem => item.EstimatedDwellingCount)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Notes)

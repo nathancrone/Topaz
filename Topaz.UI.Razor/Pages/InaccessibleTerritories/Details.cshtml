@@ -12,16 +12,16 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.InaccessibleTerritory.StreetTerritoryId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.InaccessibleTerritory.StreetTerritoryId)
-        </dd>
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.InaccessibleTerritory.TerritoryCode)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.InaccessibleTerritory.TerritoryCode)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleTerritory.StreetTerritory)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleTerritory.StreetTerritory.TerritoryCode)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.InaccessibleTerritory.Notes)

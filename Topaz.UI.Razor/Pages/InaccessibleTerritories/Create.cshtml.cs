@@ -10,7 +10,7 @@ using Topaz.Data;
 
 namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
 {
-    public class CreateModel : InaccessibleTerritoryFormModel
+    public class CreateModel : FormModel
     {
         private readonly Topaz.Data.TopazDbContext _context;
 
