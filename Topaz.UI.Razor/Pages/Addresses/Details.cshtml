@@ -12,10 +12,10 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.InaccessibleAddress.CurrentContactListId)
+            @Html.DisplayNameFor(model => model.InaccessibleAddress.Territory)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.InaccessibleAddress.CurrentContactListId)
+            @Html.DisplayFor(model => model.InaccessibleAddress.Territory.TerritoryCode)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.InaccessibleAddress.StreetAddress)
@@ -24,16 +24,16 @@
             @Html.DisplayFor(model => model.InaccessibleAddress.StreetAddress)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.InaccessibleAddress.EstimatedDwellingCount)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.InaccessibleAddress.EstimatedDwellingCount)
-        </dd>
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.InaccessibleAddress.PropertyName)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.InaccessibleAddress.PropertyName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleAddress.EstimatedDwellingCount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleAddress.EstimatedDwellingCount)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.InaccessibleAddress.Notes)
@@ -41,9 +41,7 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.InaccessibleAddress.Notes)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.InaccessibleAddress.Territory)
-        </dt>
+
     </dl>
 </div>
 <div>
