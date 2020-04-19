@@ -17,6 +17,9 @@ namespace Topaz.Common.Models
         public string MiddleInitial { get; set; }
         public int? Age { get; set; }
         public string MailingAddress { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string PostalCode { get; set; }
         public int PhoneTypeId { get; set; }
         public string PhoneNumber { get; set; }
         public InaccessibleContactList ContactList { get; set; }

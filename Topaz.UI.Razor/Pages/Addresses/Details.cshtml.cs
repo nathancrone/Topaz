@@ -20,6 +20,7 @@ namespace Topaz.UI.Razor.Pages.Addresses
         }
 
         public InaccessibleAddress InaccessibleAddress { get; set; }
+        public InaccessibleContactList InaccessibleContactList { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,7 +30,12 @@ namespace Topaz.UI.Razor.Pages.Addresses
             }
 
             InaccessibleAddress = await _context.InaccessibleAddresses
-                .Include(i => i.Territory).FirstOrDefaultAsync(m => m.InaccessibleAddressId == id);
+                .Include(i => i.Territory)
+                .Include(x => x.ContactLists)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.InaccessibleAddressId == id);
+
+            InaccessibleContactList = InaccessibleAddress.ContactLists.FirstOrDefault(x => x.InaccessibleContactListId == InaccessibleAddress.CurrentContactListId);
 
             if (InaccessibleAddress == null)
             {

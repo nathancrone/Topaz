@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.Migrations
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20200418222630_InitialCreate")]
+    [Migration("20200419022058_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,6 +117,9 @@ namespace Topaz.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("CurrentContactListId")
                         .HasColumnType("INTEGER");
 
@@ -126,7 +129,16 @@ namespace Topaz.Data.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PropertyName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ResearchedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("State")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("StreetAddress")
@@ -151,6 +163,9 @@ namespace Topaz.Data.Migrations
                     b.Property<int?>("Age")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("FirstName")
                         .HasColumnType("TEXT");
 
@@ -174,6 +189,12 @@ namespace Topaz.Data.Migrations
 
                     b.Property<int>("PhoneTypeId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("State")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("InaccessibleContactId");
 

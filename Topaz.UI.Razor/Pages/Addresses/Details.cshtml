@@ -42,6 +42,74 @@
             @Html.DisplayFor(model => model.InaccessibleAddress.Notes)
         </dd>
 
+        @if (Model.InaccessibleContactList != null) {
+            <dd class="col-sm-12">
+                <p>
+                    <a asp-page="Create">Create New</a>
+                </p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.InaccessibleContactList.Contacts[0].FirstName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.InaccessibleContactList.Contacts[0].LastName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.InaccessibleContactList.Contacts[0].MiddleInitial)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.InaccessibleContactList.Contacts[0].Age)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.InaccessibleContactList.Contacts[0].MailingAddress)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.InaccessibleContactList.Contacts[0].PhoneNumber)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.InaccessibleContactList.Contacts[0].PhoneType)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                @foreach (var item in Model.InaccessibleContactList.Contacts) {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MiddleInitial)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Age)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MailingAddress)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneType.PhoneTypeId)
+                            </td>
+                            <td>
+                                <a asp-page="./Edit" asp-route-id="@item.InaccessibleContactId">Edit</a> |
+                                <a asp-page="./Details" asp-route-id="@item.InaccessibleContactId">Details</a> |
+                                <a asp-page="./Delete" asp-route-id="@item.InaccessibleContactId">Delete</a>
+                            </td>
+                        </tr>
+                }
+                    </tbody>
+                </table>
+            </dd>
+        }
+
     </dl>
 </div>
 <div>

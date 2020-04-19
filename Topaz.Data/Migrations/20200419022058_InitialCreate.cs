@@ -154,7 +154,11 @@ namespace Topaz.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     TerritoryId = table.Column<int>(nullable: false),
                     CurrentContactListId = table.Column<int>(nullable: true),
+                    ResearchedDate = table.Column<DateTime>(nullable: true),
                     StreetAddress = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: true),
+                    State = table.Column<string>(nullable: true),
+                    PostalCode = table.Column<string>(nullable: true),
                     EstimatedDwellingCount = table.Column<int>(nullable: false),
                     PropertyName = table.Column<string>(nullable: true),
                     Notes = table.Column<string>(nullable: true)
@@ -231,6 +235,9 @@ namespace Topaz.Data.Migrations
                     MiddleInitial = table.Column<string>(nullable: true),
                     Age = table.Column<int>(nullable: true),
                     MailingAddress = table.Column<string>(nullable: true),
+                    City = table.Column<string>(nullable: true),
+                    State = table.Column<string>(nullable: true),
+                    PostalCode = table.Column<string>(nullable: true),
                     PhoneTypeId = table.Column<int>(nullable: false),
                     PhoneNumber = table.Column<string>(nullable: true),
                     IsCompleted = table.Column<bool>(nullable: false)
