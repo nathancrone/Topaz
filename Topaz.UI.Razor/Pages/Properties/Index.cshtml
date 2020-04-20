@@ -1,0 +1,60 @@
+@page
+@model Topaz.UI.Razor.Pages.Properties.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.InaccessibleProperty[0].Territory)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InaccessibleProperty[0].Street)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InaccessibleProperty[0].PropertyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InaccessibleProperty[0].EstimatedDwellingCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InaccessibleProperty[0].Description)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.InaccessibleProperty) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Territory.TerritoryCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Street)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PropertyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstimatedDwellingCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.InaccessiblePropertyId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.InaccessiblePropertyId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.InaccessiblePropertyId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

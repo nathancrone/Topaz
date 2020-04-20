@@ -7,10 +7,10 @@ namespace Topaz.Common.Models
     {
         public InaccessibleTerritory()
         {
-            InaccessibleAddresses = new List<InaccessibleAddress>();
+            InaccessibleProperties = new List<InaccessibleProperty>();
         }
         public int StreetTerritoryId { get; set; }
         public StreetTerritory StreetTerritory { get; set; }
-        public List<InaccessibleAddress> InaccessibleAddresses { get; set; }
+        public List<InaccessibleProperty> InaccessibleProperties { get; set; }
     }
 }

@@ -6,7 +6,7 @@ namespace Topaz.Common.Models
     {
         public int DoNotContactLetterId { get; set; }
         public DateTime? ReportedDate { get; set; }
-        public string MailingAddress { get; set; }
+        public string MailingAddress1 { get; set; }
         public string Notes { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
 
-namespace Topaz.UI.Razor.Pages.Addresses
+namespace Topaz.UI.Razor.Pages.Properties
 {
     public class DetailsModel : PageModel
     {
@@ -19,7 +19,7 @@ namespace Topaz.UI.Razor.Pages.Addresses
             _context = context;
         }
 
-        public InaccessibleAddress InaccessibleAddress { get; set; }
+        public InaccessibleProperty InaccessibleProperty { get; set; }
         public InaccessibleContactList InaccessibleContactList { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -29,15 +29,15 @@ namespace Topaz.UI.Razor.Pages.Addresses
                 return NotFound();
             }
 
-            InaccessibleAddress = await _context.InaccessibleAddresses
+            InaccessibleProperty = await _context.InaccessibleProperties
                 .Include(i => i.Territory)
                 .Include(x => x.ContactLists)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.InaccessibleAddressId == id);
+                .FirstOrDefaultAsync(m => m.InaccessiblePropertyId == id);
 
-            InaccessibleContactList = InaccessibleAddress.ContactLists.FirstOrDefault(x => x.InaccessibleContactListId == InaccessibleAddress.CurrentContactListId);
+            InaccessibleContactList = InaccessibleProperty.ContactLists.FirstOrDefault(x => x.InaccessibleContactListId == InaccessibleProperty.CurrentContactListId);
 
-            if (InaccessibleAddress == null)
+            if (InaccessibleProperty == null)
             {
                 return NotFound();
             }

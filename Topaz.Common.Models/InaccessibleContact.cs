@@ -16,7 +16,8 @@ namespace Topaz.Common.Models
         public string LastName { get; set; }
         public string MiddleInitial { get; set; }
         public int? Age { get; set; }
-        public string MailingAddress { get; set; }
+        public string MailingAddress1 { get; set; }
+        public string MailingAddress2 { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string PostalCode { get; set; }

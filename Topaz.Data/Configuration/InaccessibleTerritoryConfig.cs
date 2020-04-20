@@ -11,7 +11,7 @@ namespace Topaz.Data.Configuration
         {
             builder.Property(x => x.StreetTerritoryId).HasColumnName("Inaccessible_StreetTerritoryId");
 
-            builder.HasMany(x => x.InaccessibleAddresses)
+            builder.HasMany(x => x.InaccessibleProperties)
                         .WithOne(x => x.Territory)
                         .HasForeignKey(x => x.TerritoryId);
         }

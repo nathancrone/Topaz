@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
 
-namespace Topaz.UI.Razor.Pages.Addresses
+namespace Topaz.UI.Razor.Pages.Properties
 {
     public class DeleteModel : PageModel
     {
@@ -20,7 +20,7 @@ namespace Topaz.UI.Razor.Pages.Addresses
         }
 
         [BindProperty]
-        public InaccessibleAddress InaccessibleAddress { get; set; }
+        public InaccessibleProperty InaccessibleProperty { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,10 +29,10 @@ namespace Topaz.UI.Razor.Pages.Addresses
                 return NotFound();
             }
 
-            InaccessibleAddress = await _context.InaccessibleAddresses
-                .Include(i => i.Territory).FirstOrDefaultAsync(m => m.InaccessibleAddressId == id);
+            InaccessibleProperty = await _context.InaccessibleProperties
+                .Include(i => i.Territory).FirstOrDefaultAsync(m => m.InaccessiblePropertyId == id);
 
-            if (InaccessibleAddress == null)
+            if (InaccessibleProperty == null)
             {
                 return NotFound();
             }
@@ -46,11 +46,11 @@ namespace Topaz.UI.Razor.Pages.Addresses
                 return NotFound();
             }
 
-            InaccessibleAddress = await _context.InaccessibleAddresses.FindAsync(id);
+            InaccessibleProperty = await _context.InaccessibleProperties.FindAsync(id);
 
-            if (InaccessibleAddress != null)
+            if (InaccessibleProperty != null)
             {
-                _context.InaccessibleAddresses.Remove(InaccessibleAddress);
+                _context.InaccessibleProperties.Remove(InaccessibleProperty);
                 await _context.SaveChangesAsync();
             }
 

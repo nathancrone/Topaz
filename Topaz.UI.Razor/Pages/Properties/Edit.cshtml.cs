@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
 
-namespace Topaz.UI.Razor.Pages.Addresses
+namespace Topaz.UI.Razor.Pages.Properties
 {
     public class EditModel : FormModel
     {
@@ -21,7 +21,7 @@ namespace Topaz.UI.Razor.Pages.Addresses
         }
 
         [BindProperty]
-        public InaccessibleAddress InaccessibleAddress { get; set; }
+        public InaccessibleProperty InaccessibleProperty { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,10 +30,10 @@ namespace Topaz.UI.Razor.Pages.Addresses
                 return NotFound();
             }
 
-            InaccessibleAddress = await _context.InaccessibleAddresses
-                .Include(i => i.Territory).FirstOrDefaultAsync(m => m.InaccessibleAddressId == id);
+            InaccessibleProperty = await _context.InaccessibleProperties
+                .Include(i => i.Territory).FirstOrDefaultAsync(m => m.InaccessiblePropertyId == id);
 
-            if (InaccessibleAddress == null)
+            if (InaccessibleProperty == null)
             {
                 return NotFound();
             }
@@ -51,7 +51,7 @@ namespace Topaz.UI.Razor.Pages.Addresses
                 return Page();
             }
 
-            _context.Attach(InaccessibleAddress).State = EntityState.Modified;
+            _context.Attach(InaccessibleProperty).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace Topaz.UI.Razor.Pages.Addresses
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!InaccessibleAddressExists(InaccessibleAddress.InaccessibleAddressId))
+                if (!InaccessiblePropertyExists(InaccessibleProperty.InaccessiblePropertyId))
                 {
                     return NotFound();
                 }
@@ -72,9 +72,9 @@ namespace Topaz.UI.Razor.Pages.Addresses
             return RedirectToPage("./Index");
         }
 
-        private bool InaccessibleAddressExists(int id)
+        private bool InaccessiblePropertyExists(int id)
         {
-            return _context.InaccessibleAddresses.Any(e => e.InaccessibleAddressId == id);
+            return _context.InaccessibleProperties.Any(e => e.InaccessiblePropertyId == id);
         }
     }
 }

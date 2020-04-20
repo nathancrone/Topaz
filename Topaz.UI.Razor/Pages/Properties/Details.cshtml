@@ -1,5 +1,5 @@
 @page
-@model Topaz.UI.Razor.Pages.Addresses.DetailsModel
+@model Topaz.UI.Razor.Pages.Properties.DetailsModel
 
 @{
     ViewData["Title"] = "Details";
@@ -8,38 +8,38 @@
 <h1>Details</h1>
 
 <div>
-    <h4>InaccessibleAddress</h4>
+    <h4>InaccessibleProperty</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.InaccessibleAddress.Territory)
+            @Html.DisplayNameFor(model => model.InaccessibleProperty.Territory)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.InaccessibleAddress.Territory.TerritoryCode)
+            @Html.DisplayFor(model => model.InaccessibleProperty.Territory.TerritoryCode)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.InaccessibleAddress.StreetAddress)
+            @Html.DisplayNameFor(model => model.InaccessibleProperty.Street)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.InaccessibleAddress.StreetAddress)
+            @Html.DisplayFor(model => model.InaccessibleProperty.Street)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.InaccessibleAddress.PropertyName)
+            @Html.DisplayNameFor(model => model.InaccessibleProperty.PropertyName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.InaccessibleAddress.PropertyName)
+            @Html.DisplayFor(model => model.InaccessibleProperty.PropertyName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.InaccessibleAddress.EstimatedDwellingCount)
+            @Html.DisplayNameFor(model => model.InaccessibleProperty.EstimatedDwellingCount)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.InaccessibleAddress.EstimatedDwellingCount)
+            @Html.DisplayFor(model => model.InaccessibleProperty.EstimatedDwellingCount)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.InaccessibleAddress.Notes)
+            @Html.DisplayNameFor(model => model.InaccessibleProperty.Description)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.InaccessibleAddress.Notes)
+            @Html.DisplayFor(model => model.InaccessibleProperty.Description)
         </dd>
 
         @if (Model.InaccessibleContactList != null) {
@@ -63,7 +63,7 @@
                                 @Html.DisplayNameFor(model => model.InaccessibleContactList.Contacts[0].Age)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.InaccessibleContactList.Contacts[0].MailingAddress)
+                                @Html.DisplayNameFor(model => model.InaccessibleContactList.Contacts[0].MailingAddress1)
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.InaccessibleContactList.Contacts[0].PhoneNumber)
@@ -90,7 +90,7 @@
                                 @Html.DisplayFor(modelItem => item.Age)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.MailingAddress)
+                                @Html.DisplayFor(modelItem => item.MailingAddress1)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.PhoneNumber)
@@ -113,6 +113,6 @@
     </dl>
 </div>
 <div>
-    <a asp-page="./Edit" asp-route-id="@Model.InaccessibleAddress.InaccessibleAddressId">Edit</a> |
+    <a asp-page="./Edit" asp-route-id="@Model.InaccessibleProperty.InaccessiblePropertyId">Edit</a> |
     <a asp-page="./Index">Back to List</a>
 </div>

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
 
-namespace Topaz.UI.Razor.Pages.Addresses
+namespace Topaz.UI.Razor.Pages.Properties
 {
     public class IndexModel : PageModel
     {
@@ -19,11 +19,11 @@ namespace Topaz.UI.Razor.Pages.Addresses
             _context = context;
         }
 
-        public IList<InaccessibleAddress> InaccessibleAddress { get;set; }
+        public IList<InaccessibleProperty> InaccessibleProperty { get; set; }
 
         public async Task OnGetAsync()
         {
-            InaccessibleAddress = await _context.InaccessibleAddresses
+            InaccessibleProperty = await _context.InaccessibleProperties
                 .Include(i => i.Territory).ToListAsync();
         }
     }

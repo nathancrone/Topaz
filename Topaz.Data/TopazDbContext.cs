@@ -14,7 +14,7 @@ namespace Topaz.Data
         {
             modelBuilder.ApplyConfiguration(new ApartmentTerritoryConfig());
             modelBuilder.ApplyConfiguration(new BusinessTerritoryConfig());
-            modelBuilder.ApplyConfiguration(new InaccessibleAddressConfig());
+            modelBuilder.ApplyConfiguration(new InaccessiblePropertyConfig());
             modelBuilder.ApplyConfiguration(new InaccessibleContactActivityConfig());
             modelBuilder.ApplyConfiguration(new InaccessibleContactConfig());
             modelBuilder.ApplyConfiguration(new InaccessibleContactListConfig());
@@ -35,7 +35,7 @@ namespace Topaz.Data
         public DbSet<StreetTerritory> StreetTerritories { get; set; }
         public DbSet<ApartmentTerritory> ApartmentTerritories { get; set; }
         public DbSet<InaccessibleTerritory> InaccessibleTerritories { get; set; }
-        public DbSet<InaccessibleAddress> InaccessibleAddresses { get; set; }
+        public DbSet<InaccessibleProperty> InaccessibleProperties { get; set; }
         public DbSet<InaccessibleContactList> InaccessibleContactLists { get; set; }
         public DbSet<InaccessibleContact> InaccessibleContacts { get; set; }
         public DbSet<InaccessibleContactActivity> InaccessibleContactActivities { get; set; }

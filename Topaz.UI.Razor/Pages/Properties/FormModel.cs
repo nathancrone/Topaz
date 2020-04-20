@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
 
-namespace Topaz.UI.Razor.Pages.Addresses
+namespace Topaz.UI.Razor.Pages.Properties
 {
     public class FormModel : PageModel
     {

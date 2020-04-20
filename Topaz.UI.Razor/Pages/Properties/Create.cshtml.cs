@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Topaz.Common.Models;
 using Topaz.Data;
 
-namespace Topaz.UI.Razor.Pages.Addresses
+namespace Topaz.UI.Razor.Pages.Properties
 {
     public class CreateModel : FormModel
     {
@@ -26,7 +26,7 @@ namespace Topaz.UI.Razor.Pages.Addresses
         }
 
         [BindProperty]
-        public InaccessibleAddress InaccessibleAddress { get; set; }
+        public InaccessibleProperty InaccessibleProperty { get; set; }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
@@ -38,7 +38,7 @@ namespace Topaz.UI.Razor.Pages.Addresses
                 return Page();
             }
 
-            _context.InaccessibleAddresses.Add(InaccessibleAddress);
+            _context.InaccessibleProperties.Add(InaccessibleProperty);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

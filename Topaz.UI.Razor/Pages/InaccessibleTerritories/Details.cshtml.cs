@@ -30,7 +30,7 @@ namespace Topaz.UI.Razor.Pages.InaccessibleTerritories
 
             InaccessibleTerritory = await _context.InaccessibleTerritories
                 .Include(x => x.StreetTerritory)
-                .Include(x => x.InaccessibleAddresses)
+                .Include(x => x.InaccessibleProperties)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.TerritoryId == id);
 
