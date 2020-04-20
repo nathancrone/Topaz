@@ -17,8 +17,15 @@ namespace Topaz.UI.Razor.Pages.Properties
 
         public void PopulateTerritory(TopazDbContext context, object selectedTerritory = null)
         {
-            var territoriesQuery = context.InaccessibleTerritories.OrderBy(x => x.TerritoryCode).Select(x => x);
-            SelectListTerritory = new SelectList(territoriesQuery.AsNoTracking(), "TerritoryId", "TerritoryCode", selectedTerritory);
+            var territoriesQuery = context.InaccessibleTerritories
+                .Include(x => x.StreetTerritory)
+                .OrderBy(x => x.TerritoryCode)
+                .Select(x => new
+                {
+                    Value = x.TerritoryId,
+                    Text = $"{x.StreetTerritory.TerritoryCode} / {x.TerritoryCode}"
+                });
+            SelectListTerritory = new SelectList(territoriesQuery.AsNoTracking(), "Value", "Text", selectedTerritory);
         }
     }
 }

@@ -14,5 +14,7 @@ namespace Topaz.Common.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public List<TerritoryActivity> Activity { get; set; }
+        public List<InaccessibleContact> InaccessibleContacts { get; set; }
+        public List<InaccessibleContactActivity> InaccessibleContactActivity { get; set; }
     }
 }

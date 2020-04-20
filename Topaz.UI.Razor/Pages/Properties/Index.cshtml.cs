@@ -24,7 +24,9 @@ namespace Topaz.UI.Razor.Pages.Properties
         public async Task OnGetAsync()
         {
             InaccessibleProperty = await _context.InaccessibleProperties
-                .Include(i => i.Territory).ToListAsync();
+                .Include(i => i.Territory)
+                .ThenInclude(x => x.StreetTerritory)
+                .ToListAsync();
         }
     }
 }

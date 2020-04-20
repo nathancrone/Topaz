@@ -30,7 +30,9 @@ namespace Topaz.UI.Razor.Pages.Properties
             }
 
             InaccessibleProperty = await _context.InaccessibleProperties
-                .Include(i => i.Territory).FirstOrDefaultAsync(m => m.InaccessiblePropertyId == id);
+                .Include(i => i.Territory)
+                .ThenInclude(x => x.StreetTerritory)
+                .FirstOrDefaultAsync(m => m.InaccessiblePropertyId == id);
 
             if (InaccessibleProperty == null)
             {

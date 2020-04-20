@@ -7,7 +7,6 @@ namespace Topaz.Data
 {
     public class TopazDbContext : DbContext
     {
-        //protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite("Data Source=TopazDb.db");
         public TopazDbContext(DbContextOptions<TopazDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

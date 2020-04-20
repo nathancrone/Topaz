@@ -35,7 +35,7 @@
 @foreach (var item in Model.InaccessibleProperty) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Territory.TerritoryCode)
+                @Html.DisplayFor(modelItem => item.Territory.StreetTerritory.TerritoryCode)  /  @Html.DisplayFor(modelItem => item.Territory.TerritoryCode)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Street)

@@ -31,11 +31,11 @@ namespace Topaz.UI.Razor.Pages.Properties
 
             InaccessibleProperty = await _context.InaccessibleProperties
                 .Include(i => i.Territory)
-                .Include(x => x.ContactLists)
+                .ThenInclude(x => x.StreetTerritory)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.InaccessiblePropertyId == id);
 
-            InaccessibleContactList = InaccessibleProperty.ContactLists.FirstOrDefault(x => x.InaccessibleContactListId == InaccessibleProperty.CurrentContactListId);
+            //InaccessibleContactList = InaccessibleProperty.ContactLists.FirstOrDefault(x => x.InaccessibleContactListId == InaccessibleProperty.CurrentContactListId);
 
             if (InaccessibleProperty == null)
             {

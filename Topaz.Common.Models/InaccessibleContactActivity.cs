@@ -6,6 +6,7 @@ namespace Topaz.Common.Models
     {
         public int InaccessibleContactActivityId { get; set; }
         public int InaccessibleContactId { get; set; }
+        public int PublisherId { get; set; }
         public DateTime? ActivityDate { get; set; }
         public int ContactActivityTypeId { get; set; }
         public bool PhoneCallerIdBlocked { get; set; }
@@ -15,6 +16,6 @@ namespace Topaz.Common.Models
         public InaccessibleContact Contact { get; set; }
         public ContactActivityType ContactActivityType { get; set; }
         public PhoneResponseType PhoneResponseType { get; set; }
-
+        public Publisher Publisher { get; set; }
     }
 }
