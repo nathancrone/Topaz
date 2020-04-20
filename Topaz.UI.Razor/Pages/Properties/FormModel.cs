@@ -19,7 +19,8 @@ namespace Topaz.UI.Razor.Pages.Properties
         {
             var territoriesQuery = context.InaccessibleTerritories
                 .Include(x => x.StreetTerritory)
-                .OrderBy(x => x.TerritoryCode)
+                .OrderBy(x => x.StreetTerritory.TerritoryCode)
+                .ThenBy(x => x.TerritoryCode)
                 .Select(x => new
                 {
                     Value = x.TerritoryId,
