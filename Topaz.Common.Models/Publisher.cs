@@ -8,6 +8,8 @@ namespace Topaz.Common.Models
         public Publisher()
         {
             Activity = new List<TerritoryActivity>();
+            InaccessibleContacts = new List<InaccessibleContact>();
+            InaccessibleContactActivity = new List<InaccessibleContactActivity>();
         }
         public int PublisherId { get; set; }
         public string UserId { get; set; }

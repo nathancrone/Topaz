@@ -5,6 +5,10 @@ namespace Topaz.Common.Models
 {
     public class InaccessibleContactList
     {
+        public InaccessibleContactList()
+        {
+            Contacts = new List<InaccessibleContact>();
+        }
         public int InaccessibleContactListId { get; set; }
         public int InaccessiblePropertyId { get; set; }
         public DateTime? CreateDate { get; set; }
