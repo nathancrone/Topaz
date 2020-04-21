@@ -17,6 +17,9 @@
                 @Html.DisplayNameFor(model => model.InaccessibleProperty[0].Territory)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.InaccessibleProperty[0].StreetNumbers)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.InaccessibleProperty[0].Street)
             </th>
             <th>
@@ -36,6 +39,9 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Territory.StreetTerritory.TerritoryCode)  /  @Html.DisplayFor(modelItem => item.Territory.TerritoryCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StreetNumbers)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Street)

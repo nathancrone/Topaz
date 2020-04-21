@@ -22,6 +22,11 @@
                 <span asp-validation-for="InaccessibleProperty.TerritoryId" class="text-danger" />
             </div>
             <div class="form-group">
+                <label asp-for="InaccessibleProperty.StreetNumbers" class="control-label"></label>
+                <input asp-for="InaccessibleProperty.StreetNumbers" class="form-control" />
+                <span asp-validation-for="InaccessibleProperty.StreetNumbers" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="InaccessibleProperty.Street" class="control-label"></label>
                 <input asp-for="InaccessibleProperty.Street" class="form-control" />
                 <span asp-validation-for="InaccessibleProperty.Street" class="text-danger"></span>

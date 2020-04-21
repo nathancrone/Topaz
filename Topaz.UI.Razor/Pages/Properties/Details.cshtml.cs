@@ -44,6 +44,7 @@ namespace Topaz.UI.Razor.Pages.Properties
             {
                 InaccessibleContactList = await _context.InaccessibleContactLists
                     .Include(x => x.Contacts)
+                    .ThenInclude(x => x.PhoneType)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => x.InaccessibleContactListId == InaccessibleProperty.CurrentContactListId);
             }
@@ -94,6 +95,9 @@ namespace Topaz.UI.Razor.Pages.Properties
                             case "C":
                                 phoneType = PhoneTypeEnum.Mobile;
                                 break;
+                            case "M":
+                                phoneType = PhoneTypeEnum.Mobile;
+                                break;
                             case "L":
                                 phoneType = PhoneTypeEnum.Landline;
                                 break;
@@ -122,6 +126,11 @@ namespace Topaz.UI.Razor.Pages.Properties
                     }
 
                     await _context.InaccessibleContactLists.AddAsync(list);
+                    await _context.SaveChangesAsync();
+
+                    var property = new InaccessibleProperty() { InaccessiblePropertyId = id ?? 0, CurrentContactListId = list.InaccessibleContactListId };
+                    _context.InaccessibleProperties.Attach(property);
+                    _context.Entry(property).Property(X => X.CurrentContactListId).IsModified = true;
                     await _context.SaveChangesAsync();
                 }
             }
