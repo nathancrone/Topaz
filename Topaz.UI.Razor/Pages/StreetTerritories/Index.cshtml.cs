@@ -19,7 +19,7 @@ namespace Topaz.UI.Razor.Pages.StreetTerritories
             _context = context;
         }
 
-        public IList<StreetTerritory> StreetTerritory { get;set; }
+        public IList<StreetTerritory> StreetTerritory { get; set; }
 
         public async Task OnGetAsync()
         {

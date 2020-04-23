@@ -19,7 +19,7 @@ namespace Topaz.UI.Razor.Pages.ContactActivity
             _context = context;
         }
 
-        public IList<InaccessibleContactActivity> InaccessibleContactActivity { get;set; }
+        public IList<InaccessibleContactActivity> InaccessibleContactActivity { get; set; }
 
         public async Task OnGetAsync()
         {

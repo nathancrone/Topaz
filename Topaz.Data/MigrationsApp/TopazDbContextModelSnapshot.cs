@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Topaz.Data;
 
-namespace Topaz.Data.Migrations
+namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
     partial class TopazDbContextModelSnapshot : ModelSnapshot

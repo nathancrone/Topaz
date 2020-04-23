@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Topaz.Data.Migrations
+namespace Topaz.Data.MigrationsApp
 {
     public partial class InitialCreate : Migration
     {

@@ -38,8 +38,8 @@ namespace Topaz.UI.Razor.Pages.Contacts
             {
                 return NotFound();
             }
-           ViewData["InaccessibleContactListId"] = new SelectList(_context.InaccessibleContactLists, "InaccessibleContactListId", "InaccessibleContactListId");
-           ViewData["PhoneTypeId"] = new SelectList(_context.PhoneType, "PhoneTypeId", "PhoneTypeId");
+            ViewData["InaccessibleContactListId"] = new SelectList(_context.InaccessibleContactLists, "InaccessibleContactListId", "InaccessibleContactListId");
+            ViewData["PhoneTypeId"] = new SelectList(_context.PhoneType, "PhoneTypeId", "PhoneTypeId");
             return Page();
         }
 

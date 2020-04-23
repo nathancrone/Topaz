@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Topaz.Data;
 
-namespace Topaz.Data.Migrations
+namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20200421022328_InitialCreate")]
+    [Migration("20200423182244_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

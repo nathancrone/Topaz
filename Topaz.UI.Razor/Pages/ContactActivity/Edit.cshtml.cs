@@ -39,9 +39,9 @@ namespace Topaz.UI.Razor.Pages.ContactActivity
             {
                 return NotFound();
             }
-           ViewData["InaccessibleContactId"] = new SelectList(_context.InaccessibleContacts, "InaccessibleContactId", "InaccessibleContactId");
-           ViewData["ContactActivityTypeId"] = new SelectList(_context.ContactActivityTypes, "ContactActivityTypeId", "ContactActivityTypeId");
-           ViewData["PhoneResponseTypeId"] = new SelectList(_context.PhoneResponseTypes, "PhoneResponseTypeId", "PhoneResponseTypeId");
+            ViewData["InaccessibleContactId"] = new SelectList(_context.InaccessibleContacts, "InaccessibleContactId", "InaccessibleContactId");
+            ViewData["ContactActivityTypeId"] = new SelectList(_context.ContactActivityTypes, "ContactActivityTypeId", "ContactActivityTypeId");
+            ViewData["PhoneResponseTypeId"] = new SelectList(_context.PhoneResponseTypes, "PhoneResponseTypeId", "PhoneResponseTypeId");
             return Page();
         }
 
