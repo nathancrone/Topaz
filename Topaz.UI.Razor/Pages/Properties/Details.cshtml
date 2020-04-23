@@ -117,9 +117,9 @@
                                 @Html.DisplayFor(modelItem => item.PhoneType.Name)
                             </td>
                             <td>
-                                <a asp-page="./Edit" asp-route-id="@item.InaccessibleContactId">Edit</a> |
-                                <a asp-page="./Details" asp-route-id="@item.InaccessibleContactId">Details</a> |
-                                <a asp-page="./Delete" asp-route-id="@item.InaccessibleContactId">Delete</a>
+                                <a asp-page="../Contacts/Edit" asp-route-id="@item.InaccessibleContactId">Edit</a> |
+                                <a asp-page="../Contacts/Details" asp-route-id="@item.InaccessibleContactId">Details</a> |
+                                <a asp-page="../Contacts/Delete" asp-route-id="@item.InaccessibleContactId">Delete</a>
                             </td>
                         </tr>
                 }
@@ -132,5 +132,5 @@
 </div>
 <div>
     <a asp-page="./Edit" asp-route-id="@Model.InaccessibleProperty.InaccessiblePropertyId">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="../InaccessibleTerritories/Details" asp-route-id="@Model.InaccessibleProperty.TerritoryId">Back to List</a>
 </div>
