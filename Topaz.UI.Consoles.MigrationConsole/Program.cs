@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Topaz.Common.Models;
 using Topaz.Data;
-using Topaz.UI.MigrationConsole.Legacy;
-using Topaz.UI.MigrationConsole.Legacy.Models;
+using Topaz.UI.Consoles.MigrationConsole.Legacy;
+using Topaz.UI.Consoles.MigrationConsole.Legacy.Models;
 
-namespace Topaz.UI.MigrationConsole
+namespace Topaz.UI.Consoles.MigrationConsole
 {
     class Program
     {
@@ -20,7 +20,7 @@ namespace Topaz.UI.MigrationConsole
             // Generate a provider
             var serviceProvider = services.BuildServiceProvider();
             // Kick off our actual code
-            serviceProvider.GetService<MigrationApp>().Run();
+            serviceProvider.GetService<ConsoleApp>().Run();
             Console.WriteLine("done");
             Console.ReadLine();
         }
@@ -33,15 +33,15 @@ namespace Topaz.UI.MigrationConsole
             services.AddTransient<TopazDbContext, TopazDbContext>();
             services.AddDbContext<TopazDbContext>(options => options.UseSqlite("Data Source=TopazDb.db"));
             // IMPORTANT! Register our application entry point
-            services.AddTransient<MigrationApp>();
+            services.AddTransient<ConsoleApp>();
             return services;
         }
     }
-    public class MigrationApp
+    public class ConsoleApp
     {
         private TopazDbContext _db;
         private LegacyDbContext _legacyDb;
-        public MigrationApp(LegacyDbContext legacyDb, TopazDbContext db)
+        public ConsoleApp(LegacyDbContext legacyDb, TopazDbContext db)
         {
             _legacyDb = legacyDb;
             _db = db;

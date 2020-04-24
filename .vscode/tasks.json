@@ -2,37 +2,37 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build (ConsoleApp)",
+      "label": "build (TestingConsole)",
       "command": "dotnet",
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/Topaz.UI.ConsoleApp/Topaz.UI.ConsoleApp.csproj",
+        "${workspaceFolder}/Topaz.UI.Consoles.TestingConsole/Topaz.UI.Consoles.TestingConsole.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "publish (ConsoleApp)",
+      "label": "publish (TestingConsole)",
       "command": "dotnet",
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/Topaz.UI.ConsoleApp/Topaz.UI.ConsoleApp.csproj",
+        "${workspaceFolder}/Topaz.UI.Consoles.TestingConsole/Topaz.UI.Consoles.TestingConsole.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "watch (ConsoleApp)",
+      "label": "watch (TestingConsole)",
       "command": "dotnet",
       "type": "process",
       "args": [
         "watch",
         "run",
-        "${workspaceFolder}/Topaz.UI.ConsoleApp/Topaz.UI.ConsoleApp.csproj",
+        "${workspaceFolder}/Topaz.UI.Consoles.TestingConsole/Topaz.UI.Consoles.TestingConsole.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -44,7 +44,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/Topaz.UI.MigrationConsole/Topaz.UI.MigrationConsole.csproj",
+        "${workspaceFolder}/Topaz.UI.Consoles.MigrationConsole/Topaz.UI.Consoles.MigrationConsole.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -56,7 +56,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/Topaz.UI.MigrationConsole/Topaz.UI.MigrationConsole.csproj",
+        "${workspaceFolder}/Topaz.UI.Consoles.MigrationConsole/Topaz.UI.Consoles.MigrationConsole.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -69,7 +69,7 @@
       "args": [
         "watch",
         "run",
-        "${workspaceFolder}/Topaz.UI.MigrationConsole/Topaz.UI.MigrationConsole.csproj",
+        "${workspaceFolder}/Topaz.UI.Consoles.MigrationConsole/Topaz.UI.Consoles.MigrationConsole.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],

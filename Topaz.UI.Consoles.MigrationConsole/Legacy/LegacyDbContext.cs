@@ -1,8 +1,8 @@
 using System;
 using Microsoft.EntityFrameworkCore;
-using Topaz.UI.MigrationConsole.Legacy.Models;
+using Topaz.UI.Consoles.MigrationConsole.Legacy.Models;
 
-namespace Topaz.UI.MigrationConsole.Legacy
+namespace Topaz.UI.Consoles.MigrationConsole.Legacy
 {
     public class LegacyDbContext : DbContext
     {

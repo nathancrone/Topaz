@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Topaz.Common.Models;
 using Topaz.Data;
 
-namespace Topaz.UI.ConsoleApp
+namespace Topaz.UI.Consoles.TestingConsole
 {
     class Program
     {

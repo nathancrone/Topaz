@@ -5,14 +5,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": ".NET Core Launch (ConsoleApp)",
+      "name": ".NET Core Launch (TestingConsole)",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "build (ConsoleApp)",
+      "preLaunchTask": "build (TestingConsole)",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/Topaz.UI.ConsoleApp/bin/Debug/netcoreapp3.1/Topaz.UI.ConsoleApp.dll",
+      "program": "${workspaceFolder}/Topaz.UI.Consoles.TestingConsole/bin/Debug/netcoreapp3.1/Topaz.UI.Consoles.TestingConsole.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/Topaz.UI.ConsoleApp",
+      "cwd": "${workspaceFolder}/Topaz.UI.Consoles.TestingConsole",
       // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
       "console": "internalConsole",
       "stopAtEntry": false
@@ -23,9 +23,9 @@
       "request": "launch",
       "preLaunchTask": "build (MigrationConsole)",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/Topaz.UI.MigrationConsole/bin/Debug/netcoreapp3.1/Topaz.UI.MigrationConsole.dll",
+      "program": "${workspaceFolder}/Topaz.UI.Consoles.MigrationConsole/bin/Debug/netcoreapp3.1/Topaz.UI.Consoles.MigrationConsole.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/Topaz.UI.MigrationConsole",
+      "cwd": "${workspaceFolder}/Topaz.UI.Consoles.MigrationConsole",
       // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
       "console": "internalConsole",
       "stopAtEntry": false

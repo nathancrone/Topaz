@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Topaz.UI.MigrationConsole.Legacy.Models
+namespace Topaz.UI.Consoles.MigrationConsole.Legacy.Models
 {
     public class LegacyUser
     {
