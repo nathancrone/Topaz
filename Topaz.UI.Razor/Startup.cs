@@ -41,6 +41,11 @@ namespace Topaz.UI.Razor
 
             services.AddRazorPages().AddRazorPagesOptions(options =>
             {
+                options.Conventions.AuthorizeFolder("/StreetTerritories");
+                options.Conventions.AuthorizeFolder("/InaccessibleTerritories");
+                options.Conventions.AuthorizeFolder("/Properties");
+                options.Conventions.AuthorizeFolder("/Contacts");
+                options.Conventions.AuthorizeFolder("/ContactActivity");
                 options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                 options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
             });
