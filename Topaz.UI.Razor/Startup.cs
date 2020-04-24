@@ -12,6 +12,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Topaz.Data;
+using Topaz.Common.Models;
+using Topaz.UI.Razor.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace Topaz.UI.Razor
 {
@@ -29,29 +32,17 @@ namespace Topaz.UI.Razor
         {
             // adding the context for the app
             services.AddDbContext<TopazDbContext>(options => options.UseSqlite(Configuration.GetConnectionString("TopazConnection")));
-            services.AddRazorPages();
 
             // adding context for auth
             services.AddDbContext<AuthDbContext>(options => options.UseSqlite(Configuration.GetConnectionString("AuthConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AuthDbContext>();
-            services.Configure<IdentityOptions>(options =>
+
+            // add the auth stores for identity
+            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
+
+            services.AddRazorPages().AddRazorPagesOptions(options =>
             {
-                // Password settings.
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 1;
-
-                // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
-
-                // User settings.
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = false;
+                options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
+                options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
             });
 
             services.ConfigureApplicationCookie(options =>
@@ -60,10 +51,13 @@ namespace Topaz.UI.Razor
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
-                options.LoginPath = "/Identity/Account/Login";
-                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
+
+            services.AddSingleton<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

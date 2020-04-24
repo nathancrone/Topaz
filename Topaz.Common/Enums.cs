@@ -10,7 +10,9 @@ namespace Topaz.Common.Enums
     public enum ContactActivityTypeEnum
     {
         Phone = 1,
-        Letter = 2
+        Text = 2,
+        Email = 3,
+        Letter = 4
     }
 
     public enum PhoneReponseTypeEnum

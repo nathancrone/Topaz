@@ -20,6 +20,16 @@ namespace Topaz.Data.Configuration
                 },
                 new ContactActivityType
                 {
+                    ContactActivityTypeId = (int)ContactActivityTypeEnum.Text,
+                    Name = "Text"
+                },
+                new ContactActivityType
+                {
+                    ContactActivityTypeId = (int)ContactActivityTypeEnum.Email,
+                    Name = "Email"
+                },
+                new ContactActivityType
+                {
                     ContactActivityTypeId = (int)ContactActivityTypeEnum.Letter,
                     Name = "Letter"
                 }

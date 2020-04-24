@@ -24,6 +24,7 @@ namespace Topaz.Common.Models
         public string PostalCode { get; set; }
         public int? PhoneTypeId { get; set; }
         public string PhoneNumber { get; set; }
+        public string EmailAddresses { get; set; }
         public InaccessibleContactList ContactList { get; set; }
         public List<InaccessibleContactActivity> ContactActivity { get; set; }
         public PhoneType PhoneType { get; set; }
