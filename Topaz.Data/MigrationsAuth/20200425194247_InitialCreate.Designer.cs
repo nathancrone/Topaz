@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsAuth
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20200425192016_InitialCreate")]
+    [Migration("20200425194247_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,6 +197,9 @@ namespace Topaz.Data.MigrationsAuth
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PublisherId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("SecurityStamp")

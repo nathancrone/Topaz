@@ -17,20 +17,19 @@ namespace Topaz.Common.Enums
 
     public enum PhoneReponseTypeEnum
     {
-        VoicemailNoName = 1,
-        VoicemaiNameMatches = 2,
-        VoicemailDifferentName = 3,
-        VoicemailBusiness = 4,
-        NoResponseFaxModem = 5,
-        NoResponseBusySignal = 6,
-        NoResponseNotWorkingNumber = 7,
-        NoResponseRingNoAnswer = 8,
-        AnsweredRespondedFavorably = 9,
-        AnsweredNotGoodTime = 10,
-        AnsweredImmediateHangup = 11,
-        AnsweredNotInterested = 12,
-        AnsweredDoNotContact = 13,
-        AnsweredProfanityOrThreatening = 14
-
+        VoicemailNoName = 100,
+        VoicemaiNameMatches = 101,
+        VoicemailDifferentName = 102,
+        VoicemailBusiness = 103,
+        NoResponseFaxModem = 200,
+        NoResponseBusySignal = 201,
+        NoResponseNotWorkingNumber = 202,
+        NoResponseRingNoAnswer = 203,
+        AnsweredRespondedFavorably = 300,
+        AnsweredNotGoodTime = 301,
+        AnsweredImmediateHangup = 302,
+        AnsweredNotInterested = 303,
+        AnsweredDoNotContact = 304,
+        AnsweredProfanityOrThreatening = 305
     }
 }

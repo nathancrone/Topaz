@@ -19,19 +19,26 @@ namespace Topaz.UI.Consoles.UserConsole.Services
 
         public async Task CreateUser()
         {
-            var user = new AppUser { UserName = "nathan.crone@gmail.com", Email = "nathan.crone@gmail.com" };
-            var result = await this._userManager.CreateAsync(user, "Test@123");
+            var users = new List<AppUser>() {
+                new AppUser { UserName = "nathan.crone@gmail.com", Email = "nathan.crone@gmail.com" },
+                new AppUser { UserName = "danashelyce123@gmail.com", Email = "danashelyce123@gmail.com" }
+            };
 
-            if (result.Succeeded == false)
+            foreach (var user in users)
             {
-                foreach (var error in result.Errors)
+                var result = await this._userManager.CreateAsync(user, "Test@123");
+
+                if (result.Succeeded == false)
                 {
-                    Console.WriteLine(error.Description);
+                    foreach (var error in result.Errors)
+                    {
+                        Console.WriteLine(error.Description);
+                    }
                 }
-            }
-            else
-            {
-                Console.WriteLine("Done.");
+                else
+                {
+                    Console.WriteLine("user created.");
+                }
             }
         }
     }

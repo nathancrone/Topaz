@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20200425192001_InitialCreate")]
+    [Migration("20200425194227_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -306,72 +306,72 @@ namespace Topaz.Data.MigrationsApp
                     b.HasData(
                         new
                         {
-                            PhoneResponseTypeId = 1,
+                            PhoneResponseTypeId = 100,
                             Name = "Voicemail (No Name)"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 2,
+                            PhoneResponseTypeId = 101,
                             Name = "Voicemail (Name Matches)"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 3,
+                            PhoneResponseTypeId = 102,
                             Name = "Voicemail (Different Name)"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 4,
+                            PhoneResponseTypeId = 103,
                             Name = "Voicemail (Business Number)"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 5,
+                            PhoneResponseTypeId = 200,
                             Name = "No Response (Fax / Modem)"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 6,
+                            PhoneResponseTypeId = 201,
                             Name = "No Response (Busy Signal)"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 7,
+                            PhoneResponseTypeId = 202,
                             Name = "No Response (Not a working number)"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 8,
+                            PhoneResponseTypeId = 203,
                             Name = "No Response (Ring no answer)"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 9,
+                            PhoneResponseTypeId = 300,
                             Name = "Answered (Responded favorably)"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 10,
+                            PhoneResponseTypeId = 301,
                             Name = "Answered (\"Not a good time\")"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 11,
+                            PhoneResponseTypeId = 302,
                             Name = "Answered (Hung up immediately)"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 12,
+                            PhoneResponseTypeId = 303,
                             Name = "Answered (\"Not Interested\")"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 13,
+                            PhoneResponseTypeId = 304,
                             Name = "Answered (\"Take me off your list\")"
                         },
                         new
                         {
-                            PhoneResponseTypeId = 14,
+                            PhoneResponseTypeId = 305,
                             Name = "Answered (profanity or threatening)"
                         });
                 });
@@ -402,7 +402,7 @@ namespace Topaz.Data.MigrationsApp
                         new
                         {
                             PhoneTypeId = 3,
-                            Name = "VOIP"
+                            Name = "Voip"
                         });
                 });
 

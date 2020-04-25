@@ -10,5 +10,6 @@ namespace Topaz.Common.Models
         public AppUser(string userName) : base(userName) { }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public int? PublisherId { get; set; }
     }
 }

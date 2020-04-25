@@ -336,72 +336,72 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 14, "Answered (profanity or threatening)" });
+                values: new object[] { 305, "Answered (profanity or threatening)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 13, "Answered (\"Take me off your list\")" });
+                values: new object[] { 304, "Answered (\"Take me off your list\")" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 12, "Answered (\"Not Interested\")" });
+                values: new object[] { 303, "Answered (\"Not Interested\")" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 11, "Answered (Hung up immediately)" });
+                values: new object[] { 302, "Answered (Hung up immediately)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 10, "Answered (\"Not a good time\")" });
+                values: new object[] { 301, "Answered (\"Not a good time\")" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 9, "Answered (Responded favorably)" });
+                values: new object[] { 300, "Answered (Responded favorably)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 8, "No Response (Ring no answer)" });
+                values: new object[] { 203, "No Response (Ring no answer)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 7, "No Response (Not a working number)" });
+                values: new object[] { 202, "No Response (Not a working number)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 6, "No Response (Busy Signal)" });
+                values: new object[] { 201, "No Response (Busy Signal)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 5, "No Response (Fax / Modem)" });
+                values: new object[] { 200, "No Response (Fax / Modem)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 4, "Voicemail (Business Number)" });
+                values: new object[] { 103, "Voicemail (Business Number)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 3, "Voicemail (Different Name)" });
+                values: new object[] { 102, "Voicemail (Different Name)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 2, "Voicemail (Name Matches)" });
+                values: new object[] { 101, "Voicemail (Name Matches)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 1, "Voicemail (No Name)" });
+                values: new object[] { 100, "Voicemail (No Name)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",
@@ -416,7 +416,7 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.InsertData(
                 table: "PhoneType",
                 columns: new[] { "PhoneTypeId", "Name" },
-                values: new object[] { 3, "VOIP" });
+                values: new object[] { 3, "Voip" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DoNotContactStreets_TerritoryId",
