@@ -23,3 +23,7 @@
 ```
 > Import-CSV "filename.csv" | Select FirstName,LastName,MiddleInitial,@{Name="Age";Expression={[int32]\$\_.Age}},MailingAddress1,MailingAddress2,PostalCode,PhoneNumber,PhoneType | ConvertTo-Json | Add-Content -Path "filename.json"
 ```
+
+## Links
+
+[Configuring the web project to be deployed](https://www.hanselman.com/blog/DeployingTWOWebsitesToWindowsAzureFromOneGitRepository.aspx)
