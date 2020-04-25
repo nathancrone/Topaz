@@ -37,6 +37,16 @@ namespace Topaz.Data.MigrationsApp
                         new
                         {
                             ContactActivityTypeId = 2,
+                            Name = "Text"
+                        },
+                        new
+                        {
+                            ContactActivityTypeId = 3,
+                            Name = "Email"
+                        },
+                        new
+                        {
+                            ContactActivityTypeId = 4,
                             Name = "Letter"
                         });
                 });
@@ -119,6 +129,9 @@ namespace Topaz.Data.MigrationsApp
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EmailAddresses")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")

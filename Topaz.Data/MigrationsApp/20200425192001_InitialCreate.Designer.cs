@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20200423182244_InitialCreate")]
+    [Migration("20200425192001_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,16 @@ namespace Topaz.Data.MigrationsApp
                         new
                         {
                             ContactActivityTypeId = 2,
+                            Name = "Text"
+                        },
+                        new
+                        {
+                            ContactActivityTypeId = 3,
+                            Name = "Email"
+                        },
+                        new
+                        {
+                            ContactActivityTypeId = 4,
                             Name = "Letter"
                         });
                 });
@@ -121,6 +131,9 @@ namespace Topaz.Data.MigrationsApp
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EmailAddresses")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FirstName")

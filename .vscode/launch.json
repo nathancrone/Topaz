@@ -31,6 +31,19 @@
       "stopAtEntry": false
     },
     {
+      "name": ".NET Core Launch (UserConsole)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build (UserConsole)",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/Topaz.UI.Consoles.UserConsole/bin/Debug/netcoreapp3.1/Topaz.UI.Consoles.UserConsole.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Topaz.UI.Consoles.UserConsole",
+      // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+      "console": "internalConsole",
+      "stopAtEntry": false
+    },
+    {
       "name": ".NET Core Launch (Razor)",
       "type": "coreclr",
       "request": "launch",

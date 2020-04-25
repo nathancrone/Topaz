@@ -76,6 +76,43 @@
       "problemMatcher": "$msCompile"
     },
     {
+      "label": "build (UserConsole)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/Topaz.UI.Consoles.UserConsole/Topaz.UI.Consoles.UserConsole.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish (UserConsole)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/Topaz.UI.Consoles.UserConsole/Topaz.UI.Consoles.UserConsole.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch (UserConsole)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "${workspaceFolder}/Topaz.UI.Consoles.UserConsole/Topaz.UI.Consoles.UserConsole.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
       "label": "build (Razor)",
       "command": "dotnet",
       "type": "process",

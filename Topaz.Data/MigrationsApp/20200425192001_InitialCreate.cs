@@ -243,6 +243,7 @@ namespace Topaz.Data.MigrationsApp
                     PostalCode = table.Column<string>(nullable: true),
                     PhoneTypeId = table.Column<int>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
+                    EmailAddresses = table.Column<string>(nullable: true),
                     IsWorked = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -320,7 +321,17 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.InsertData(
                 table: "ContactActivityTypes",
                 columns: new[] { "ContactActivityTypeId", "Name" },
-                values: new object[] { 2, "Letter" });
+                values: new object[] { 2, "Text" });
+
+            migrationBuilder.InsertData(
+                table: "ContactActivityTypes",
+                columns: new[] { "ContactActivityTypeId", "Name" },
+                values: new object[] { 3, "Email" });
+
+            migrationBuilder.InsertData(
+                table: "ContactActivityTypes",
+                columns: new[] { "ContactActivityTypeId", "Name" },
+                values: new object[] { 4, "Letter" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
@@ -360,6 +371,11 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
+                values: new object[] { 7, "No Response (Not a working number)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Name" },
                 values: new object[] { 6, "No Response (Busy Signal)" });
 
             migrationBuilder.InsertData(
@@ -388,19 +404,14 @@ namespace Topaz.Data.MigrationsApp
                 values: new object[] { 1, "Voicemail (No Name)" });
 
             migrationBuilder.InsertData(
-                table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 7, "No Response (Not a working number)" });
+                table: "PhoneType",
+                columns: new[] { "PhoneTypeId", "Name" },
+                values: new object[] { 1, "Mobile" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",
                 columns: new[] { "PhoneTypeId", "Name" },
                 values: new object[] { 2, "Landline" });
-
-            migrationBuilder.InsertData(
-                table: "PhoneType",
-                columns: new[] { "PhoneTypeId", "Name" },
-                values: new object[] { 1, "Mobile" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",
