@@ -10,6 +10,7 @@ namespace Topaz.Data.Configuration
         public void Configure(EntityTypeBuilder<StreetTerritory> builder)
         {
             builder.Property(x => x.MapLocation).HasColumnName("Street_MapLocation");
+            builder.Property(x => x.RefId).HasColumnName("Street_RefId");
 
             builder.HasMany(x => x.InaccessibleTerritories)
                 .WithOne(x => x.StreetTerritory)

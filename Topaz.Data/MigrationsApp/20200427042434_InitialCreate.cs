@@ -104,7 +104,8 @@ namespace Topaz.Data.MigrationsApp
                     Apartment_StreetAddress = table.Column<string>(nullable: true),
                     Business_MapLocation = table.Column<string>(nullable: true),
                     Inaccessible_StreetTerritoryId = table.Column<int>(nullable: true),
-                    Street_MapLocation = table.Column<string>(nullable: true)
+                    Street_MapLocation = table.Column<string>(nullable: true),
+                    Street_RefId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {

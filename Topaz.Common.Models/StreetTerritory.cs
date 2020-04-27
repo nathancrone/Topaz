@@ -14,6 +14,6 @@ namespace Topaz.Common.Models
         public string MapLocation { get; set; }
         public List<ApartmentTerritory> ApartmentTerritories { get; set; }
         public List<InaccessibleTerritory> InaccessibleTerritories { get; set; }
-        public int? RefId;
+        public int? RefId { get; set; }
     }
 }

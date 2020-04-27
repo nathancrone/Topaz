@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20200427002652_InitialCreate")]
+    [Migration("20200427042434_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -538,6 +538,10 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<string>("MapLocation")
                         .HasColumnName("Street_MapLocation")
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("RefId")
+                        .HasColumnName("Street_RefId")
+                        .HasColumnType("INTEGER");
 
                     b.HasDiscriminator().HasValue("StreetTerritory");
                 });

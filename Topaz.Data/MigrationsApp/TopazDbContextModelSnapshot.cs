@@ -537,6 +537,10 @@ namespace Topaz.Data.MigrationsApp
                         .HasColumnName("Street_MapLocation")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("RefId")
+                        .HasColumnName("Street_RefId")
+                        .HasColumnType("INTEGER");
+
                     b.HasDiscriminator().HasValue("StreetTerritory");
                 });
 

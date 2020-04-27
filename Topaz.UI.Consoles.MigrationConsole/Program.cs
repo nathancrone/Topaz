@@ -90,6 +90,7 @@ namespace Topaz.UI.Consoles.MigrationConsole
 
             // copy inaccessible territories from source
             var sourceTerritories = _sourceDb.InaccessibleTerritories
+                .Include(x => x.StreetTerritory)
                 .Include(x => x.InaccessibleProperties)
                 .ThenInclude(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
@@ -100,7 +101,8 @@ namespace Topaz.UI.Consoles.MigrationConsole
 
             foreach (var t in sourceTerritories)
             {
-                var streetTerritoryId = _targetDb.StreetTerritories.Where(x => x.RefId == t.StreetTerritoryId).AsNoTracking().Select(x => x.TerritoryId).FirstOrDefault();
+                var refId = t.StreetTerritory.RefId;
+                var streetTerritoryId = _targetDb.StreetTerritories.Where(x => x.RefId == refId).Select(x => x.TerritoryId).FirstOrDefault();
 
                 var territory = new InaccessibleTerritory
                 {
@@ -176,7 +178,17 @@ namespace Topaz.UI.Consoles.MigrationConsole
             }
             _targetDb.SaveChanges();
 
-            //_targetDb.Database.ExecuteSqlRaw("");
+            //this will set the current contact list for the property
+            _targetDb.Database.ExecuteSqlRaw(@"
+                UPDATE 
+                InaccessibleProperties 
+                SET 
+                CurrentContactListId = (
+                    SELECT MAX(InaccessibleContactListId)
+                    FROM InaccessibleContactLists i
+                    WHERE i.InaccessiblePropertyId = InaccessibleProperties.InaccessiblePropertyId 
+                )"
+            );
         }
     }
 }
