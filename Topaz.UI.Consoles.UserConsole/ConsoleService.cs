@@ -21,6 +21,7 @@ namespace Topaz.UI.Consoles.UserConsole
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            _userCreationService.CreateRole();
             _userCreationService.CreateUser();
             return Task.CompletedTask;
         }

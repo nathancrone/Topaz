@@ -7,6 +7,7 @@ namespace Topaz.Data
 {
     public class TopazDbContext : DbContext
     {
+        protected TopazDbContext(DbContextOptions options) : base(options) { }
         public TopazDbContext(DbContextOptions<TopazDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

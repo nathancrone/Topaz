@@ -39,14 +39,19 @@ namespace Topaz.UI.Razor
             // add the auth stores for identity
             services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
+            });
+
             services.AddRazorPages().AddRazorPagesOptions(options =>
             {
-                options.Conventions.AuthorizeFolder("/StreetTerritories");
-                options.Conventions.AuthorizeFolder("/InaccessibleTerritories");
-                options.Conventions.AuthorizeFolder("/Properties");
-                options.Conventions.AuthorizeFolder("/Contacts");
-                options.Conventions.AuthorizeFolder("/ContactActivity");
-                options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
+                options.Conventions.AuthorizeFolder("/StreetTerritories", "RequireAdministratorRole");
+                options.Conventions.AuthorizeFolder("/InaccessibleTerritories", "RequireAdministratorRole");
+                options.Conventions.AuthorizeFolder("/Properties", "RequireAdministratorRole");
+                options.Conventions.AuthorizeFolder("/Contacts", "RequireAdministratorRole");
+                options.Conventions.AuthorizeFolder("/ContactActivity", "RequireAdministratorRole");
+                options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage", "RequireAdministratorRole");
                 options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
             });
 

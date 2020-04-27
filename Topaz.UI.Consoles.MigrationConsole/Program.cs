@@ -30,8 +30,10 @@ namespace Topaz.UI.Consoles.MigrationConsole
             IServiceCollection services = new ServiceCollection();
             services.AddTransient<LegacyDbContext, LegacyDbContext>();
             services.AddDbContext<LegacyDbContext>(options => options.UseSqlite("Data Source=JasperDB.db"));
-            services.AddTransient<TopazDbContext, TopazDbContext>();
-            services.AddDbContext<TopazDbContext>(options => options.UseSqlite("Data Source=TopazDb.db"));
+            services.AddTransient<SourceDbContext, SourceDbContext>();
+            services.AddDbContext<SourceDbContext>(options => options.UseSqlite("Data Source=TopazDb.src.db"));
+            services.AddTransient<TargetDbContext, TargetDbContext>();
+            services.AddDbContext<TargetDbContext>(options => options.UseSqlite("Data Source=TopazDb.db"));
             // IMPORTANT! Register our application entry point
             services.AddTransient<ConsoleApp>();
             return services;
@@ -39,12 +41,14 @@ namespace Topaz.UI.Consoles.MigrationConsole
     }
     public class ConsoleApp
     {
-        private TopazDbContext _db;
+        private TopazDbContext _sourceDb;
+        private TopazDbContext _targetDb;
         private LegacyDbContext _legacyDb;
-        public ConsoleApp(LegacyDbContext legacyDb, TopazDbContext db)
+        public ConsoleApp(LegacyDbContext legacyDb, SourceDbContext sourceDb, TargetDbContext targetDb)
         {
             _legacyDb = legacyDb;
-            _db = db;
+            _sourceDb = sourceDb;
+            _targetDb = targetDb;
         }
 
         // Application starting point
@@ -52,37 +56,127 @@ namespace Topaz.UI.Consoles.MigrationConsole
         {
             List<LegacyTerritory> legacyTerritories = new List<LegacyTerritory>();
 
-            //get the legacy data out of the database
-            legacyTerritories = _legacyDb.LegacyTerritories.Include(a => a.LedgerEntries).ThenInclude(a => a.User).ToList();
+            // get the legacy data out of the database
+            legacyTerritories = _legacyDb.LegacyTerritories.Include(a => a.LedgerEntries).ThenInclude(a => a.User).AsNoTracking().ToList();
 
-            //distinct list of legacy users
+            // distinct list of legacy users
             List<LegacyUser> legacyUsers = legacyTerritories.SelectMany(a => a.LedgerEntries.Select(b => b.User)).Distinct().ToList();
 
-            //create the users
+            // create the users
             foreach (var u in legacyUsers.OrderBy(a => a.LastName))
             {
-                _db.Add(new Publisher { UserId = u.UserId, FirstName = u.FirstName, LastName = u.LastName });
-                _db.SaveChanges();
+                _targetDb.Add(new Publisher { UserId = u.UserId, FirstName = u.FirstName, LastName = u.LastName });
+                _targetDb.SaveChanges();
             }
 
-            //create the street territories
+            // create the street territories
             foreach (var t in legacyTerritories.OrderBy(a => a.TerritoryCode))
             {
                 var territoryCode = $"{t.TerritoryCode.Substring(0, 1).ToUpper()}-{int.Parse(t.TerritoryCode.Substring(1)):000}";
-                var street = new StreetTerritory { TerritoryCode = territoryCode, InActive = t.InActive };
-                _db.Add(street);
-                _db.SaveChanges();
+                var street = new StreetTerritory { TerritoryCode = territoryCode, InActive = t.InActive, RefId = t.TerritoryId };
+                _targetDb.Add(street);
+                _targetDb.SaveChanges();
                 foreach (var entry in t.LedgerEntries.OrderBy(x => x.CheckOutDate))
                 {
                     street.Activity.Add(new TerritoryActivity
                     {
-                        PublisherId = _db.Publishers.FirstOrDefault(x => x.UserId == entry.UserId).PublisherId,
+                        PublisherId = _targetDb.Publishers.FirstOrDefault(x => x.UserId == entry.UserId).PublisherId,
                         CheckOutDate = entry.CheckOutDate,
                         CheckInDate = entry.CheckInDate
                     });
-                    _db.SaveChanges();
+                    _targetDb.SaveChanges();
                 }
             }
+
+            // copy inaccessible territories from source
+            var sourceTerritories = _sourceDb.InaccessibleTerritories
+                .Include(x => x.InaccessibleProperties)
+                .ThenInclude(x => x.ContactLists)
+                .ThenInclude(x => x.Contacts)
+                .ThenInclude(x => x.ContactActivity)
+                .ThenInclude(x => x.Publisher)
+                .AsNoTracking()
+                .ToList();
+
+            foreach (var t in sourceTerritories)
+            {
+                var streetTerritoryId = _targetDb.StreetTerritories.Where(x => x.RefId == t.StreetTerritoryId).AsNoTracking().Select(x => x.TerritoryId).FirstOrDefault();
+
+                var territory = new InaccessibleTerritory
+                {
+                    TerritoryCode = t.TerritoryCode,
+                    StreetTerritoryId = streetTerritoryId,
+                    InActive = t.InActive
+                };
+
+                foreach (var p in t.InaccessibleProperties)
+                {
+                    var property = new InaccessibleProperty
+                    {
+                        ResearchedDate = p.ResearchedDate,
+                        StreetNumbers = p.StreetNumbers,
+                        Street = p.Street,
+                        City = p.City,
+                        State = p.State,
+                        PostalCode = p.PostalCode,
+                        EstimatedDwellingCount = p.EstimatedDwellingCount,
+                        PropertyName = p.PropertyName,
+                        Description = p.Description
+                    };
+
+                    foreach (var l in p.ContactLists)
+                    {
+                        var list = new InaccessibleContactList
+                        {
+                            CreateDate = l.CreateDate
+                        };
+
+                        foreach (var c in l.Contacts)
+                        {
+                            var contact = new InaccessibleContact
+                            {
+                                PublisherId = c.PublisherId,
+                                FirstName = c.FirstName,
+                                LastName = c.LastName,
+                                MiddleInitial = c.MiddleInitial,
+                                Age = c.Age,
+                                MailingAddress1 = c.MailingAddress1,
+                                MailingAddress2 = c.MailingAddress2,
+                                City = c.City,
+                                State = c.State,
+                                PostalCode = c.PostalCode,
+                                PhoneTypeId = c.PhoneTypeId,
+                                PhoneNumber = c.PhoneNumber,
+                                EmailAddresses = c.EmailAddresses,
+                                IsWorked = c.IsWorked
+                            };
+
+                            foreach (var a in c.ContactActivity)
+                            {
+                                var publisherId = _targetDb.Publishers.Where(x => x.UserId == a.Publisher.UserId).AsNoTracking().Select(x => x.PublisherId).FirstOrDefault();
+
+                                contact.ContactActivity.Add(new InaccessibleContactActivity
+                                {
+                                    PublisherId = publisherId,
+                                    ActivityDate = a.ActivityDate,
+                                    ContactActivityTypeId = a.ContactActivityTypeId,
+                                    PhoneCallerIdBlocked = a.PhoneCallerIdBlocked,
+                                    PhoneResponseTypeId = a.PhoneResponseTypeId,
+                                    LetterReturned = a.LetterReturned,
+                                    Notes = a.Notes
+                                });
+                            }
+                            list.Contacts.Add(contact);
+                        }
+                        property.ContactLists.Add(list);
+                    }
+                    territory.InaccessibleProperties.Add(property);
+                }
+                _targetDb.Add(territory);
+            }
+            _targetDb.SaveChanges();
+
+            //_targetDb.Database.ExecuteSqlRaw("");
         }
     }
 }
