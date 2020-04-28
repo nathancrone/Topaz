@@ -1,0 +1,76 @@
+@page
+@model Topaz.UI.Razor.Areas.Admin.Pages.Contacts.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>InaccessibleContact</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleContact.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleContact.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleContact.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleContact.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleContact.MiddleInitial)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleContact.MiddleInitial)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleContact.Age)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleContact.Age)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleContact.MailingAddress1)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleContact.MailingAddress1)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleContact.MailingAddress2)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleContact.MailingAddress2)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleContact.PhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleContact.PhoneNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleContact.ContactList)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleContact.ContactList.InaccessibleContactListId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleContact.PhoneType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleContact.PhoneType.PhoneTypeId)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="InaccessibleContact.InaccessibleContactId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="../Properties/Details" asp-route-id="@Model.InaccessibleContact.ContactList.InaccessiblePropertyId">Back to List</a>
+    </form>
+</div>

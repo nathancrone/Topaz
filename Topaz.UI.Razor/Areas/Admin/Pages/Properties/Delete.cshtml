@@ -1,0 +1,58 @@
+@page
+@model Topaz.UI.Razor.Areas.Admin.Pages.Properties.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>InaccessibleProperty</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleProperty.Territory)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleProperty.Territory.StreetTerritory.TerritoryCode)  /  @Html.DisplayFor(model => model.InaccessibleProperty.Territory.TerritoryCode)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleProperty.StreetNumbers)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleProperty.StreetNumbers)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleProperty.Street)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleProperty.Street)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleProperty.PropertyName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleProperty.PropertyName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleProperty.EstimatedDwellingCount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleProperty.EstimatedDwellingCount)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleProperty.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleProperty.Description)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="InaccessibleProperty.InaccessiblePropertyId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="../InaccessibleTerritories/Details" asp-route-id="@Model.InaccessibleProperty.TerritoryId">Back to List</a>
+    </form>
+</div>

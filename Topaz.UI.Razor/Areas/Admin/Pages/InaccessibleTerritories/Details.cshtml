@@ -1,0 +1,85 @@
+@page
+@model Topaz.UI.Razor.Areas.Admin.Pages.InaccessibleTerritories.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>InaccessibleTerritory</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleTerritory.TerritoryCode)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleTerritory.TerritoryCode)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleTerritory.StreetTerritory)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleTerritory.StreetTerritory.TerritoryCode)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleTerritory.Notes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleTerritory.Notes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InaccessibleTerritory.InActive)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InaccessibleTerritory.InActive)
+        </dd>
+        <dd class="col-sm-12">
+            <p>
+                <a asp-page="../Properties/Create" asp-route-territoryId="@Model.InaccessibleTerritory.TerritoryId">Create New Property</a>
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.InaccessibleTerritory.InaccessibleProperties[0].Street)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.InaccessibleTerritory.InaccessibleProperties[0].PropertyName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.InaccessibleTerritory.InaccessibleProperties[0].EstimatedDwellingCount)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.InaccessibleTerritory.InaccessibleProperties)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Street)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PropertyName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EstimatedDwellingCount)
+                        </td>
+                        <td>
+                            <a asp-page="../Properties/Edit" asp-route-id="@item.InaccessiblePropertyId">Edit</a> |
+                            <a asp-page="../Properties/Details" asp-route-id="@item.InaccessiblePropertyId">Details</a> |
+                            <a asp-page="../Properties/Delete" asp-route-id="@item.InaccessiblePropertyId">Delete</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.InaccessibleTerritory.TerritoryId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

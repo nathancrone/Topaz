@@ -46,11 +46,7 @@ namespace Topaz.UI.Razor
 
             services.AddRazorPages().AddRazorPagesOptions(options =>
             {
-                options.Conventions.AuthorizeFolder("/StreetTerritories", "RequireAdministratorRole");
-                options.Conventions.AuthorizeFolder("/InaccessibleTerritories", "RequireAdministratorRole");
-                options.Conventions.AuthorizeFolder("/Properties", "RequireAdministratorRole");
-                options.Conventions.AuthorizeFolder("/Contacts", "RequireAdministratorRole");
-                options.Conventions.AuthorizeFolder("/ContactActivity", "RequireAdministratorRole");
+                options.Conventions.AuthorizeAreaFolder("Admin", "/", "RequireAdministratorRole");
                 options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage", "RequireAdministratorRole");
                 options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
             });
