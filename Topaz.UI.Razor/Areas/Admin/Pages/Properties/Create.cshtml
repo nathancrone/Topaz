@@ -53,7 +53,7 @@
 </div>
 
 <div>
-    <a asp-page="../InaccessibleTerritories/Details">Back to List</a>
+    <a asp-page="../InaccessibleTerritories/Details" asp-route-id='@Request.Query["territoryId"]'>Back to List</a>
 </div>
 
 @section Scripts {
