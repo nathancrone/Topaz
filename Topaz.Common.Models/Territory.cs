@@ -7,13 +7,13 @@ namespace Topaz.Common.Models
     {
         public Territory()
         {
-            Activity = new List<TerritoryActivity>();
+            //Activity = new List<TerritoryActivity>();
         }
 
         public int TerritoryId { get; set; }
         public string TerritoryCode { get; set; }
         public string Notes { get; set; }
         public bool InActive { get; set; }
-        public List<TerritoryActivity> Activity { get; set; }
+        //public List<TerritoryActivity> Activity { get; set; }
     }
 }

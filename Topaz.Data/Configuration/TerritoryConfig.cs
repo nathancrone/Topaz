@@ -11,10 +11,6 @@ namespace Topaz.Data.Configuration
         {
             builder.HasKey(x => x.TerritoryId);
             builder.Property(x => x.TerritoryId).ValueGeneratedOnAdd();
-
-            builder.HasMany(x => x.Activity)
-            .WithOne(x => x.Territory)
-            .HasForeignKey(x => x.TerritoryId);
         }
     }
 }

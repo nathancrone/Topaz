@@ -13,6 +13,10 @@ namespace Topaz.Data.Configuration
             builder.Property(x => x.MapLocation).HasColumnName("Apartment_MapLocation");
             builder.Property(x => x.PropertyName).HasColumnName("Apartment_PropertyName");
             builder.Property(x => x.StreetAddress).HasColumnName("Apartment_StreetAddress");
+
+            builder.HasMany(x => x.Activity)
+                .WithOne(x => x.ApartmentTerritory)
+                .HasForeignKey(x => x.TerritoryId);
         }
     }
 }

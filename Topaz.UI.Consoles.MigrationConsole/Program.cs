@@ -20,7 +20,8 @@ namespace Topaz.UI.Consoles.MigrationConsole
             // Generate a provider
             var serviceProvider = services.BuildServiceProvider();
             // Kick off our actual code
-            serviceProvider.GetService<ConsoleApp>().Run();
+            serviceProvider.GetService<ConsoleApp>().Legacy();
+            serviceProvider.GetService<ConsoleApp>().Populate();
             Console.WriteLine("done");
             Console.ReadLine();
         }
@@ -52,7 +53,7 @@ namespace Topaz.UI.Consoles.MigrationConsole
         }
 
         // Application starting point
-        public void Run()
+        public void Legacy()
         {
             List<LegacyTerritory> legacyTerritories = new List<LegacyTerritory>();
 
@@ -60,7 +61,7 @@ namespace Topaz.UI.Consoles.MigrationConsole
             legacyTerritories = _legacyDb.LegacyTerritories.Include(a => a.LedgerEntries).ThenInclude(a => a.User).AsNoTracking().ToList();
 
             // distinct list of legacy users
-            List<LegacyUser> legacyUsers = legacyTerritories.SelectMany(a => a.LedgerEntries.Select(b => b.User)).Distinct().ToList();
+            var legacyUsers = legacyTerritories.SelectMany(a => a.LedgerEntries.Select(b => new { b.User.UserId, b.User.FirstName, b.User.LastName })).Distinct().ToList();
 
             // create the users
             foreach (var u in legacyUsers.OrderBy(a => a.LastName))
@@ -87,7 +88,10 @@ namespace Topaz.UI.Consoles.MigrationConsole
                     _targetDb.SaveChanges();
                 }
             }
+        }
 
+        public void Populate()
+        {
             // copy inaccessible territories from source
             var sourceTerritories = _sourceDb.InaccessibleTerritories
                 .Include(x => x.StreetTerritory)

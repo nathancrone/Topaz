@@ -413,6 +413,9 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<string>("FirstName")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .HasColumnType("TEXT");
 

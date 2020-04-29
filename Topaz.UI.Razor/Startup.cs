@@ -46,6 +46,8 @@ namespace Topaz.UI.Razor
 
             services.AddRazorPages().AddRazorPagesOptions(options =>
             {
+                options.Conventions.AuthorizePage("/StreetActivity/Index");
+                options.Conventions.AuthorizePage("/InaccessibleActivity/Index");
                 options.Conventions.AuthorizeAreaFolder("Admin", "/", "RequireAdministratorRole");
                 options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage", "RequireAdministratorRole");
                 options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");

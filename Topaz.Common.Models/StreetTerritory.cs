@@ -9,11 +9,13 @@ namespace Topaz.Common.Models
         {
             ApartmentTerritories = new List<ApartmentTerritory>();
             InaccessibleTerritories = new List<InaccessibleTerritory>();
+            Activity = new List<TerritoryActivity>();
         }
 
         public string MapLocation { get; set; }
         public List<ApartmentTerritory> ApartmentTerritories { get; set; }
         public List<InaccessibleTerritory> InaccessibleTerritories { get; set; }
         public int? RefId { get; set; }
+        public List<TerritoryActivity> Activity { get; set; }
     }
 }

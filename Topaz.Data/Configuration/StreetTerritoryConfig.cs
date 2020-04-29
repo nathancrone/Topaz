@@ -19,6 +19,10 @@ namespace Topaz.Data.Configuration
             builder.HasMany(x => x.ApartmentTerritories)
                 .WithOne(x => x.StreetTerritory)
                 .HasForeignKey(x => x.StreetTerritoryId);
+
+            builder.HasMany(x => x.Activity)
+                .WithOne(x => x.StreetTerritory)
+                .HasForeignKey(x => x.TerritoryId);
         }
     }
 }

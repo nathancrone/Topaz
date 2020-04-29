@@ -81,7 +81,8 @@ namespace Topaz.Data.MigrationsApp
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<string>(nullable: true),
                     FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true)
+                    LastName = table.Column<string>(nullable: true),
+                    IsHidden = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

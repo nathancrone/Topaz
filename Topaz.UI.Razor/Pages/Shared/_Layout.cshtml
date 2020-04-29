@@ -23,10 +23,16 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-page="/StreetTerritories/Index">Street</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="StreetActivity/Index">My Street Territories</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-page="/InaccessibleTerritories/Index">Inaccessible</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Admin
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="adminDropdown">
+                                <a class="dropdown-item" asp-area="Admin" asp-page="/StreetTerritories/Index">Street</a>
+                                <a class="dropdown-item" asp-area="Admin" asp-page="/InaccessibleTerritories/Index">Inaccessible</a>
+                            </div>
                         </li>
                     </ul>
                 </div>

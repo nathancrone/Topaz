@@ -10,6 +10,10 @@ namespace Topaz.Data.Configuration
         public void Configure(EntityTypeBuilder<BusinessTerritory> builder)
         {
             builder.Property(x => x.MapLocation).HasColumnName("Business_MapLocation");
+
+            builder.HasMany(x => x.Activity)
+                .WithOne(x => x.BusinessTerritory)
+                .HasForeignKey(x => x.TerritoryId);
         }
     }
 }
