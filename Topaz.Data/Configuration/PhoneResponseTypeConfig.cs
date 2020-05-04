@@ -35,6 +35,11 @@ namespace Topaz.Data.Configuration
                 },
                 new PhoneResponseType
                 {
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.VoicemailMailboxFullNotSetUp,
+                    Name = "Voicemail (Mailbox Full or Not Set Up)"
+                },
+                new PhoneResponseType
+                {
                     PhoneResponseTypeId = (int)PhoneReponseTypeEnum.NoResponseFaxModem,
                     Name = "No Response (Fax / Modem)"
                 },

@@ -204,6 +204,24 @@ namespace Topaz.Data.MigrationsApp
                         principalTable: "Territories",
                         principalColumn: "TerritoryId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TerritoryActivities_Territories_TerritoryId1",
+                        column: x => x.TerritoryId,
+                        principalTable: "Territories",
+                        principalColumn: "TerritoryId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TerritoryActivities_Territories_TerritoryId2",
+                        column: x => x.TerritoryId,
+                        principalTable: "Territories",
+                        principalColumn: "TerritoryId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TerritoryActivities_Territories_TerritoryId3",
+                        column: x => x.TerritoryId,
+                        principalTable: "Territories",
+                        principalColumn: "TerritoryId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -373,17 +391,17 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 202, "No Response (Not a working number)" });
-
-            migrationBuilder.InsertData(
-                table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
                 values: new object[] { 201, "No Response (Busy Signal)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
                 values: new object[] { 200, "No Response (Fax / Modem)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Name" },
+                values: new object[] { 104, "Voicemail (Mailbox Full or Not Set Up)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
@@ -406,14 +424,19 @@ namespace Topaz.Data.MigrationsApp
                 values: new object[] { 100, "Voicemail (No Name)" });
 
             migrationBuilder.InsertData(
-                table: "PhoneType",
-                columns: new[] { "PhoneTypeId", "Name" },
-                values: new object[] { 1, "Mobile" });
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Name" },
+                values: new object[] { 202, "No Response (Not a working number)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",
                 columns: new[] { "PhoneTypeId", "Name" },
                 values: new object[] { 2, "Landline" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneType",
+                columns: new[] { "PhoneTypeId", "Name" },
+                values: new object[] { 1, "Mobile" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",

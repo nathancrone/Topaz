@@ -324,6 +324,11 @@ namespace Topaz.Data.MigrationsApp
                         },
                         new
                         {
+                            PhoneResponseTypeId = 104,
+                            Name = "Voicemail (Mailbox Full or Not Set Up)"
+                        },
+                        new
+                        {
                             PhoneResponseTypeId = 200,
                             Name = "No Response (Fax / Modem)"
                         },
@@ -626,9 +631,30 @@ namespace Topaz.Data.MigrationsApp
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Topaz.Common.Models.Territory", "Territory")
+                    b.HasOne("Topaz.Common.Models.ApartmentTerritory", "ApartmentTerritory")
                         .WithMany("Activity")
                         .HasForeignKey("TerritoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Topaz.Common.Models.BusinessTerritory", "BusinessTerritory")
+                        .WithMany("Activity")
+                        .HasForeignKey("TerritoryId")
+                        .HasConstraintName("FK_TerritoryActivities_Territories_TerritoryId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Topaz.Common.Models.InaccessibleTerritory", "InaccessibleTerritory")
+                        .WithMany("Activity")
+                        .HasForeignKey("TerritoryId")
+                        .HasConstraintName("FK_TerritoryActivities_Territories_TerritoryId2")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Topaz.Common.Models.StreetTerritory", "StreetTerritory")
+                        .WithMany("Activity")
+                        .HasForeignKey("TerritoryId")
+                        .HasConstraintName("FK_TerritoryActivities_Territories_TerritoryId3")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

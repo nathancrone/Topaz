@@ -21,6 +21,7 @@ namespace Topaz.Common.Enums
         VoicemaiNameMatches = 101,
         VoicemailDifferentName = 102,
         VoicemailBusiness = 103,
+        VoicemailMailboxFullNotSetUp = 104,
         NoResponseFaxModem = 200,
         NoResponseBusySignal = 201,
         NoResponseNotWorkingNumber = 202,

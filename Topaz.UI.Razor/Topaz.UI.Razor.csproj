@@ -21,8 +21,8 @@
     <ProjectReference Include="..\Topaz.Common.Models\Topaz.Common.Models.csproj" />
     <ProjectReference Include="..\Topaz.Data\Topaz.Data.csproj" />
     <ProjectReference Include="..\Topaz.Service\Topaz.Service.csproj" />
-    <None Include="AuthDb.db" CopyToOutputDirectory="Always" />
-    <None Include="TopazDb.db" CopyToOutputDirectory="Always" />
+    <!-- <None Include="AuthDb.db" CopyToOutputDirectory="Always" />
+    <None Include="TopazDb.db" CopyToOutputDirectory="Always" /> -->
   </ItemGroup>
 
 </Project>
