@@ -4,14 +4,13 @@ process.env.NODE_ENV = "development";
 
 module.exports = {
   entry: {
-    myInaccessible: "./src_myInaccessible/App.js",
-    myStreet: "./src_myStreet/App.js",
+    currentInaccessible: "./src_currentInaccessible/App.js",
+    currentStreet: "./src_currentStreet/App.js",
   },
   output: {
     path: path.resolve(__dirname, "../wwwroot/js/"),
     filename: "bundle.[name].js",
   },
-
   module: {
     rules: [
       {

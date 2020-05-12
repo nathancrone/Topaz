@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Topaz.Common.Models;
 using Topaz.Data;
 using Topaz.UI.Razor.Services;
+using Newtonsoft.Json;
 
 namespace Topaz.UI.Razor
 {
@@ -44,6 +45,10 @@ namespace Topaz.UI.Razor
                 options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
             });
 
+            // to enable web api functionality
+            services.AddControllers();
+
+            // to enable razor pages
             services.AddRazorPages().AddRazorPagesOptions(options =>
             {
                 options.Conventions.AuthorizePage("/StreetActivity/Index");
@@ -93,6 +98,7 @@ namespace Topaz.UI.Razor
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
         }
