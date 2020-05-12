@@ -5,16 +5,18 @@ function IndexList(props) {
   return (
     <table className="table">
       <thead>
-        <tr>Territory</tr>
-        <tr>Date Checked Out</tr>
-        <tr>Actions</tr>
+        <tr>
+          <th>Territory</th>
+          <th>Date Checked Out</th>
+          <th>Actions</th>
+        </tr>
       </thead>
       <tbody>
         {props.activity.map((a) => {
           return (
-            <tr key="a.Id">
-              <td>{a.TerritoryCode}</td>
-              <td>{a.CheckOutDate}</td>
+            <tr key="a.territoryActivityId">
+              <td>{a.territoryCode}</td>
+              <td>{a.checkOutDate}</td>
               <td>&nbsp;</td>
             </tr>
           );

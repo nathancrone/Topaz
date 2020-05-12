@@ -1,6 +1,6 @@
 var DataApi = {
   getCurrentStreetActivity: async function () {
-    const response = await fetch("http://example.com/movies.json");
+    const response = await fetch("street");
     return await response.json();
   },
 };
