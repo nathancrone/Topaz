@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 function IndexList(props) {
@@ -17,7 +18,11 @@ function IndexList(props) {
             <tr key="a.territoryActivityId">
               <td>{a.territoryCode}</td>
               <td>{a.checkOutDate}</td>
-              <td>&nbsp;</td>
+              <td>
+                <Link to={"/checkin/" + a.territoryId}>Check In</Link>
+                {" | "}
+                <Link to={"/rework/" + a.territoryId}>Rework</Link>
+              </td>
             </tr>
           );
         })}
@@ -30,6 +35,7 @@ IndexList.propTypes = {
   activity: PropTypes.arrayOf(
     PropTypes.shape({
       territoryActivityId: PropTypes.number.isRequired,
+      territoryId: PropTypes.number.isRequired,
       territoryCode: PropTypes.string.isRequired,
       checkOutDate: PropTypes.object.isRequired,
     })

@@ -1,9 +1,10 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function ReworkPage() {
   return (
     <>
-      <div></div>
+      <Link to="">Cancel</Link>
     </>
   );
 }

@@ -32,7 +32,7 @@ namespace MyApi.Controllers
 
             return _context.TerritoryActivities
                 .Where(x => x.Publisher.UserId == UserId && x.CheckInDate == null && x.StreetTerritory != null)
-                .Select(x => new { x.TerritoryActivityId, x.StreetTerritory.TerritoryCode, x.CheckOutDate }).ToList();
+                .Select(x => new { x.TerritoryActivityId, x.StreetTerritory.TerritoryId, x.StreetTerritory.TerritoryCode, x.CheckOutDate }).ToList();
         }
     }
 }

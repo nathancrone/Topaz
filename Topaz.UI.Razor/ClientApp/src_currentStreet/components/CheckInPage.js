@@ -1,9 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-function CheckInPage() {
+function CheckInPage(props) {
   return (
     <>
-      <div></div>
+      {props.match.params.id}
+      <Link to="">Cancel</Link>
     </>
   );
 }
