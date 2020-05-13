@@ -3,6 +3,7 @@ const path = require("path");
 process.env.NODE_ENV = "development";
 
 module.exports = {
+  mode: "development",
   entry: {
     currentInaccessible: "./src_currentInaccessible/App.js",
     currentStreet: "./src_currentStreet/App.js",

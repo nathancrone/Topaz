@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import IndexList from "./IndexList";
-import DataApi from "../../DataApi";
+import DataApi from "../../lib/DataApi";
 
 function IndexPage() {
-  const [activity, setActivity] = useState([]);
+  const [territory, setTerritory] = useState([]);
 
   useEffect(() => {
-    DataApi.getCurrentStreetActivity().then((_activity) =>
-      setActivity(_activity)
+    DataApi.getCurrentStreetTerritory().then((_territory) =>
+      setTerritory(_territory)
     );
   }, []);
 
   return (
     <>
       <h2>Current Street Territory</h2>
-      <IndexList activity={activity} />
+      <IndexList territory={territory} />
       <Link to="/checkout">Check Out</Link>
     </>
   );

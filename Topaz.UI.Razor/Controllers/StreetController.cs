@@ -25,14 +25,37 @@ namespace MyApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Object> Get()
+        [Route("[action]")]
+        public IEnumerable<Object> GetCurrentTerritory()
         {
             var claimsIdentity = (ClaimsIdentity)this.User.Identity;
             var UserId = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
 
             return _context.TerritoryActivities
                 .Where(x => x.Publisher.UserId == UserId && x.CheckInDate == null && x.StreetTerritory != null)
-                .Select(x => new { x.TerritoryActivityId, x.StreetTerritory.TerritoryId, x.StreetTerritory.TerritoryCode, x.CheckOutDate }).ToList();
+                .Select(x => new
+                {
+                    x.TerritoryActivityId,
+                    x.StreetTerritory.TerritoryId,
+                    x.StreetTerritory.TerritoryCode,
+                    x.CheckOutDate
+                }).ToList();
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public IEnumerable<Object> GetAvailableTerritory()
+        {
+            var LinqResult = _context.StreetTerritories.Where(x => !x.InActive && !x.Activity.Any());
+
+            LinqResult = LinqResult.Union(_context.StreetTerritories.Where(x => !x.InActive && !x.Activity.Any(y => y.CheckInDate == null)));
+
+            return LinqResult.Select(x => new
+            {
+                x.TerritoryId,
+                x.TerritoryCode,
+                CheckInDate = x.Activity.Max(y => y.CheckInDate)
+            }).OrderBy(x => x.CheckInDate).Take(3).ToList();
         }
     }
 }
