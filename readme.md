@@ -27,3 +27,5 @@
 ## Links
 
 [Configuring the web project to be deployed](https://www.hanselman.com/blog/DeployingTWOWebsitesToWindowsAzureFromOneGitRepository.aspx)
+
+[Using Vue CLI Inside an ASP.NET Core Project](https://wildermuth.com/2019/04/08/Using-Vue-CLI-Inside-an-ASP-NET-Core-Project)
