@@ -21,9 +21,7 @@
                 name: 'PublisherStreetCheckin',
                 params: { id: t.territoryId },
               }"
-            >
-              Check In </router-link
-            >&nbsp;
+            >Check In</router-link>&nbsp;
             <router-link
               tag="a"
               class="btn btn-primary"
@@ -31,9 +29,7 @@
                 name: 'PublisherStreetRework',
                 params: { id: t.territoryId },
               }"
-            >
-              Rework</router-link
-            >&nbsp;
+            >Rework</router-link>&nbsp;
           </td>
         </tr>
       </tbody>
@@ -43,13 +39,12 @@
 
 <script>
 import { data } from "../shared";
-import { format } from "date-fns";
 
 export default {
   name: "PublisherStreetTerritories",
   data() {
     return {
-      territories: [],
+      territories: []
     };
   },
   async created() {
@@ -63,16 +58,11 @@ export default {
     handleCancelCheckout() {},
     handleConfirmCheckout(territory) {
       const index = this.territories.findIndex(
-        (t) => t.territoryId === territory.territoryId
+        t => t.territoryId === territory.territoryId
       );
       this.territories.splice(index, 1, territory);
       this.territories = [...this.territories];
-    },
-  },
-  filters: {
-    dateFormat: function(value, formatString) {
-      return format(value, formatString);
-    },
-  },
+    }
+  }
 };
 </script>
