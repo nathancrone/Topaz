@@ -28,8 +28,8 @@ namespace MyApi.Controllers
         [Route("[action]")]
         public IEnumerable<Object> GetCurrentTerritory()
         {
-            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
-            var UserId = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var Claims = (ClaimsIdentity)this.User.Identity;
+            var UserId = Claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
 
             return _context.TerritoryActivities
                 .Where(x => x.Publisher.UserId == UserId && x.CheckInDate == null && x.StreetTerritory != null)
@@ -56,6 +56,34 @@ namespace MyApi.Controllers
                 x.TerritoryCode,
                 CheckInDate = x.Activity.Max(y => y.CheckInDate)
             }).OrderBy(x => x.CheckInDate).Take(3).ToList();
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public int CheckOutTerritory(int territoryId)
+        {
+            var Claims = (ClaimsIdentity)this.User.Identity;
+            var UserId = Claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+
+            //only allow the check out if the territory isn't already checked out
+            if (!_context.TerritoryActivities.Any(x => x.TerritoryId == territoryId && x.CheckOutDate != null && x.CheckInDate == null))
+            {
+                //get the publisher by the user id
+                var Publisher = _context.Publishers.FirstOrDefault(x => x.UserId == UserId);
+
+                if (Publisher != null)
+                {
+                    var activity = new TerritoryActivity()
+                    {
+                        PublisherId = Publisher.PublisherId,
+                        CheckOutDate = DateTime.UtcNow
+                    };
+                    _context.TerritoryActivities.Add(activity);
+                    _context.SaveChanges();
+                }
+            }
+
+            return 0;
         }
     }
 }

@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import PublisherStreetTerritories from "../views/publisher-street-territories.vue";
+import PublisherStreetCheckout from "../views/publisher-street-checkout.vue";
 import PublisherStreetCheckin from "../views/publisher-street-checkin.vue";
 import PublisherStreetRework from "../views/publisher-street-rework.vue";
 
@@ -11,6 +12,11 @@ const routes = [
     path: "/Publisher/StreetTerritories",
     name: "PublisherStreetTerritories",
     component: PublisherStreetTerritories,
+  },
+  {
+    path: "/Publisher/StreetTerritories/Checkout",
+    name: "PublisherStreetCheckout",
+    component: PublisherStreetCheckout,
   },
   {
     path: "/Publisher/StreetTerritories/Checkin/:id",

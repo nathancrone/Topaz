@@ -1,12 +1,27 @@
 import * as axios from "axios";
 import { format } from "date-fns";
 
-const getPublisherStreeTerritories = async function() {
+const getPublisherStreetTerritories = async function() {
   try {
     const response = await axios.get(`/Street/GetCurrentTerritory`);
     let data = parseList(response);
     const territories = data.map((t) => {
       t.checkOutDate = format(parseDate(t.checkOutDate), "MMM dd, yyyy");
+      return t;
+    });
+    return territories;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getAvailableStreetTerritories = async function() {
+  try {
+    const response = await axios.get(`/Street/GetAvailableTerritory`);
+    let data = parseList(response);
+    const territories = data.map((t) => {
+      t.checkInDate = format(parseDate(t.checkInDate), "MMM dd, yyyy");
       return t;
     });
     return territories;
@@ -34,5 +49,6 @@ const parseList = (response) => {
 };
 
 export const data = {
-  getPublisherStreeTerritories,
+  getPublisherStreetTerritories,
+  getAvailableStreetTerritories,
 };
