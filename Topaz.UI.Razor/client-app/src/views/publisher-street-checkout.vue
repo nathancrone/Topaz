@@ -11,12 +11,8 @@
           <small>Last Check In: {{ t.checkInDate }}</small>
         </div>
         <div class="d-flex w-100 justify-content-end">
-          <button
-            v-if="t !== selectedTerritory"
-            class="btn btn-primary"
-            @click="handleSelect(t)"
-          >Select</button>
-          <div v-if="t === selectedTerritory">
+          <button v-if="t !== checkout" class="btn btn-primary" @click="handleSelect(t)">Select</button>
+          <div v-if="t === checkout">
             Check out?
             <button class="btn btn-success mr-1" @click="handleConfirm">Confirm</button>
             <button class="btn btn-danger" @click="handleCancel">Cancel</button>
@@ -35,7 +31,7 @@ export default {
   data() {
     return {
       territories: [],
-      selectedTerritory: undefined
+      checkout: undefined
     };
   },
   async created() {
@@ -46,13 +42,23 @@ export default {
       this.territories = [];
       this.territories = await data.getAvailableStreetTerritories();
     },
+    async checkoutTerritory(t) {
+      await data.currentUserCheckout(t);
+      await this.loadTerritories(t);
+    },
     handleSelect(t) {
-      this.selectedTerritory = t;
+      this.checkout = t;
     },
     handleCancel() {
-      this.selectedTerritory = undefined;
+      this.checkout = undefined;
     },
-    handleConfirm() {}
+    async handleConfirm() {
+      if (this.checkout) {
+        await this.checkoutTerritory(this.checkout);
+      }
+      this.checkout = undefined;
+      this.$router.push({ name: "PublisherStreetTerritories" });
+    }
   }
 };
 </script>

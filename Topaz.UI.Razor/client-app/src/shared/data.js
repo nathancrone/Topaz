@@ -31,6 +31,48 @@ const getAvailableStreetTerritories = async function() {
   }
 };
 
+const currentUserCheckout = async function(territory) {
+  try {
+    const response = await axios.post(
+      `/Street/CurrentUserCheckout/${territory.territoryId}`
+    );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return [];
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+const currentUserCheckin = async function(territory) {
+  try {
+    const response = await axios.post(
+      `/Street/CurrentUserCheckin/${territory.territoryId}`
+    );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return [];
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+const currentUserRework = async function(territory) {
+  try {
+    const response = await axios.post(
+      `/Street/CurrentUserRework/${territory.territoryId}`
+    );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return [];
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
 const parseDate = (d) => {
   var arr = d.split(/\D+/);
   return new Date(
@@ -51,4 +93,7 @@ const parseList = (response) => {
 export const data = {
   getPublisherStreetTerritories,
   getAvailableStreetTerritories,
+  currentUserCheckout,
+  currentUserCheckin,
+  currentUserRework,
 };

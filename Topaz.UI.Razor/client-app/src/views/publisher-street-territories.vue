@@ -23,18 +23,18 @@
         </div>
         <div class="d-flex w-100 justify-content-end">
           <button
-            v-if="t !== checkinTerritory && t !== reworkTerritory"
+            v-if="t !== checkin && t !== rework"
             class="btn btn-primary mr-1"
             @click="handleCheckin(t)"
           >Check In</button>
           <button
-            v-if="t !== checkinTerritory && t !== reworkTerritory"
+            v-if="t !== checkin && t !== rework"
             class="btn btn-primary"
             @click="handleRework(t)"
           >Rework</button>
-          <div v-if="t === checkinTerritory || t === reworkTerritory">
-            <span class="mr-1" v-if="checkinTerritory">Check in?</span>
-            <span class="mr-1" v-if="reworkTerritory">Rework?</span>
+          <div v-if="t === checkin || t === rework">
+            <span class="mr-1" v-if="checkin">Check in?</span>
+            <span class="mr-1" v-if="rework">Rework?</span>
             <button class="btn btn-success mr-1" @click="handleConfirm">Confirm</button>
             <button class="btn btn-danger" @click="handleCancel">Cancel</button>
           </div>
@@ -52,8 +52,8 @@ export default {
   data() {
     return {
       territories: [],
-      checkinTerritory: undefined,
-      reworkTerritory: undefined
+      checkin: undefined,
+      rework: undefined
     };
   },
   async created() {
@@ -64,17 +64,33 @@ export default {
       this.territories = [];
       this.territories = await data.getPublisherStreetTerritories();
     },
+    async checkinTerritory(t) {
+      await data.currentUserCheckin(t);
+      await this.loadTerritories(t);
+    },
+    async reworkTerritory(t) {
+      await data.currentUserRework(t);
+      await this.loadTerritories(t);
+    },
     handleCheckin(t) {
-      this.checkinTerritory = t;
+      this.checkin = t;
     },
     handleRework(t) {
-      this.reworkTerritory = t;
+      this.rework = t;
+    },
+    async handleConfirm() {
+      if (this.checkin) {
+        await this.checkinTerritory(this.checkin);
+      } else if (this.rework) {
+        await this.reworkTerritory(this.rework);
+      }
+      this.checkin = undefined;
+      this.rework = undefined;
     },
     handleCancel() {
-      this.checkinTerritory = undefined;
-      this.reworkTerritory = undefined;
-    },
-    handleConfirm() {}
+      this.checkin = undefined;
+      this.rework = undefined;
+    }
   }
 };
 </script>
