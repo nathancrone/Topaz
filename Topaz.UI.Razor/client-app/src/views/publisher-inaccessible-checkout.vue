@@ -27,7 +27,7 @@
 import { data } from "../shared";
 
 export default {
-  name: "PublisherStreetCheckout",
+  name: "PublisherInaccessibleCheckout",
   data() {
     return {
       territories: [],
@@ -40,7 +40,8 @@ export default {
   methods: {
     async loadTerritories() {
       this.territories = [];
-      this.territories = await data.getAvailableStreetTerritories();
+      this.territories = await data.getAvailableInaccessibleTerritories();
+      console.log(this.territories);
     },
     async checkoutTerritory(t) {
       await data.currentUserCheckout(t);
@@ -57,7 +58,7 @@ export default {
         await this.checkoutTerritory(this.checkout);
       }
       this.checkout = undefined;
-      this.$router.push({ name: "PublisherStreetTerritories" });
+      this.$router.push({ name: "PublisherInaccessibleTerritories" });
     }
   }
 };

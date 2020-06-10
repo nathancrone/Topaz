@@ -6,7 +6,10 @@ const getPublisherStreetTerritories = async function() {
     const response = await axios.get(`/Street/GetCurrentTerritory`);
     let data = parseList(response);
     const territories = data.map((t) => {
-      t.checkOutDate = format(parseDate(t.checkOutDate), "MMM dd, yyyy");
+      t.checkOutDate =
+        t.checkOutDate === null
+          ? null
+          : format(parseDate(t.checkOutDate), "MMM dd, yyyy");
       return t;
     });
     return territories;
@@ -21,7 +24,46 @@ const getAvailableStreetTerritories = async function() {
     const response = await axios.get(`/Street/GetAvailableTerritory`);
     let data = parseList(response);
     const territories = data.map((t) => {
-      t.checkInDate = format(parseDate(t.checkInDate), "MMM dd, yyyy");
+      t.checkInDate =
+        t.checkInDate === null
+          ? null
+          : format(parseDate(t.checkInDate), "MMM dd, yyyy");
+      return t;
+    });
+    return territories;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getPublisherInaccessibleTerritories = async function() {
+  try {
+    const response = await axios.get(`/Inaccessible/GetCurrentTerritory`);
+    let data = parseList(response);
+    const territories = data.map((t) => {
+      t.checkOutDate =
+        t.checkOutDate === null
+          ? null
+          : format(parseDate(t.checkOutDate), "MMM dd, yyyy");
+      return t;
+    });
+    return territories;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getAvailableInaccessibleTerritories = async function() {
+  try {
+    const response = await axios.get(`/Inaccessible/GetAvailableTerritory`);
+    let data = parseList(response);
+    const territories = data.map((t) => {
+      t.checkInDate =
+        t.checkInDate === null
+          ? null
+          : format(parseDate(t.checkInDate), "MMM dd, yyyy");
       return t;
     });
     return territories;
@@ -34,7 +76,7 @@ const getAvailableStreetTerritories = async function() {
 const currentUserCheckout = async function(territory) {
   try {
     const response = await axios.post(
-      `/Street/CurrentUserCheckout/${territory.territoryId}`
+      `/Territory/CurrentUserCheckout/${territory.territoryId}`
     );
     if (response.status !== 200) throw Error(response.message);
     if (!response.data) return [];
@@ -48,7 +90,7 @@ const currentUserCheckout = async function(territory) {
 const currentUserCheckin = async function(territory) {
   try {
     const response = await axios.post(
-      `/Street/CurrentUserCheckin/${territory.territoryId}`
+      `/Territory/CurrentUserCheckin/${territory.territoryId}`
     );
     if (response.status !== 200) throw Error(response.message);
     if (!response.data) return [];
@@ -62,7 +104,7 @@ const currentUserCheckin = async function(territory) {
 const currentUserRework = async function(territory) {
   try {
     const response = await axios.post(
-      `/Street/CurrentUserRework/${territory.territoryId}`
+      `/Territory/CurrentUserRework/${territory.territoryId}`
     );
     if (response.status !== 200) throw Error(response.message);
     if (!response.data) return [];
@@ -93,6 +135,8 @@ const parseList = (response) => {
 export const data = {
   getPublisherStreetTerritories,
   getAvailableStreetTerritories,
+  getPublisherInaccessibleTerritories,
+  getAvailableInaccessibleTerritories,
   currentUserCheckout,
   currentUserCheckin,
   currentUserRework,

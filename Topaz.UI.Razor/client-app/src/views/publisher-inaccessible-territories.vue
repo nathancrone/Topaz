@@ -7,7 +7,7 @@
             tag="a"
             class="btn btn-primary"
             :to="{
-            name: 'PublisherStreetCheckout'
+            name: 'PublisherInaccessibleCheckout'
             }"
           >Check Out</router-link>
         </div>
@@ -48,7 +48,7 @@
 import { data } from "../shared";
 
 export default {
-  name: "PublisherStreetTerritories",
+  name: "PublisherInaccessibleTerritories",
   data() {
     return {
       territories: [],
@@ -59,10 +59,17 @@ export default {
   async created() {
     await this.loadTerritories();
   },
+  computed: {
+    rows() {
+      return this.territories.map(x => {
+        return { territoryCode: `I-000 / ${x.territoryCode}` };
+      });
+    }
+  },
   methods: {
     async loadTerritories() {
       this.territories = [];
-      this.territories = await data.getPublisherStreetTerritories();
+      this.territories = await data.getPublisherInaccessibleTerritories();
     },
     async checkinTerritory(t) {
       await data.currentUserCheckin(t);

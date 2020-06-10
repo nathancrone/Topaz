@@ -13,12 +13,12 @@ namespace MyApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class StreetController : ControllerBase
+    public class InaccessibleController : ControllerBase
     {
         private readonly Topaz.Data.TopazDbContext _context;
-        private readonly ILogger<StreetController> _logger;
+        private readonly ILogger<InaccessibleController> _logger;
 
-        public StreetController(Topaz.Data.TopazDbContext context, ILogger<StreetController> logger)
+        public InaccessibleController(Topaz.Data.TopazDbContext context, ILogger<InaccessibleController> logger)
         {
             _context = context;
             _logger = logger;
@@ -32,12 +32,14 @@ namespace MyApi.Controllers
             var UserId = Claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
 
             return _context.TerritoryActivities
-                .Where(x => x.Publisher.UserId == UserId && x.CheckInDate == null && x.StreetTerritory != null)
+                .Where(x => x.Publisher.UserId == UserId && x.CheckInDate == null && x.InaccessibleTerritory != null)
                 .Select(x => new
                 {
                     x.TerritoryActivityId,
-                    x.StreetTerritory.TerritoryId,
-                    x.StreetTerritory.TerritoryCode,
+                    x.InaccessibleTerritory.TerritoryId,
+                    x.InaccessibleTerritory.TerritoryCode,
+                    StreetTerritoryId = x.InaccessibleTerritory.StreetTerritory.TerritoryId,
+                    StreetTerritoryCode = x.InaccessibleTerritory.StreetTerritory.TerritoryCode,
                     x.CheckOutDate
                 })
                 .AsNoTracking()
@@ -48,15 +50,17 @@ namespace MyApi.Controllers
         [Route("[action]/{take?}")]
         public IEnumerable<Object> GetAvailableTerritory(int? take = null)
         {
-            var LinqResult = _context.StreetTerritories.Where(x => !x.InActive && !x.Activity.Any());
+            var LinqResult = _context.InaccessibleTerritories.Where(x => !x.InActive && !x.Activity.Any());
 
-            LinqResult = LinqResult.Union(_context.StreetTerritories.Where(x => !x.InActive && !x.Activity.Any(y => y.CheckInDate == null)));
+            LinqResult = LinqResult.Union(_context.InaccessibleTerritories.Where(x => !x.InActive && !x.Activity.Any(y => y.CheckInDate == null)));
 
             return LinqResult
                 .Select(x => new
                 {
                     x.TerritoryId,
                     x.TerritoryCode,
+                    StreetTerritoryId = x.StreetTerritory.TerritoryId,
+                    StreetTerritoryCode = x.StreetTerritory.TerritoryCode,
                     CheckInDate = x.Activity.Max(y => y.CheckInDate)
                 })
                 .OrderBy(x => x.CheckInDate)

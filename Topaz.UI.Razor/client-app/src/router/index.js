@@ -2,8 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import PublisherStreetTerritories from "../views/publisher-street-territories.vue";
 import PublisherStreetCheckout from "../views/publisher-street-checkout.vue";
-import PublisherStreetCheckin from "../views/publisher-street-checkin.vue";
-import PublisherStreetRework from "../views/publisher-street-rework.vue";
+import PublisherInaccessibleTerritories from "../views/publisher-inaccessible-territories.vue";
+import PublisherInaccessibleCheckout from "../views/publisher-inaccessible-checkout.vue";
 
 Vue.use(VueRouter);
 
@@ -19,16 +19,14 @@ const routes = [
     component: PublisherStreetCheckout,
   },
   {
-    path: "/Publisher/StreetTerritories/Checkin/:id",
-    name: "PublisherStreetCheckin",
-    component: PublisherStreetCheckin,
-    props: true,
+    path: "/Publisher/InaccessibleTerritories",
+    name: "PublisherInaccessibleTerritories",
+    component: PublisherInaccessibleTerritories,
   },
   {
-    path: "/Publisher/StreetTerritories/Rework/:id",
-    name: "PublisherStreetRework",
-    component: PublisherStreetRework,
-    props: true,
+    path: "/Publisher/InaccessibleTerritories/Checkout",
+    name: "PublisherInaccessibleCheckout",
+    component: PublisherInaccessibleCheckout,
   },
   // {
   //   path: '/about',
