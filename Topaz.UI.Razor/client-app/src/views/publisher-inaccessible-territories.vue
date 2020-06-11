@@ -13,13 +13,13 @@
         </div>
       </li>
       <li
-        v-for="t in territories"
+        v-for="t in territoryRows"
         :key="t.territoryActivityId"
         class="list-group-item list-group-item-action flex-column align-items-start"
       >
         <div class="d-flex w-100 justify-content-between">
           <h5 class="mb-1">{{ t.territoryCode }}</h5>
-          <small>Checked Out: {{ (t.checkOutDate === null) ? "Never" : t.checkOutDate }}</small>
+          <small>Checked Out: {{ (t.checkOutDate === null) ? "Never1" : t.checkOutDate }}</small>
         </div>
         <div class="d-flex w-100 justify-content-end">
           <button
@@ -60,9 +60,15 @@ export default {
     await this.loadTerritories();
   },
   computed: {
-    rows() {
+    territoryRows() {
       return this.territories.map(x => {
-        return { territoryCode: `I-000 / ${x.territoryCode}` };
+        return Object.assign(
+          {},
+          { ...x },
+          {
+            territoryCode: [x.streetTerritoryCode, x.territoryCode].join(" / ")
+          }
+        );
       });
     }
   },

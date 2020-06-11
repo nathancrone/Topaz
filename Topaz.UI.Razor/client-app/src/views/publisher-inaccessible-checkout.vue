@@ -2,7 +2,7 @@
   <div>
     <ul class="list-group">
       <li
-        v-for="t in territories"
+        v-for="t in territoryRows"
         :key="t.territoryId"
         class="list-group-item list-group-item-action flex-column align-items-start"
       >
@@ -36,6 +36,19 @@ export default {
   },
   async created() {
     await this.loadTerritories();
+  },
+  computed: {
+    territoryRows() {
+      return this.territories.map(x => {
+        return Object.assign(
+          {},
+          { ...x },
+          {
+            territoryCode: [x.streetTerritoryCode, x.territoryCode].join(" / ")
+          }
+        );
+      });
+    }
   },
   methods: {
     async loadTerritories() {
