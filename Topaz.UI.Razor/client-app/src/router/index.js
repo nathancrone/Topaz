@@ -4,8 +4,11 @@ import PublisherStreetTerritories from "../views/publisher-street-territories.vu
 import PublisherStreetCheckout from "../views/publisher-street-checkout.vue";
 import PublisherInaccessibleTerritories from "../views/publisher-inaccessible-territories.vue";
 import PublisherInaccessibleCheckout from "../views/publisher-inaccessible-checkout.vue";
+import PublisherInaccessibleAssign from "../views/publisher-inaccessible-assign.vue";
 
 Vue.use(VueRouter);
+
+const parseProps = (r) => ({ id: parseInt(r.params.id) });
 
 const routes = [
   {
@@ -27,6 +30,12 @@ const routes = [
     path: "/Publisher/InaccessibleTerritories/Checkout",
     name: "PublisherInaccessibleCheckout",
     component: PublisherInaccessibleCheckout,
+  },
+  {
+    path: "/Publisher/InaccessibleTerritories/Assign/:id",
+    name: "PublisherInaccessibleAssign",
+    props: parseProps,
+    component: PublisherInaccessibleAssign,
   },
   // {
   //   path: '/about',

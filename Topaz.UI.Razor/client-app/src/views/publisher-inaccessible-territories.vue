@@ -19,9 +19,15 @@
       >
         <div class="d-flex w-100 justify-content-between">
           <h5 class="mb-1">{{ t.territoryCode }}</h5>
-          <small>Checked Out: {{ (t.checkOutDate === null) ? "Never1" : t.checkOutDate }}</small>
+          <small>Checked Out: {{ (t.checkOutDate === null) ? "Never" : t.checkOutDate }}</small>
         </div>
         <div class="d-flex w-100 justify-content-end">
+          <div v-if="t === checkin || t === rework">
+            <span class="mr-1" v-if="checkin">Check in?</span>
+            <span class="mr-1" v-if="rework">Rework?</span>
+            <button class="btn btn-success mr-1" @click="handleConfirm">Confirm</button>
+            <button class="btn btn-danger mr-1" @click="handleCancel">Cancel</button>
+          </div>
           <button
             v-if="t !== checkin && t !== rework"
             class="btn btn-primary mr-1"
@@ -29,15 +35,14 @@
           >Check In</button>
           <button
             v-if="t !== checkin && t !== rework"
-            class="btn btn-primary"
+            class="btn btn-primary mr-1"
             @click="handleRework(t)"
           >Rework</button>
-          <div v-if="t === checkin || t === rework">
-            <span class="mr-1" v-if="checkin">Check in?</span>
-            <span class="mr-1" v-if="rework">Rework?</span>
-            <button class="btn btn-success mr-1" @click="handleConfirm">Confirm</button>
-            <button class="btn btn-danger" @click="handleCancel">Cancel</button>
-          </div>
+          <router-link
+            tag="a"
+            class="btn btn-primary"
+            :to="{ name: 'PublisherInaccessibleAssign', params: { id: t.territoryId } }"
+          >Assign</router-link>
         </div>
       </li>
     </ul>
@@ -84,6 +89,10 @@ export default {
     async reworkTerritory(t) {
       await data.currentUserRework(t);
       await this.loadTerritories(t);
+    },
+    handleAssign(t) {
+      console.log(t);
+      //this.checkin = t;
     },
     handleCheckin(t) {
       this.checkin = t;
