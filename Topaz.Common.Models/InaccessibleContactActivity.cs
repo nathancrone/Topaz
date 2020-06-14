@@ -11,7 +11,7 @@ namespace Topaz.Common.Models
         public int ContactActivityTypeId { get; set; }
         public bool PhoneCallerIdBlocked { get; set; }
         public int PhoneResponseTypeId { get; set; }
-        public DateTime? LetterReturned { get; set; }
+        public DateTime? LetterReturnDate { get; set; }
         public string Notes { get; set; }
         public InaccessibleContact Contact { get; set; }
         public ContactActivityType ContactActivityType { get; set; }

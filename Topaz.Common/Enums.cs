@@ -9,10 +9,11 @@ namespace Topaz.Common.Enums
 
     public enum ContactActivityTypeEnum
     {
-        Phone = 1,
-        Text = 2,
-        Email = 3,
-        Letter = 4
+        PhoneWithoutVoicemail = 1,
+        PhoneWithVoicemail = 2,
+        Letter = 3,
+        Email = 4,
+        Text = 5
     }
 
     public enum PhoneReponseTypeEnum
@@ -21,7 +22,7 @@ namespace Topaz.Common.Enums
         VoicemaiNameMatches = 101,
         VoicemailDifferentName = 102,
         VoicemailBusiness = 103,
-        VoicemailMailboxFullNotSetUp = 104,
+        VoicemailFullOrNotSetUp = 104,
         NoResponseFaxModem = 200,
         NoResponseBusySignal = 201,
         NoResponseNotWorkingNumber = 202,

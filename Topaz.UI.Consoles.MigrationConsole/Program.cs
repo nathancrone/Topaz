@@ -141,7 +141,7 @@ namespace Topaz.UI.Consoles.MigrationConsole
                         {
                             var contact = new InaccessibleContact
                             {
-                                PublisherId = c.PublisherId,
+                                AssignPublisherId = c.AssignPublisherId,
                                 FirstName = c.FirstName,
                                 LastName = c.LastName,
                                 MiddleInitial = c.MiddleInitial,
@@ -154,7 +154,6 @@ namespace Topaz.UI.Consoles.MigrationConsole
                                 PhoneTypeId = c.PhoneTypeId,
                                 PhoneNumber = c.PhoneNumber,
                                 EmailAddresses = c.EmailAddresses,
-                                IsWorked = c.IsWorked
                             };
 
                             foreach (var a in c.ContactActivity)
@@ -168,7 +167,7 @@ namespace Topaz.UI.Consoles.MigrationConsole
                                     ContactActivityTypeId = a.ContactActivityTypeId,
                                     PhoneCallerIdBlocked = a.PhoneCallerIdBlocked,
                                     PhoneResponseTypeId = a.PhoneResponseTypeId,
-                                    LetterReturned = a.LetterReturned,
+                                    LetterReturnDate = a.LetterReturnDate,
                                     Notes = a.Notes
                                 });
                             }

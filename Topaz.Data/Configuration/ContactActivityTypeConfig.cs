@@ -15,13 +15,18 @@ namespace Topaz.Data.Configuration
             builder.HasData(
                 new ContactActivityType
                 {
-                    ContactActivityTypeId = (int)ContactActivityTypeEnum.Phone,
-                    Name = "Phone"
+                    ContactActivityTypeId = (int)ContactActivityTypeEnum.PhoneWithoutVoicemail,
+                    Name = "Phone (don't leave a voicemail)"
                 },
                 new ContactActivityType
                 {
-                    ContactActivityTypeId = (int)ContactActivityTypeEnum.Text,
-                    Name = "Text"
+                    ContactActivityTypeId = (int)ContactActivityTypeEnum.PhoneWithVoicemail,
+                    Name = "Phone (leave a voicemail)"
+                },
+                new ContactActivityType
+                {
+                    ContactActivityTypeId = (int)ContactActivityTypeEnum.Letter,
+                    Name = "Letter"
                 },
                 new ContactActivityType
                 {
@@ -30,8 +35,8 @@ namespace Topaz.Data.Configuration
                 },
                 new ContactActivityType
                 {
-                    ContactActivityTypeId = (int)ContactActivityTypeEnum.Letter,
-                    Name = "Letter"
+                    ContactActivityTypeId = (int)ContactActivityTypeEnum.Text,
+                    Name = "Text"
                 }
             );
         }

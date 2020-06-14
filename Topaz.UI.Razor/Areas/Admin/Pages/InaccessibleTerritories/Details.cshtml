@@ -43,6 +43,9 @@
                 <thead>
                     <tr>
                         <th>
+                            @Html.DisplayNameFor(model => model.InaccessibleTerritory.InaccessibleProperties[0].StreetNumbers)
+                        </th>
+                        <th>
                             @Html.DisplayNameFor(model => model.InaccessibleTerritory.InaccessibleProperties[0].Street)
                         </th>
                         <th>
@@ -58,6 +61,9 @@
                 @foreach (var item in Model.InaccessibleTerritory.InaccessibleProperties)
                 {
                     <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StreetNumbers)
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Street)
                         </td>

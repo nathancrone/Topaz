@@ -12,7 +12,6 @@ namespace Topaz.Common.Models
         }
         public int InaccessibleContactId { get; set; }
         public int InaccessibleContactListId { get; set; }
-        public int? PublisherId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MiddleInitial { get; set; }
@@ -25,10 +24,12 @@ namespace Topaz.Common.Models
         public int? PhoneTypeId { get; set; }
         public string PhoneNumber { get; set; }
         public string EmailAddresses { get; set; }
+        public int? AssignPublisherId { get; set; }
+        public DateTime? AssignDate { get; set; }
+        public int? AssignContactActivityTypeId { get; set; }
         public InaccessibleContactList ContactList { get; set; }
         public List<InaccessibleContactActivity> ContactActivity { get; set; }
         public PhoneType PhoneType { get; set; }
-        public bool IsWorked { get; set; }
-        public Publisher Publisher { get; set; }
+        public Publisher AssignPublisher { get; set; }
     }
 }
