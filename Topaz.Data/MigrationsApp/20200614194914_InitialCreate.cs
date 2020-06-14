@@ -251,7 +251,6 @@ namespace Topaz.Data.MigrationsApp
                     InaccessibleContactId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     InaccessibleContactListId = table.Column<int>(nullable: false),
-                    PublisherId = table.Column<int>(nullable: true),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     MiddleInitial = table.Column<string>(nullable: true),
@@ -264,11 +263,19 @@ namespace Topaz.Data.MigrationsApp
                     PhoneTypeId = table.Column<int>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
                     EmailAddresses = table.Column<string>(nullable: true),
-                    IsWorked = table.Column<bool>(nullable: false)
+                    AssignPublisherId = table.Column<int>(nullable: true),
+                    AssignDate = table.Column<DateTime>(nullable: true),
+                    AssignContactActivityTypeId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_InaccessibleContacts", x => x.InaccessibleContactId);
+                    table.ForeignKey(
+                        name: "FK_InaccessibleContacts_Publishers_AssignPublisherId",
+                        column: x => x.AssignPublisherId,
+                        principalTable: "Publishers",
+                        principalColumn: "PublisherId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_InaccessibleContacts_InaccessibleContactLists_InaccessibleContactListId",
                         column: x => x.InaccessibleContactListId,
@@ -280,12 +287,6 @@ namespace Topaz.Data.MigrationsApp
                         column: x => x.PhoneTypeId,
                         principalTable: "PhoneType",
                         principalColumn: "PhoneTypeId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_InaccessibleContacts_Publishers_PublisherId",
-                        column: x => x.PublisherId,
-                        principalTable: "Publishers",
-                        principalColumn: "PublisherId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -301,7 +302,7 @@ namespace Topaz.Data.MigrationsApp
                     ContactActivityTypeId = table.Column<int>(nullable: false),
                     PhoneCallerIdBlocked = table.Column<bool>(nullable: false),
                     PhoneResponseTypeId = table.Column<int>(nullable: false),
-                    LetterReturned = table.Column<DateTime>(nullable: true),
+                    LetterReturnDate = table.Column<DateTime>(nullable: true),
                     Notes = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -336,22 +337,27 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.InsertData(
                 table: "ContactActivityTypes",
                 columns: new[] { "ContactActivityTypeId", "Name" },
-                values: new object[] { 1, "Phone" });
+                values: new object[] { 1, "Phone (don't leave a voicemail)" });
 
             migrationBuilder.InsertData(
                 table: "ContactActivityTypes",
                 columns: new[] { "ContactActivityTypeId", "Name" },
-                values: new object[] { 2, "Text" });
+                values: new object[] { 2, "Phone (leave a voicemail)" });
 
             migrationBuilder.InsertData(
                 table: "ContactActivityTypes",
                 columns: new[] { "ContactActivityTypeId", "Name" },
-                values: new object[] { 3, "Email" });
+                values: new object[] { 3, "Letter" });
 
             migrationBuilder.InsertData(
                 table: "ContactActivityTypes",
                 columns: new[] { "ContactActivityTypeId", "Name" },
-                values: new object[] { 4, "Letter" });
+                values: new object[] { 4, "Email" });
+
+            migrationBuilder.InsertData(
+                table: "ContactActivityTypes",
+                columns: new[] { "ContactActivityTypeId", "Name" },
+                values: new object[] { 5, "Text" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
@@ -474,6 +480,11 @@ namespace Topaz.Data.MigrationsApp
                 column: "InaccessiblePropertyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InaccessibleContacts_AssignPublisherId",
+                table: "InaccessibleContacts",
+                column: "AssignPublisherId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InaccessibleContacts_InaccessibleContactListId",
                 table: "InaccessibleContacts",
                 column: "InaccessibleContactListId");
@@ -482,11 +493,6 @@ namespace Topaz.Data.MigrationsApp
                 name: "IX_InaccessibleContacts_PhoneTypeId",
                 table: "InaccessibleContacts",
                 column: "PhoneTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InaccessibleContacts_PublisherId",
-                table: "InaccessibleContacts",
-                column: "PublisherId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InaccessibleProperties_TerritoryId",
@@ -541,13 +547,13 @@ namespace Topaz.Data.MigrationsApp
                 name: "PhoneResponseTypes");
 
             migrationBuilder.DropTable(
+                name: "Publishers");
+
+            migrationBuilder.DropTable(
                 name: "InaccessibleContactLists");
 
             migrationBuilder.DropTable(
                 name: "PhoneType");
-
-            migrationBuilder.DropTable(
-                name: "Publishers");
 
             migrationBuilder.DropTable(
                 name: "InaccessibleProperties");

@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20200504020546_InitialCreate")]
+    [Migration("20200614194914_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,22 +34,27 @@ namespace Topaz.Data.MigrationsApp
                         new
                         {
                             ContactActivityTypeId = 1,
-                            Name = "Phone"
+                            Name = "Phone (don't leave a voicemail)"
                         },
                         new
                         {
                             ContactActivityTypeId = 2,
-                            Name = "Text"
+                            Name = "Phone (leave a voicemail)"
                         },
                         new
                         {
                             ContactActivityTypeId = 3,
-                            Name = "Email"
+                            Name = "Letter"
                         },
                         new
                         {
                             ContactActivityTypeId = 4,
-                            Name = "Letter"
+                            Name = "Email"
+                        },
+                        new
+                        {
+                            ContactActivityTypeId = 5,
+                            Name = "Text"
                         });
                 });
 
@@ -130,6 +135,15 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<int?>("Age")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("AssignContactActivityTypeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("AssignDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("AssignPublisherId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("City")
                         .HasColumnType("TEXT");
 
@@ -140,9 +154,6 @@ namespace Topaz.Data.MigrationsApp
                         .HasColumnType("TEXT");
 
                     b.Property<int>("InaccessibleContactListId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsWorked")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("LastName")
@@ -166,19 +177,16 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<string>("PostalCode")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("PublisherId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("State")
                         .HasColumnType("TEXT");
 
                     b.HasKey("InaccessibleContactId");
 
+                    b.HasIndex("AssignPublisherId");
+
                     b.HasIndex("InaccessibleContactListId");
 
                     b.HasIndex("PhoneTypeId");
-
-                    b.HasIndex("PublisherId");
 
                     b.ToTable("InaccessibleContacts");
                 });
@@ -198,7 +206,7 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<int>("InaccessibleContactId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("LetterReturned")
+                    b.Property<DateTime?>("LetterReturnDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Notes")
@@ -565,6 +573,10 @@ namespace Topaz.Data.MigrationsApp
 
             modelBuilder.Entity("Topaz.Common.Models.InaccessibleContact", b =>
                 {
+                    b.HasOne("Topaz.Common.Models.Publisher", "AssignPublisher")
+                        .WithMany("InaccessibleContacts")
+                        .HasForeignKey("AssignPublisherId");
+
                     b.HasOne("Topaz.Common.Models.InaccessibleContactList", "ContactList")
                         .WithMany("Contacts")
                         .HasForeignKey("InaccessibleContactListId")
@@ -574,10 +586,6 @@ namespace Topaz.Data.MigrationsApp
                     b.HasOne("Topaz.Common.Models.PhoneType", "PhoneType")
                         .WithMany("InaccessibleContact")
                         .HasForeignKey("PhoneTypeId");
-
-                    b.HasOne("Topaz.Common.Models.Publisher", "Publisher")
-                        .WithMany("InaccessibleContacts")
-                        .HasForeignKey("PublisherId");
                 });
 
             modelBuilder.Entity("Topaz.Common.Models.InaccessibleContactActivity", b =>
