@@ -41,7 +41,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Properties
             _context.InaccessibleProperties.Add(InaccessibleProperty);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("../InaccessibleTerritories/Details", InaccessibleProperty.TerritoryId);
+            return RedirectToPage("../InaccessibleTerritories/Details", new { id = InaccessibleProperty.TerritoryId });
         }
     }
 }

@@ -54,7 +54,6 @@ export default {
     async loadTerritories() {
       this.territories = [];
       this.territories = await data.getAvailableInaccessibleTerritories();
-      console.log(this.territories);
     },
     async checkoutTerritory(t) {
       await data.currentUserCheckout(t);

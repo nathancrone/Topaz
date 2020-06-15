@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
 using System.Security.Claims;
+using Topaz.Common.Enums;
 
 namespace MyApi.Controllers
 {
@@ -67,6 +68,87 @@ namespace MyApi.Controllers
                 .Take(take ?? 3)
                 .AsNoTracking()
                 .ToList();
+        }
+
+        [HttpGet]
+        [Route("[action]/{id}/{type}")]
+        public IEnumerable<Object> GetAssignments(int id, string type)
+        {
+            var Assignments = _context.InaccessibleProperties
+                .Include(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId))
+                .ThenInclude(x => x.Contacts)
+                .ThenInclude(x => x.ContactActivity)
+                .Include(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId))
+                .ThenInclude(x => x.Contacts)
+                .ThenInclude(x => x.AssignPublisher)
+                .Where(x => x.TerritoryId == id)
+                .SelectMany(x => x.ContactLists.SelectMany(y => y.Contacts))
+                .AsNoTracking()
+                .ToList();
+
+            var FilteredAssignments = Assignments.AsQueryable();
+
+            if (type == "phone")
+            {
+                FilteredAssignments = FilteredAssignments
+                    .Where(x =>
+                        !string.IsNullOrEmpty(x.PhoneNumber) &&
+                        !x.ContactActivity.Any()
+                    );
+            }
+            else if (type == "vm")
+            {
+                FilteredAssignments = FilteredAssignments
+                    .Where(x =>
+                        !string.IsNullOrEmpty(x.PhoneNumber) &&
+                        !x.ContactActivity.Any(y =>
+                            y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail
+                        ) ||
+                        x.ContactActivity.Where(y =>
+                            y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithoutVoicemail ||
+                            y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail
+                        ).All(y =>
+                            y.PhoneResponseTypeId == (int)PhoneReponseTypeEnum.AnsweredNotGoodTime
+                        )
+                    );
+            }
+            else if (type == "letter")
+            {
+                PhoneReponseTypeEnum[] NoContact = new PhoneReponseTypeEnum[] {
+                    PhoneReponseTypeEnum.VoicemailFullOrNotSetUp,
+                    PhoneReponseTypeEnum.NoResponseFaxModem,
+                    PhoneReponseTypeEnum.NoResponseBusySignal,
+                    PhoneReponseTypeEnum.NoResponseNotWorkingNumber,
+                    PhoneReponseTypeEnum.NoResponseRingNoAnswer,
+                    PhoneReponseTypeEnum.AnsweredImmediateHangup,
+                };
+
+                FilteredAssignments = FilteredAssignments
+                    .Where(x =>
+                        !string.IsNullOrEmpty(x.MailingAddress1) &&
+                        !x.ContactActivity.Any(y =>
+                            y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter ||
+                            y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Email ||
+                            y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Text
+                        ) &&
+                        (
+                            string.IsNullOrEmpty(x.PhoneNumber) ||
+                            (
+                                !string.IsNullOrEmpty(x.PhoneNumber) &&
+                                x.ContactActivity.Any(y =>
+                                    y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail
+                                ) &&
+                                x.ContactActivity.Where(y =>
+                                    y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail
+                                ).All(y =>
+                                    Array.IndexOf(NoContact, y.PhoneResponseTypeId) == -1
+                                )
+                            )
+                        )
+                    );
+            }
+
+            return Assignments;
         }
     }
 }
