@@ -73,6 +73,20 @@ const getAvailableInaccessibleTerritories = async function() {
   }
 };
 
+const getAvailableInaccessibleAssignments = async function() {
+  try {
+    const response = await axios.get(`/Inaccessible/GetAssignments/138/phone`);
+    let data = parseList(response);
+    const available = data.map((a) => {
+      return a;
+    });
+    return available;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 const currentUserCheckout = async function(territory) {
   try {
     const response = await axios.post(
@@ -137,6 +151,7 @@ export const data = {
   getAvailableStreetTerritories,
   getPublisherInaccessibleTerritories,
   getAvailableInaccessibleTerritories,
+  getAvailableInaccessibleAssignments,
   currentUserCheckout,
   currentUserCheckin,
   currentUserRework,

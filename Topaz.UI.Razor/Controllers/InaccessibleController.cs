@@ -75,14 +75,14 @@ namespace MyApi.Controllers
         public IEnumerable<Object> GetAssignments(int id, string type)
         {
             var Assignments = _context.InaccessibleProperties
-                .Include(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId))
+                .Include(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
                 .ThenInclude(x => x.ContactActivity)
-                .Include(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId))
+                .Include(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
                 .ThenInclude(x => x.AssignPublisher)
                 .Where(x => x.TerritoryId == id)
-                .SelectMany(x => x.ContactLists.SelectMany(y => y.Contacts))
+                .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId).SelectMany(y => y.Contacts))
                 .AsNoTracking()
                 .ToList();
 
