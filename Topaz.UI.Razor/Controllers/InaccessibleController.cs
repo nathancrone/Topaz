@@ -81,6 +81,11 @@ namespace MyApi.Controllers
                 .Include(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
                 .ThenInclude(x => x.AssignPublisher)
+                /*
+                .Include(x => x.ContactLists)
+                .ThenInclude(x => x.Contacts)
+                .ThenInclude(x => x.PhoneType)
+                */
                 .Where(x => x.TerritoryId == id)
                 .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId).SelectMany(y => y.Contacts))
                 .AsNoTracking()
@@ -148,7 +153,7 @@ namespace MyApi.Controllers
                     );
             }
 
-            return Assignments;
+            return FilteredAssignments;
         }
     }
 }

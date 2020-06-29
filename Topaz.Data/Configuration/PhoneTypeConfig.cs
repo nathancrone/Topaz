@@ -11,6 +11,11 @@ namespace Topaz.Data.Configuration
         public void Configure(EntityTypeBuilder<PhoneType> builder)
         {
             builder.HasKey(x => x.PhoneTypeId);
+
+            builder.HasMany(x => x.InaccessibleContacts)
+                        .WithOne(x => x.PhoneType)
+                        .HasForeignKey(x => x.PhoneTypeId);
+
             builder.Property(x => x.PhoneTypeId).ValueGeneratedNever();
             builder.HasData(
                 new PhoneType

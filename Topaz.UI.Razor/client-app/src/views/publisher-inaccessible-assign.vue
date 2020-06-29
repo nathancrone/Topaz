@@ -36,17 +36,37 @@
         </li>
       </ul>
     </div>
+    <div class="row mt-3">
+      <div class="d-flex col">
+        <div class="flex-grow-1">
+          <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input mr-1" id="unassignedOnly" />
+            <label class="form-check-label" for="unassignedOnly">show only unassigned</label>
+          </div>
+        </div>
+        <div>
+          <a class="btn btn-primary disabled" href="#">assign...</a>
+          <a class="btn btn-primary mr-1" href="#">refresh</a>
+        </div>
+      </div>
+    </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
       <template v-for="(a, i) in availableAssignments">
         <div :key="'c' + i" class="col mt-3">
           <div class="card shadow-sm rounded">
+            <div class="card-header d-flex">
+              <div class="flex-grow-1">{{ a.lastName }}, {{ a.firstName }} {{ a.middleInitial }}</div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" :id="'cb' + i" />
+              </div>
+            </div>
             <div class="card-body">
               <address>
-                <strong>{{ a.lastName }}, {{ a.firstName }} {{ a.middleInitial }}</strong>
-                <br />
                 Age: {{ a.age }}
                 <br />
-                {{ a.mailingAddress1 }}, {{ a.mailingAddress2 }}
+                {{ a.mailingAddress1 }}
+                <br />
+                {{ a.mailingAddress2 }}
                 <br />
                 Dallas, TX {{a.postalCode}}
                 <br />
@@ -72,12 +92,17 @@ const VIEWS = Object.freeze({
 
 export default {
   name: "PublisherInaccessibleAssign",
+  props: {
+    id: {
+      type: Number,
+      default: 0
+    }
+  },
   data() {
     return {
       availableViews: VIEWS,
       activeView: VIEWS.PHONE_WITHOUT_VM,
-      availableAssignments: [],
-      items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      availableAssignments: []
     };
   },
   async created() {
@@ -87,7 +112,9 @@ export default {
   methods: {
     async loadAssignments() {
       this.availableAssignments = [];
-      this.availableAssignments = await data.getAvailableInaccessibleAssignments();
+      this.availableAssignments = await data.getAvailableInaccessibleAssignments(
+        this.id
+      );
     },
     async setActiveView(v) {
       this.activeView = v;

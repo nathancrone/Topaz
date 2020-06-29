@@ -73,9 +73,11 @@ const getAvailableInaccessibleTerritories = async function() {
   }
 };
 
-const getAvailableInaccessibleAssignments = async function() {
+const getAvailableInaccessibleAssignments = async function(territoryId) {
   try {
-    const response = await axios.get(`/Inaccessible/GetAssignments/138/phone`);
+    const response = await axios.get(
+      `/Inaccessible/GetAssignments/${territoryId}/phone`
+    );
     let data = parseList(response);
     const available = data.map((a) => {
       return a;

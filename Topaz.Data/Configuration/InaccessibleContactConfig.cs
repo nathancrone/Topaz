@@ -16,13 +16,8 @@ namespace Topaz.Data.Configuration
                         .WithOne(x => x.Contact)
                         .HasForeignKey(x => x.InaccessibleContactId);
 
-            builder.HasOne(x => x.AssignPublisher).WithMany(x => x.InaccessibleContacts).HasForeignKey(x => x.AssignPublisherId);
-
-            builder.HasOne(x => x.ContactList).WithMany(x => x.Contacts).HasForeignKey(x => x.InaccessibleContactListId);
-
-            //builder.HasOne(x => PhoneType).WithMany(x => x.)
-
-            //builder.HasOne(x => ContactActivityType).WithMany(x => x.)
+            //builder.HasOne(x => x.AssignPublisher).WithMany(x => x.InaccessibleContacts).HasForeignKey(x => x.AssignPublisherId);
+            //builder.HasOne(x => x.ContactList).WithMany(x => x.Contacts).HasForeignKey(x => x.InaccessibleContactListId);
         }
     }
 }

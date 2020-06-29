@@ -7,10 +7,10 @@ namespace Topaz.Common.Models
     {
         public PhoneType()
         {
-            InaccessibleContact = new List<InaccessibleContact>();
+            InaccessibleContacts = new List<InaccessibleContact>();
         }
         public int PhoneTypeId { get; set; }
         public string Name { get; set; }
-        public List<InaccessibleContact> InaccessibleContact { get; set; }
+        public List<InaccessibleContact> InaccessibleContacts { get; set; }
     }
 }
