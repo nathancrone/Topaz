@@ -7,11 +7,15 @@
             tag="a"
             class="btn btn-primary"
             :to="{
-            name: 'PublisherInaccessibleCheckout'
+              name: 'PublisherInaccessibleCheckout'
             }"
           >Check Out</router-link>
         </div>
       </li>
+      <li
+        v-if="territories.length === 0"
+        class="list-group-item list-group-item-action flex-column align-items-start"
+      >You currently have no inaccessible territories checked out.</li>
       <li
         v-for="t in territoryRows"
         :key="t.territoryActivityId"

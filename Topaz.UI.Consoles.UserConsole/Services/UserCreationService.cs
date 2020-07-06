@@ -48,7 +48,8 @@ namespace Topaz.UI.Consoles.UserConsole.Services
         {
             var users = new List<AppUser>() {
                 new AppUser { UserName = "nathan.crone@gmail.com", Email = "nathan.crone@gmail.com" },
-                new AppUser { UserName = "danashelyce123@gmail.com", Email = "danashelyce123@gmail.com" }
+                new AppUser { UserName = "danashelyce123@gmail.com", Email = "danashelyce123@gmail.com" },
+                new AppUser { UserName = "wilmacrone@hotmail.com", Email = "wilmacrone@hotmail.com" }
             };
 
             foreach (var user in users)

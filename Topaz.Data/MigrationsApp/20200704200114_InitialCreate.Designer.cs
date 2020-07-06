@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20200614194914_InitialCreate")]
+    [Migration("20200704200114_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -584,7 +584,7 @@ namespace Topaz.Data.MigrationsApp
                         .IsRequired();
 
                     b.HasOne("Topaz.Common.Models.PhoneType", "PhoneType")
-                        .WithMany("InaccessibleContact")
+                        .WithMany("InaccessibleContacts")
                         .HasForeignKey("PhoneTypeId");
                 });
 

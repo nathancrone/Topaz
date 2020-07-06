@@ -582,7 +582,7 @@ namespace Topaz.Data.MigrationsApp
                         .IsRequired();
 
                     b.HasOne("Topaz.Common.Models.PhoneType", "PhoneType")
-                        .WithMany("InaccessibleContact")
+                        .WithMany("InaccessibleContacts")
                         .HasForeignKey("PhoneTypeId");
                 });
 

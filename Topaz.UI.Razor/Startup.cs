@@ -46,7 +46,10 @@ namespace Topaz.UI.Razor
             });
 
             // to enable web api functionality
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
 
             // to enable razor pages
             services.AddRazorPages().AddRazorPagesOptions(options =>

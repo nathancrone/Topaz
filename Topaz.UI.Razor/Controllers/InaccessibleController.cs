@@ -81,17 +81,14 @@ namespace MyApi.Controllers
                 .Include(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
                 .ThenInclude(x => x.AssignPublisher)
-                /*
                 .Include(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
                 .ThenInclude(x => x.PhoneType)
-                */
                 .Where(x => x.TerritoryId == id)
                 .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId).SelectMany(y => y.Contacts))
-                .AsNoTracking()
-                .ToList();
+                .AsNoTracking();
 
-            var FilteredAssignments = Assignments.AsQueryable();
+            var FilteredAssignments = Assignments;
 
             if (type == "phone")
             {
@@ -106,6 +103,9 @@ namespace MyApi.Controllers
                 FilteredAssignments = FilteredAssignments
                     .Where(x =>
                         !string.IsNullOrEmpty(x.PhoneNumber) &&
+                        x.ContactActivity.Any(y =>
+                            y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithoutVoicemail
+                        ) &&
                         !x.ContactActivity.Any(y =>
                             y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail
                         ) ||
