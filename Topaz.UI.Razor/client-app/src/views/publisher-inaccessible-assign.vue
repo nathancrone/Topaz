@@ -53,12 +53,17 @@
               autocomplete="off"
               placeholder="enter assignee"
               list="availableAssigneeList"
+              :disabled="!isAssignmentSelected"
             />
             <datalist id="availableAssigneeList">
               <option v-for="(match, i) in assigneeMatches" :key="i">{{ match.name }}</option>
             </datalist>
             <div class="input-group-append">
-              <a class="btn btn-primary mr-1" :class="{ disabled: !isAssignReady }" href="#">assign</a>
+              <a
+                class="btn btn-primary mr-1"
+                :class="{ disabled: !isAssignmentSelected || !selectedAssignee }"
+                href="#"
+              >assign</a>
             </div>
           </div>
         </div>
@@ -130,16 +135,15 @@ export default {
     this.loadAssignees();
   },
   computed: {
-    isAssignReady() {
-      return (
-        this.availableAssignments.some((element) => {
-          return element.selected === true;
-        }) && this.selectedAssignee
-      );
+    isAssignmentSelected() {
+      console.log(this.selectedAssignee);
+      return this.availableAssignments.some((a) => {
+        return a.selected === true;
+      });
     },
     assigneeMatches() {
-      return this.availableAssigees.filter((option) => {
-        return option.name.indexOf(this.assigneeSearch) >= 0;
+      return this.availableAssigees.filter((a) => {
+        return a.name.indexOf(this.assigneeSearch) >= 0;
       });
     },
   },
@@ -149,8 +153,8 @@ export default {
         this.id,
         this.activeView.type
       );
-      assignments.forEach(function (element) {
-        element.selected = false;
+      assignments.forEach(function (a) {
+        a.selected = false;
       });
       this.availableAssignments = [];
       this.availableAssignments = assignments;
@@ -170,11 +174,11 @@ export default {
   },
   watch: {
     assigneeSearch: function (after) {
-      const selectedAssignee = this.availableAssigees.find(
+      const assignee = this.availableAssigees.find(
         ({ name }) => name === after
       );
-      if (selectedAssignee) {
-        this.selectedAssignee = Object.assign({}, selectedAssignee);
+      if (assignee) {
+        this.selectedAssignee = Object.assign({}, assignee);
       } else {
         this.selectedAssignee = undefined;
       }
