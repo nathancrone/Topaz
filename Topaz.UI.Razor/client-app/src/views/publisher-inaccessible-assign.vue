@@ -8,8 +8,7 @@
             :class="{ active: activeView === availableViews.PHONE_WITHOUT_VM }"
             @click.prevent="setActiveView(availableViews.PHONE_WITHOUT_VM)"
             href="#"
-            >{{ availableViews.PHONE_WITHOUT_VM.name }}</a
-          >
+          >{{ availableViews.PHONE_WITHOUT_VM.name }}</a>
         </li>
         <li class="nav-item">
           <a
@@ -17,8 +16,7 @@
             :class="{ active: activeView === availableViews.PHONE_WITH_VM }"
             @click.prevent="setActiveView(availableViews.PHONE_WITH_VM)"
             href="#"
-            >{{ availableViews.PHONE_WITH_VM.name }}</a
-          >
+          >{{ availableViews.PHONE_WITH_VM.name }}</a>
         </li>
         <li class="nav-item">
           <a
@@ -26,8 +24,7 @@
             :class="{ active: activeView === availableViews.LETTER }"
             @click.prevent="setActiveView(availableViews.LETTER)"
             href="#"
-            >{{ availableViews.LETTER.name }}</a
-          >
+          >{{ availableViews.LETTER.name }}</a>
         </li>
         <li class="nav-item">
           <a
@@ -35,8 +32,7 @@
             :class="{ active: activeView === availableViews.COMPLETE }"
             @click.prevent="setActiveView(availableViews.COMPLETE)"
             href="#"
-            >{{ availableViews.COMPLETE.name }}</a
-          >
+          >{{ availableViews.COMPLETE.name }}</a>
         </li>
       </ul>
     </div>
@@ -44,31 +40,30 @@
       <div class="d-flex col">
         <div class="flex-grow-1">
           <div class="form-group form-check">
-            <input
-              type="checkbox"
-              class="form-check-input mr-1"
-              id="unassignedOnly"
-            />
-            <label class="form-check-label" for="unassignedOnly"
-              >show only unassigned</label
-            >
+            <input type="checkbox" class="form-check-input mr-1" id="unassignedOnly" />
+            <label class="form-check-label" for="unassignedOnly">show only unassigned</label>
           </div>
         </div>
         <div class="mr-1">
-          <autocomplete :suggestions="suggestions"></autocomplete>
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              v-model="assigneeSearch"
+              autocomplete="off"
+              placeholder="enter assignee"
+              list="availableAssigneeList"
+            />
+            <datalist id="availableAssigneeList">
+              <option v-for="(match, i) in assigneeMatches" :key="i">{{ match.name }}</option>
+            </datalist>
+            <div class="input-group-append">
+              <a class="btn btn-primary mr-1" :class="{ disabled: !isAssignReady }" href="#">assign</a>
+            </div>
+          </div>
         </div>
         <div>
-          <a
-            v-if="!isAssignMode"
-            class="btn btn-primary mr-1"
-            :class="{ disabled: !isAssignmentSelected }"
-            href="#"
-            @click.prevent="toggleAssignMode"
-            >assign...</a
-          >
-          <a class="btn btn-primary" href="#" @click.prevent="loadAssignments"
-            >refresh</a
-          >
+          <a class="btn btn-primary" href="#" @click.prevent="loadAssignments">refresh</a>
         </div>
       </div>
     </div>
@@ -77,16 +72,9 @@
         <div :key="'c' + i" class="col mt-3">
           <div class="card shadow-sm rounded">
             <div class="card-header d-flex">
-              <div class="flex-grow-1">
-                {{ a.lastName }}, {{ a.firstName }} {{ a.middleInitial }}
-              </div>
+              <div class="flex-grow-1">{{ a.lastName }}, {{ a.firstName }} {{ a.middleInitial }}</div>
               <div class="form-check">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  v-model="a.selected"
-                  :id="'cb' + i"
-                />
+                <input type="checkbox" class="form-check-input" v-model="a.selected" :id="'cb' + i" />
               </div>
             </div>
             <div class="card-body">
@@ -111,7 +99,6 @@
 
 <script>
 import { data } from "../shared";
-import autocomplete from "../components/autocomplete.vue";
 
 const VIEWS = Object.freeze({
   PHONE_WITHOUT_VM: { type: "phone", name: "1st Call (no voicemail)" },
@@ -128,30 +115,31 @@ export default {
       default: 0,
     },
   },
-  components: { autocomplete },
   data() {
     return {
       availableViews: VIEWS,
       activeView: VIEWS.PHONE_WITHOUT_VM,
       availableAssignments: [],
-      isAssignMode: false,
-      suggestions: [
-        { label: "Bangalore", value: 0 },
-        { label: "Chennai", value: 1 },
-        { label: "Cochin", value: 2 },
-        { label: "Delhi", value: 3 },
-        { label: "Kolkata", value: 4 },
-        { label: "Mumbai", value: 5 },
-      ],
+      assigneeSearch: "",
+      availableAssigees: [],
+      selectedAssignee: undefined,
     };
   },
   async created() {
     await this.loadAssignments();
+    this.loadAssignees();
   },
   computed: {
-    isAssignmentSelected() {
-      return this.availableAssignments.some((element) => {
-        return element.selected === true;
+    isAssignReady() {
+      return (
+        this.availableAssignments.some((element) => {
+          return element.selected === true;
+        }) && this.selectedAssignee
+      );
+    },
+    assigneeMatches() {
+      return this.availableAssigees.filter((option) => {
+        return option.name.indexOf(this.assigneeSearch) >= 0;
       });
     },
   },
@@ -161,18 +149,35 @@ export default {
         this.id,
         this.activeView.type
       );
-      assignments.forEach(function(element) {
+      assignments.forEach(function (element) {
         element.selected = false;
       });
       this.availableAssignments = [];
       this.availableAssignments = assignments;
     },
+    loadAssignees() {
+      this.availableAssigees = [
+        { id: 1, name: "Crone, Nathan" },
+        { id: 2, name: "Crone, Patricia" },
+        { id: 3, name: "Thoman, Lori" },
+        { id: 4, name: "Thoman, Nik" },
+      ];
+    },
     async setActiveView(v) {
       this.activeView = v;
       await this.loadAssignments();
     },
-    toggleAssignMode() {
-      this.isAssignMode = !this.isAssignMode;
+  },
+  watch: {
+    assigneeSearch: function (after) {
+      const selectedAssignee = this.availableAssigees.find(
+        ({ name }) => name === after
+      );
+      if (selectedAssignee) {
+        this.selectedAssignee = Object.assign({}, selectedAssignee);
+      } else {
+        this.selectedAssignee = undefined;
+      }
     },
   },
 };
