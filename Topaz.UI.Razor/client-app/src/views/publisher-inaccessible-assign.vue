@@ -126,24 +126,25 @@ export default {
       activeView: VIEWS.PHONE_WITHOUT_VM,
       availableAssignments: [],
       assigneeSearch: "",
+      assigneeSearchToken: undefined,
       availableAssigees: [],
       selectedAssignee: undefined,
     };
   },
   async created() {
     await this.loadAssignments();
-    this.loadAssignees();
   },
   computed: {
     isAssignmentSelected() {
-      console.log(this.selectedAssignee);
       return this.availableAssignments.some((a) => {
         return a.selected === true;
       });
     },
     assigneeMatches() {
       return this.availableAssigees.filter((a) => {
-        return a.name.indexOf(this.assigneeSearch) >= 0;
+        return (
+          a.name.toLowerCase().indexOf(this.assigneeSearch.toLowerCase()) >= 0
+        );
       });
     },
   },
@@ -159,13 +160,10 @@ export default {
       this.availableAssignments = [];
       this.availableAssignments = assignments;
     },
-    loadAssignees() {
-      this.availableAssigees = [
-        { id: 1, name: "Crone, Nathan" },
-        { id: 2, name: "Crone, Patricia" },
-        { id: 3, name: "Thoman, Lori" },
-        { id: 4, name: "Thoman, Nik" },
-      ];
+    async loadAssignees(token) {
+      const assignees = await data.getPublisherSelectOptions(token);
+      this.availableAssigees = [];
+      this.availableAssigees = assignees;
     },
     async setActiveView(v) {
       this.activeView = v;
@@ -173,15 +171,30 @@ export default {
     },
   },
   watch: {
-    assigneeSearch: function (after) {
+    async assigneeSearch(after) {
+      // find available assignee that exactly matches
       const assignee = this.availableAssigees.find(
-        ({ name }) => name === after
+        ({ name }) => name.toLowerCase() === after.toLowerCase()
       );
+
+      // if exact match found, set the selected assignee
+      // if not, clear the selected assignee
       if (assignee) {
         this.selectedAssignee = Object.assign({}, assignee);
       } else {
         this.selectedAssignee = undefined;
       }
+
+      if (after.length < 3 || this.selectedAssignee) {
+        return;
+      }
+      if (
+        this.assigneeSearchToken &&
+        after.indexOf(this.assigneeSearchToken) !== -1
+      ) {
+        return;
+      }
+      await this.loadAssignees(after);
     },
   },
 };

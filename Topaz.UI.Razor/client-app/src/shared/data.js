@@ -89,6 +89,20 @@ const getAvailableInaccessibleAssignments = async function(territoryId, type) {
   }
 };
 
+const getPublisherSelectOptions = async function(token) {
+  try {
+    const response = await axios.get(`/Publisher/GetPublisherSelectOptions/${token}`);
+    let data = parseList(response);
+    const available = data.map((a) => {
+      return a;
+    });
+    return available;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 const currentUserCheckout = async function(territory) {
   try {
     const response = await axios.post(
@@ -154,6 +168,7 @@ export const data = {
   getPublisherInaccessibleTerritories,
   getAvailableInaccessibleTerritories,
   getAvailableInaccessibleAssignments,
+  getPublisherSelectOptions,
   currentUserCheckout,
   currentUserCheckin,
   currentUserRework,
