@@ -87,6 +87,11 @@ namespace Topaz.Data.Configuration
                 {
                     PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredProfanityOrThreatening,
                     Name = "Answered (profanity or threatening)"
+                },
+                new PhoneResponseType
+                {
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredNoEnglish,
+                    Name = "Answered (doesn't speak English)"
                 }
             );
         }

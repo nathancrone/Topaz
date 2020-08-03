@@ -32,6 +32,7 @@ namespace Topaz.Common.Enums
         AnsweredImmediateHangup = 302,
         AnsweredNotInterested = 303,
         AnsweredDoNotContact = 304,
-        AnsweredProfanityOrThreatening = 305
+        AnsweredProfanityOrThreatening = 305,
+        AnsweredNoEnglish = 306
     }
 }

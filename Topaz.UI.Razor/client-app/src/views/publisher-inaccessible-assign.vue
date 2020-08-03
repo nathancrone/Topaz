@@ -63,6 +63,7 @@
                 class="btn btn-primary mr-1"
                 :class="{ disabled: !isAssignmentSelected || !selectedAssignee }"
                 href="#"
+                @click.prevent="assign"
               >assign</a>
             </div>
           </div>
@@ -94,6 +95,10 @@
                 <br />
                 {{ a.phoneNumber }}
               </address>
+              <span
+                v-if="a.assignPublisher"
+                class="badge badge-secondary"
+              >{{ a.assignPublisher.firstName }} {{ a.assignPublisher.lastName }}</span>
             </div>
           </div>
         </div>
@@ -127,7 +132,7 @@ export default {
       availableAssignments: [],
       assigneeSearch: "",
       assigneeSearchToken: undefined,
-      availableAssigees: [],
+      availableAssignees: [],
       selectedAssignee: undefined,
     };
   },
@@ -141,7 +146,7 @@ export default {
       });
     },
     assigneeMatches() {
-      return this.availableAssigees.filter((a) => {
+      return this.availableAssignees.filter((a) => {
         return (
           a.name.toLowerCase().indexOf(this.assigneeSearch.toLowerCase()) >= 0
         );
@@ -162,18 +167,30 @@ export default {
     },
     async loadAssignees(token) {
       const assignees = await data.getPublisherSelectOptions(token);
-      this.availableAssigees = [];
-      this.availableAssigees = assignees;
+      this.availableAssignees = [];
+      this.availableAssignees = assignees;
     },
     async setActiveView(v) {
       this.activeView = v;
       await this.loadAssignments();
     },
+    async assign() {
+      const assignments = this.availableAssignments.reduce(
+        (a, o) => (o.selected && a.push(o.inaccessibleContactId), a),
+        []
+      );
+      const assignee = this.selectedAssignee.id;
+      await data.assignInaccessibleContacts(assignee, assignments);
+      await this.loadAssignments();
+      this.selectedAssignee = undefined;
+      this.assigneeSearch = "";
+      this.availableAssignees = [];
+    },
   },
   watch: {
     async assigneeSearch(after) {
       // find available assignee that exactly matches
-      const assignee = this.availableAssigees.find(
+      const assignee = this.availableAssignees.find(
         ({ name }) => name.toLowerCase() === after.toLowerCase()
       );
 
@@ -194,6 +211,7 @@ export default {
       ) {
         return;
       }
+      this.assigneeSearchToken = after;
       await this.loadAssignees(after);
     },
   },
