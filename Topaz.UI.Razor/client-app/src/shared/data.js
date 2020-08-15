@@ -76,7 +76,7 @@ const getAvailableInaccessibleTerritories = async function() {
 const getAvailableInaccessibleAssignments = async function(territoryId, type) {
   try {
     const response = await axios.get(
-      `/Inaccessible/GetAssignments/${territoryId}/${type}`
+      `/Inaccessible/GetAvailableAssignments/${territoryId}/${type}`
     );
     let data = parseList(response);
     const available = data.map((a) => {
@@ -117,6 +117,17 @@ const assignInaccessibleContacts = async function(assignee, assignments) {
   } catch (error) {
     console.error(error);
     return;
+  }
+};
+
+const currentUserInaccessibleAssignments = async function() {
+  try {
+    const response = await axios.get(`/Inaccessible/CurrentUserAssignments`);
+    if (!response.data) return null;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 };
 
@@ -187,6 +198,7 @@ export const data = {
   getAvailableInaccessibleAssignments,
   getPublisherSelectOptions,
   assignInaccessibleContacts,
+  currentUserInaccessibleAssignments,
   currentUserCheckout,
   currentUserCheckin,
   currentUserRework,

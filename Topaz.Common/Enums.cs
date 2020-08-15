@@ -9,6 +9,7 @@ namespace Topaz.Common.Enums
 
     public enum ContactActivityTypeEnum
     {
+        None = -1,
         PhoneWithoutVoicemail = 1,
         PhoneWithVoicemail = 2,
         Letter = 3,

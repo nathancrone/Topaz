@@ -16,6 +16,28 @@ namespace MyApi.Controllers
     [Route("[controller]")]
     public class InaccessibleController : ControllerBase
     {
+        private static readonly ContactActivityTypeEnum[] phoneActivity = {
+            ContactActivityTypeEnum.PhoneWithoutVoicemail,
+            ContactActivityTypeEnum.PhoneWithVoicemail
+        };
+
+        private static readonly PhoneReponseTypeEnum[] answeredCheck = {
+            PhoneReponseTypeEnum.AnsweredRespondedFavorably,
+            PhoneReponseTypeEnum.AnsweredNotInterested,
+            PhoneReponseTypeEnum.AnsweredDoNotContact,
+            PhoneReponseTypeEnum.AnsweredProfanityOrThreatening,
+            PhoneReponseTypeEnum.AnsweredNoEnglish
+        };
+
+        private static readonly PhoneReponseTypeEnum[] voicemailResponseCheck = {
+            PhoneReponseTypeEnum.VoicemailFullOrNotSetUp,
+            PhoneReponseTypeEnum.NoResponseFaxModem,
+            PhoneReponseTypeEnum.NoResponseBusySignal,
+            PhoneReponseTypeEnum.NoResponseNotWorkingNumber,
+            PhoneReponseTypeEnum.NoResponseRingNoAnswer,
+            PhoneReponseTypeEnum.AnsweredImmediateHangup
+        };
+
         private readonly Topaz.Data.TopazDbContext _context;
         private readonly ILogger<InaccessibleController> _logger;
 
@@ -72,30 +94,8 @@ namespace MyApi.Controllers
 
         [HttpGet]
         [Route("[action]/{id}/{type}")]
-        public IEnumerable<Object> GetAssignments(int id, string type)
+        public IEnumerable<Object> GetAvailableAssignments(int id, string type)
         {
-            ContactActivityTypeEnum[] phoneActivity = new ContactActivityTypeEnum[] {
-                ContactActivityTypeEnum.PhoneWithoutVoicemail,
-                ContactActivityTypeEnum.PhoneWithVoicemail
-            };
-
-            PhoneReponseTypeEnum[] answeredCheck = new PhoneReponseTypeEnum[] {
-                PhoneReponseTypeEnum.AnsweredRespondedFavorably,
-                PhoneReponseTypeEnum.AnsweredNotInterested,
-                PhoneReponseTypeEnum.AnsweredDoNotContact,
-                PhoneReponseTypeEnum.AnsweredProfanityOrThreatening,
-                PhoneReponseTypeEnum.AnsweredNoEnglish
-            };
-
-            PhoneReponseTypeEnum[] voicemailResponseCheck = new PhoneReponseTypeEnum[] {
-                PhoneReponseTypeEnum.VoicemailFullOrNotSetUp,
-                PhoneReponseTypeEnum.NoResponseFaxModem,
-                PhoneReponseTypeEnum.NoResponseBusySignal,
-                PhoneReponseTypeEnum.NoResponseNotWorkingNumber,
-                PhoneReponseTypeEnum.NoResponseRingNoAnswer,
-                PhoneReponseTypeEnum.AnsweredImmediateHangup
-            };
-
             var Assignments = _context.InaccessibleProperties
                 .Include(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
@@ -191,6 +191,67 @@ namespace MyApi.Controllers
             }
 
             return FilteredAssignments;
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public Object CurrentUserAssignments()
+        {
+            var Claims = (ClaimsIdentity)this.User.Identity;
+            var UserId = Claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+
+            var Assignments = _context.InaccessibleProperties
+                .Include(x => x.ContactLists)
+                .ThenInclude(x => x.Contacts)
+                .ThenInclude(x => x.ContactActivity)
+                .Include(x => x.ContactLists)
+                .ThenInclude(x => x.Contacts)
+                .ThenInclude(x => x.AssignPublisher)
+                .Include(x => x.ContactLists)
+                .ThenInclude(x => x.Contacts)
+                .ThenInclude(x => x.PhoneType)
+                .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId).SelectMany(y => y.Contacts.Where(z => z.AssignPublisher.UserId == UserId)))
+                .AsNoTracking();
+
+            return new
+            {
+                PhoneWithoutVoicemail = Assignments.Where(x =>
+                    // has phone number
+                    !string.IsNullOrEmpty(x.PhoneNumber) &&
+                    // phone has not been attempted
+                    x.ContactActivity.All(y => !phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId))
+                ),
+                PhoneWithVoicemail = Assignments.Where(x =>
+                    // has phone number
+                    !string.IsNullOrEmpty(x.PhoneNumber) &&
+                    // phone has been attempted but there has been no answer
+                    x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
+                    x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !answeredCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
+                    // phone with voicemail has not been attempted
+                    x.ContactActivity.All(y => y.ContactActivityTypeId != (int)ContactActivityTypeEnum.PhoneWithVoicemail)
+                ),
+                Letter = Assignments.Where(x =>
+                    // has mailing address
+                    !string.IsNullOrEmpty(x.MailingAddress1) &&
+                    (
+                        // has no phone number
+                        string.IsNullOrEmpty(x.PhoneNumber) ||
+                        (
+                            // phone has been attempted but there has been no answer
+                            !string.IsNullOrEmpty(x.PhoneNumber) &&
+                            x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
+                            x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !answeredCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId))
+                        ) ||
+                        (
+                            // all phone with voicemail attempts resulted in no contact and no message left
+                            !string.IsNullOrEmpty(x.PhoneNumber) &&
+                            x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail) &&
+                            x.ContactActivity.Where(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail).All(y => voicemailResponseCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId))
+                        )
+                    )
+                )
+            };
+
         }
 
 
