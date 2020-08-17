@@ -131,6 +131,40 @@ const currentUserInaccessibleAssignments = async function() {
   }
 };
 
+const getPhoneResponseTypes = async function() {
+  try {
+    const response = await axios.get(`/Inaccessible/GetPhoneResponseTypes`);
+    let data = parseList(response);
+    const available = data.map((a) => {
+      return a;
+    });
+    return available;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const saveInaccessibleContactPhoneActivity = async function(
+  inaccessibleContactId,
+  contactActivityTypeId,
+  notes,
+  phoneResponseTypeId
+) {
+  try {
+    const response = await axios.post(
+      `/Inaccessible/Contact/${inaccessibleContactId}/PhoneActivity`,
+      { contactActivityTypeId, notes, phoneResponseTypeId }
+    );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
 const currentUserCheckout = async function(territory) {
   try {
     const response = await axios.post(
@@ -199,6 +233,8 @@ export const data = {
   getPublisherSelectOptions,
   assignInaccessibleContacts,
   currentUserInaccessibleAssignments,
+  getPhoneResponseTypes,
+  saveInaccessibleContactPhoneActivity,
   currentUserCheckout,
   currentUserCheckin,
   currentUserRework,

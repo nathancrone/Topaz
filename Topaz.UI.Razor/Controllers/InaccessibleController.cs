@@ -251,11 +251,14 @@ namespace MyApi.Controllers
                     )
                 )
             };
-
         }
 
-
-
+        [HttpGet]
+        [Route("[action]")]
+        public IEnumerable<Object> GetPhoneResponseTypes()
+        {
+            return _context.PhoneResponseTypes.OrderBy(x => x.Name);
+        }
 
         [HttpPost]
         [Route("[action]/{assignee:int}")]
@@ -264,6 +267,36 @@ namespace MyApi.Controllers
             var contacts = _context.InaccessibleContacts.Where(x => assignments.Contains(x.InaccessibleContactId));
             contacts.ToList().ForEach(x => x.AssignPublisherId = assignee);
             return _context.SaveChanges();
+        }
+
+        [HttpPost]
+        [Route("/Inaccessible/Contact/{id:int}/PhoneActivity")]
+        public int SavePhoneActivity(int id, [FromBody] SavePhoneActivityDto dto)
+        {
+            var contact = _context.InaccessibleContacts.Find(id);
+
+            if (contact != null && contact.AssignPublisherId.HasValue)
+            {
+                _context.InaccessibleContactActivities.Add(new InaccessibleContactActivity()
+                {
+                    InaccessibleContactId = id,
+                    PublisherId = contact.AssignPublisherId.Value,
+                    ActivityDate = System.DateTime.UtcNow,
+                    ContactActivityTypeId = dto.contactActivityTypeId,
+                    PhoneResponseTypeId = dto.phoneResponseTypeId,
+                    Notes = dto.notes
+                });
+            }
+
+            contact.AssignPublisherId = null;
+
+            return _context.SaveChanges();
+        }
+        public class SavePhoneActivityDto
+        {
+            public int contactActivityTypeId { get; set; }
+            public string notes { get; set; }
+            public int phoneResponseTypeId { get; set; }
         }
     }
 }
