@@ -270,6 +270,15 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
+        [Route("[action]")]
+        public int Unassign([FromBody] int[] assignments)
+        {
+            var contacts = _context.InaccessibleContacts.Where(x => assignments.Contains(x.InaccessibleContactId));
+            contacts.ToList().ForEach(x => x.AssignPublisherId = null);
+            return _context.SaveChanges();
+        }
+
+        [HttpPost]
         [Route("/Inaccessible/Contact/{id:int}/PhoneActivity")]
         public int SavePhoneActivity(int id, [FromBody] SavePhoneActivityDto dto)
         {

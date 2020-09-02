@@ -120,6 +120,18 @@ const assignInaccessibleContacts = async function(assignee, assignments) {
   }
 };
 
+const unassignInaccessibleContacts = async function(assignments) {
+  try {
+    const response = await axios.post(`/Inaccessible/Unassign`, assignments);
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
 const currentUserInaccessibleAssignments = async function() {
   try {
     const response = await axios.get(`/Inaccessible/CurrentUserAssignments`);
@@ -232,6 +244,7 @@ export const data = {
   getAvailableInaccessibleAssignments,
   getPublisherSelectOptions,
   assignInaccessibleContacts,
+  unassignInaccessibleContacts,
   currentUserInaccessibleAssignments,
   getPhoneResponseTypes,
   saveInaccessibleContactPhoneActivity,

@@ -36,19 +36,28 @@
         </li>
       </ul>
     </div>
-    <div class="row mt-3">
-      <div class="d-flex col">
-        <div class="flex-grow-1">
-          <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input mr-1" id="unassignedOnly" />
-            <label class="form-check-label" for="unassignedOnly">show only unassigned</label>
-          </div>
+    <div class="row mt-3 no-gutters">
+      <div class="d-flex flex-wrap col">
+        <div class="flex-grow-1 mb-2">
+          <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="loadAssignments">refresh</a>
+          <a
+            class="btn btn-sm btn-primary mr-1"
+            :class="{ disabled: assignmentCount === assignmentSelectedCount }"
+            href="#"
+            @click.prevent="toggleAll(true)"
+          >select all</a>
+          <a
+            class="btn btn-sm btn-primary"
+            :class="{ disabled: assignmentSelectedCount === 0 }"
+            href="#"
+            @click.prevent="toggleAll(false)"
+          >deselect all</a>
         </div>
-        <div class="mr-1">
-          <div class="input-group mb-3">
+        <div class="flex-grow-1 flex-md-grow-0 mb-2">
+          <div class="input-group mr-1">
             <input
               type="text"
-              class="form-control"
+              class="form-control form-control-sm"
               v-model="assigneeSearch"
               autocomplete="off"
               placeholder="enter assignee"
@@ -60,16 +69,25 @@
             </datalist>
             <div class="input-group-append">
               <a
-                class="btn btn-primary mr-1"
+                class="btn btn-sm btn-primary mr-1"
                 :class="{ disabled: !isAssignmentSelected || !selectedAssignee }"
                 href="#"
                 @click.prevent="assign"
               >assign</a>
             </div>
+            <a
+              class="btn btn-sm btn-primary mr-1"
+              href="#"
+              :class="{ disabled: assignmentUnassignedSelectedCount !== 0 || assignmentAssignedSelectedCount === 0 || !!selectedAssignee }"
+              @click.prevent="unassign"
+            >unassign</a>
+            <a
+              class="btn btn-sm btn-primary"
+              href="#"
+              :class="{ disabled: assignmentUnassignedSelectedCount !== 0 || assignmentAssignedSelectedCount === 0 || !!selectedAssignee }"
+              @click.prevent="(0)"
+            >complete</a>
           </div>
-        </div>
-        <div>
-          <a class="btn btn-primary" href="#" @click.prevent="loadAssignments">refresh</a>
         </div>
       </div>
     </div>
@@ -152,6 +170,22 @@ export default {
         );
       });
     },
+    assignmentCount() {
+      return this.availableAssignments.length;
+    },
+    assignmentSelectedCount() {
+      return this.availableAssignments.filter((x) => x.selected).length;
+    },
+    assignmentUnassignedSelectedCount() {
+      return this.availableAssignments.filter(
+        (x) => !x.assignPublisher && x.selected
+      ).length;
+    },
+    assignmentAssignedSelectedCount() {
+      return this.availableAssignments.filter(
+        (x) => !!x.assignPublisher && x.selected
+      ).length;
+    },
   },
   methods: {
     async loadAssignments() {
@@ -185,6 +219,19 @@ export default {
       this.selectedAssignee = undefined;
       this.assigneeSearch = "";
       this.availableAssignees = [];
+    },
+    async unassign() {
+      const assignments = this.availableAssignments.reduce(
+        (a, o) => (o.selected && a.push(o.inaccessibleContactId), a),
+        []
+      );
+      await data.unassignInaccessibleContacts(assignments);
+      await this.loadAssignments();
+    },
+    toggleAll(selected) {
+      this.availableAssignments.forEach(function (a) {
+        a.selected = selected;
+      });
     },
   },
   watch: {
