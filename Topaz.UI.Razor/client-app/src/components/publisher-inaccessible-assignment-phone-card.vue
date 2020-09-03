@@ -25,7 +25,7 @@
             type="text"
             class="form-control"
             autocomplete="off"
-            placeholder="result"
+            placeholder="enter result"
             list="phoneResponseTypeList"
             v-model="clonedContact.responseTypeSearch"
           />

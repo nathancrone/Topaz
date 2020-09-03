@@ -55,38 +55,49 @@
         </div>
         <div class="flex-grow-1 flex-md-grow-0 mb-2">
           <div class="input-group mr-1">
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              v-model="assigneeSearch"
-              autocomplete="off"
-              placeholder="enter assignee"
-              list="availableAssigneeList"
-              :disabled="!isAssignmentSelected"
-            />
-            <datalist id="availableAssigneeList">
-              <option v-for="(match, i) in assigneeMatches" :key="i">{{ match.name }}</option>
-            </datalist>
-            <div class="input-group-append">
-              <a
-                class="btn btn-sm btn-primary mr-1"
-                :class="{ disabled: !isAssignmentSelected || !selectedAssignee }"
-                href="#"
-                @click.prevent="assign"
-              >assign</a>
-            </div>
-            <a
-              class="btn btn-sm btn-primary mr-1"
-              href="#"
-              :class="{ disabled: assignmentUnassignedSelectedCount !== 0 || assignmentAssignedSelectedCount === 0 || !!selectedAssignee }"
-              @click.prevent="unassign"
-            >unassign</a>
-            <a
-              class="btn btn-sm btn-primary"
-              href="#"
-              :class="{ disabled: assignmentUnassignedSelectedCount !== 0 || assignmentAssignedSelectedCount === 0 || !!selectedAssignee }"
-              @click.prevent="(0)"
-            >complete</a>
+            <template
+              v-if="assignmentUnassignedSelectedCount !== 0 && assignmentAssignedSelectedCount === 0"
+            >
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                v-model="assigneeSearch"
+                autocomplete="off"
+                placeholder="enter assignee"
+                list="availableAssigneeList"
+                :disabled="!isAssignmentSelected"
+              />
+              <datalist id="availableAssigneeList">
+                <option v-for="(match, i) in assigneeMatches" :key="i">{{ match.name }}</option>
+              </datalist>
+              <div class="input-group-append">
+                <a
+                  class="btn btn-sm btn-primary mr-1"
+                  :class="{ disabled: !isAssignmentSelected || !selectedAssignee }"
+                  href="#"
+                  @click.prevent="assign"
+                >assign</a>
+              </div>
+            </template>
+            <template
+              v-if="assignmentUnassignedSelectedCount === 0 && assignmentAssignedSelectedCount !== 0"
+            >
+              <input
+                id="phoneResponseType"
+                type="text"
+                class="form-control form-control-sm"
+                autocomplete="off"
+                placeholder="enter result"
+                list="phoneResponseTypeList"
+              />
+              <datalist id="phoneResponseTypeList">
+                <option v-for="(type, r) in phoneResponseTypes" :key="r">{{ type.name }}</option>
+              </datalist>
+              <div class="input-group-append">
+                <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="(0)">save</a>
+              </div>
+              <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="unassign">unassign</a>
+            </template>
           </div>
         </div>
       </div>
@@ -102,6 +113,10 @@
               </div>
             </div>
             <div class="card-body">
+              <span
+                v-if="a.assignPublisher"
+                class="badge badge-secondary"
+              >{{ a.assignPublisher.firstName }} {{ a.assignPublisher.lastName }}</span>
               <address>
                 Age: {{ a.age }}
                 <br />
@@ -113,10 +128,48 @@
                 <br />
                 {{ a.phoneNumber }}
               </address>
-              <span
-                v-if="a.assignPublisher"
-                class="badge badge-secondary"
-              >{{ a.assignPublisher.firstName }} {{ a.assignPublisher.lastName }}</span>
+              <ul class="list-group">
+                <li class="list-group-item list-group-item-action flex-column align-items-start">
+                  <div class="d-flex w-100 justify-content-end">
+                    <i class="arrow up"></i>
+                  </div>
+                </li>
+                <template>
+                  <li class="list-group-item flex-column align-items-start">
+                    <div class="mb-1 d-flex w-100 justify-content-between">
+                      <small class="font-weight-bold">8/8/2020 - John Publisher</small>
+                    </div>
+                    <div class="d-flex w-100">
+                      <small>Voicemail - No Name</small>
+                    </div>
+                    <div class="d-flex w-100">
+                      <small class="font-italic">different language. possibly vietnamese</small>
+                    </div>
+                  </li>
+                  <li class="list-group-item flex-column align-items-start">
+                    <div class="mb-1 d-flex w-100 justify-content-between">
+                      <small class="font-weight-bold">8/8/2020 - John Publisher</small>
+                    </div>
+                    <div class="d-flex w-100">
+                      <small>Voicemail - No Name</small>
+                    </div>
+                    <div class="d-flex w-100">
+                      <small class="font-italic">different language. possibly vietnamese</small>
+                    </div>
+                  </li>
+                  <li class="list-group-item flex-column align-items-start">
+                    <div class="mb-1 d-flex w-100 justify-content-between">
+                      <small class="font-weight-bold">8/8/2020 - John Publisher</small>
+                    </div>
+                    <div class="d-flex w-100">
+                      <small>Voicemail - No Name</small>
+                    </div>
+                    <div class="d-flex w-100">
+                      <small class="font-italic">different language. possibly vietnamese</small>
+                    </div>
+                  </li>
+                </template>
+              </ul>
             </div>
           </div>
         </div>
@@ -152,10 +205,12 @@ export default {
       assigneeSearchToken: undefined,
       availableAssignees: [],
       selectedAssignee: undefined,
+      phoneResponseTypes: [],
     };
   },
   async created() {
     await this.loadAssignments();
+    await this.loadPhoneResponseTypes();
   },
   computed: {
     isAssignmentSelected() {
@@ -203,6 +258,10 @@ export default {
       const assignees = await data.getPublisherSelectOptions(token);
       this.availableAssignees = [];
       this.availableAssignees = assignees;
+    },
+    async loadPhoneResponseTypes() {
+      const types = await data.getPhoneResponseTypes();
+      this.phoneResponseTypes = types;
     },
     async setActiveView(v) {
       this.activeView = v;
