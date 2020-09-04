@@ -309,8 +309,8 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
-        [Route("/Inaccessible/ResponseType/{id:int}/PhoneActivities")]
-        public int SavePhoneActivities(int id, [FromBody] int[] assignments)
+        [Route("/Inaccessible/ResponseType/{responseTypeId:int}/{activityTypeId:int}/PhoneActivities")]
+        public int SavePhoneActivities(int responseTypeId, int activityTypeId, [FromBody] int[] assignments)
         {
             var contacts = _context.InaccessibleContacts.Include(x => x.ContactActivity).Where(x => assignments.Contains(x.InaccessibleContactId));
             contacts.ToList().ForEach(x =>
@@ -321,8 +321,8 @@ namespace MyApi.Controllers
                     {
                         PublisherId = x.AssignPublisherId.Value,
                         ActivityDate = DateTime.UtcNow,
-                        ContactActivityTypeId = (int)ContactActivityTypeEnum.PhoneWithoutVoicemail,
-                        PhoneResponseTypeId = id
+                        ContactActivityTypeId = activityTypeId,
+                        PhoneResponseTypeId = responseTypeId
                     });
                     x.AssignPublisherId = null;
                 }

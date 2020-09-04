@@ -190,10 +190,18 @@
 import { data } from "../shared";
 
 const VIEWS = Object.freeze({
-  PHONE_WITHOUT_VM: { type: "phone", name: "1st Call (no voicemail)" },
-  PHONE_WITH_VM: { type: "vm", name: "2nd Call (leave voicemail)" },
-  LETTER: { type: "letter", name: "Write Letters" },
-  COMPLETE: { type: "none", name: "Done" },
+  PHONE_WITHOUT_VM: {
+    type: "phone",
+    name: "1st Call (no voicemail)",
+    activityTypeId: 1,
+  },
+  PHONE_WITH_VM: {
+    type: "vm",
+    name: "2nd Call (leave voicemail)",
+    activityTypeId: 2,
+  },
+  LETTER: { type: "letter", name: "Write Letters", activityTypeId: 3 },
+  COMPLETE: { type: "none", name: "Done", activityTypeId: null },
 });
 
 export default {
@@ -303,8 +311,10 @@ export default {
         []
       );
       const responseType = this.selectedResponseType.phoneResponseTypeId;
+      const activityType = this.activeView.activityTypeId;
       await data.saveInaccessibleContactPhoneActivities(
         responseType,
+        activityType,
         assignments
       );
       await this.loadAssignments();

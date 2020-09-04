@@ -179,11 +179,12 @@ const saveInaccessibleContactPhoneActivity = async function(
 
 const saveInaccessibleContactPhoneActivities = async function(
   responseTypeId,
+  activityTypeId,
   assignments
 ) {
   try {
     const response = await axios.post(
-      `/Inaccessible/ResponseType/${responseTypeId}/PhoneActivities`,
+      `/Inaccessible/ResponseType/${responseTypeId}/${activityTypeId}/PhoneActivities`,
       assignments
     );
     if (response.status !== 200) throw Error(response.message);
