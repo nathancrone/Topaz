@@ -193,6 +193,18 @@ namespace MyApi.Controllers
         }
 
         [HttpGet]
+        [Route("[action]/{id:int}")]
+        public IEnumerable<Object> GetContactActivity(int id)
+        {
+            return _context.InaccessibleContactActivities
+                .Where(x => x.InaccessibleContactId == id)
+                .Include(x => x.Publisher)
+                .Include(x => x.PhoneResponseType)
+                .Include(x => x.ContactActivityType)
+                .AsNoTracking();
+        }
+
+        [HttpGet]
         [Route("[action]")]
         public Object CurrentUserAssignments()
         {

@@ -33,43 +33,44 @@
           {{ clonedContact.phoneNumber }}
         </address>
         <ul class="list-group">
-          <li class="list-group-item list-group-item-action flex-column align-items-start">
+          <li
+            @click="toggle"
+            class="list-group-item list-group-item-action flex-column align-items-start"
+          >
             <div class="d-flex w-100 justify-content-end">
-              <i class="arrow up"></i>
+              <i
+                class="arrow"
+                :class="{ up: contactActivityExpanded, down: !contactActivityExpanded }"
+              ></i>
             </div>
           </li>
-          <template>
-            <li class="list-group-item flex-column align-items-start">
+          <template v-if="contactActivityExpanded">
+            <li
+              v-if="contactActivity.length === 0 && contactActivityLoaded"
+              class="list-group-item flex-column align-items-start"
+            >
               <div class="mb-1 d-flex w-100">
-                <small class="font-weight-bold">8/8/2020 - John Publisher</small>
-              </div>
-              <div class="mb-1 d-flex w-100">
-                <small>Voicemail - No Name</small>
-              </div>
-              <div class="d-flex w-100">
-                <small class="font-italic">different language. possibly vietnamese</small>
+                <small class="font-weight-bold">no history recorded</small>
               </div>
             </li>
-            <li class="list-group-item flex-column align-items-start">
+            <li
+              v-for="(a, i) in contactActivity"
+              :key="i"
+              class="list-group-item flex-column align-items-start"
+            >
               <div class="mb-1 d-flex w-100">
-                <small class="font-weight-bold">8/8/2020 - John Publisher</small>
+                <small
+                  class="font-weight-bold"
+                >{{ displayDate(a.activityDate) }} - {{ a.publisher.firstName }} {{ a.publisher.lastName }}</small>
               </div>
+              <!-- <div class="mb-1 d-flex w-100">
+                <small>{{ a.contactActivityType.name }}</small>
+              </div>-->
               <div class="mb-1 d-flex w-100">
-                <small>Voicemail - No Name</small>
+                <small>{{ a.phoneResponseType.name }}</small>
               </div>
               <div class="d-flex w-100">
-                <small class="font-italic">different language. possibly vietnamese</small>
-              </div>
-            </li>
-            <li class="list-group-item flex-column align-items-start">
-              <div class="mb-1 d-flex w-100">
-                <small class="font-weight-bold">8/8/2020 - John Publisher</small>
-              </div>
-              <div class="mb-1 d-flex w-100">
-                <small>Voicemail - No Name</small>
-              </div>
-              <div class="d-flex w-100">
-                <small class="font-italic">different language. possibly vietnamese</small>
+                <small class="font-italic">{{ a.notes }}</small>
               </div>
             </li>
           </template>
@@ -80,6 +81,8 @@
 </template>
 
 <script>
+import { data } from "../shared";
+import { format } from "date-fns";
 export default {
   name: "PublisherInaccessibleAssignPhoneCard",
   props: {
@@ -92,10 +95,24 @@ export default {
     return {
       clonedContact: { ...this.contact },
       contactActivityExpanded: false,
+      contactActivityLoaded: false,
       contactActivity: [],
     };
   },
-  methods: {},
+  methods: {
+    toggle() {
+      this.contactActivityExpanded = !this.contactActivityExpanded;
+    },
+    async loadActivity() {
+      const activity = await data.getContactActivity(
+        this.clonedContact.inaccessibleContactId
+      );
+      this.contactActivity = [...activity];
+    },
+    displayDate(date) {
+      return format(data.parseDate(date), "MM/dd/yyyy");
+    },
+  },
   watch: {
     "clonedContact.selected": {
       immediate: true,
@@ -112,6 +129,15 @@ export default {
       immediate: true,
       handler(after) {
         this.clonedContact.selected = after;
+      },
+    },
+    contactActivityExpanded: {
+      async handler(after) {
+        if (after && !this.contactActivityLoaded) {
+          await this.loadActivity();
+          //console.log(JSON.stringify(this.clonedContact));
+          this.contactActivityLoaded = true;
+        }
       },
     },
   },

@@ -223,12 +223,11 @@ export default {
     },
     async loadAssignees(token) {
       const assignees = await data.getPublisherSelectOptions(token);
-      this.availableAssignees = [];
-      this.availableAssignees = assignees;
+      this.availableAssignees = [...assignees];
     },
     async loadPhoneResponseTypes() {
       const types = await data.getPhoneResponseTypes();
-      this.phoneResponseTypes = types;
+      this.phoneResponseTypes = [...types];
     },
     async setActiveView(v) {
       this.activeView = v;
