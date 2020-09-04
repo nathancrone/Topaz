@@ -86,6 +86,7 @@
                 id="phoneResponseType"
                 type="text"
                 class="form-control form-control-sm"
+                v-model="responseTypeSearch"
                 autocomplete="off"
                 placeholder="enter result"
                 list="phoneResponseTypeList"
@@ -94,7 +95,12 @@
                 <option v-for="(type, r) in phoneResponseTypes" :key="r">{{ type.name }}</option>
               </datalist>
               <div class="input-group-append">
-                <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="(0)">save</a>
+                <a
+                  class="btn btn-sm btn-primary mr-1"
+                  :class="{ disabled: !isAssignmentSelected || !selectedResponseType }"
+                  href="#"
+                  @click.prevent="saveResponses"
+                >save</a>
               </div>
               <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="unassign">unassign</a>
             </template>
@@ -113,10 +119,12 @@
               </div>
             </div>
             <div class="card-body">
-              <span
-                v-if="a.assignPublisher"
-                class="badge badge-secondary"
-              >{{ a.assignPublisher.firstName }} {{ a.assignPublisher.lastName }}</span>
+              <div class="d-flex w-100 justify-content-end">
+                <span
+                  v-if="a.assignPublisher"
+                  class="badge badge-secondary"
+                >{{ a.assignPublisher.firstName }} {{ a.assignPublisher.lastName }}</span>
+              </div>
               <address>
                 Age: {{ a.age }}
                 <br />
@@ -136,10 +144,10 @@
                 </li>
                 <template>
                   <li class="list-group-item flex-column align-items-start">
-                    <div class="mb-1 d-flex w-100 justify-content-between">
+                    <div class="mb-1 d-flex w-100">
                       <small class="font-weight-bold">8/8/2020 - John Publisher</small>
                     </div>
-                    <div class="d-flex w-100">
+                    <div class="mb-1 d-flex w-100">
                       <small>Voicemail - No Name</small>
                     </div>
                     <div class="d-flex w-100">
@@ -147,10 +155,10 @@
                     </div>
                   </li>
                   <li class="list-group-item flex-column align-items-start">
-                    <div class="mb-1 d-flex w-100 justify-content-between">
+                    <div class="mb-1 d-flex w-100">
                       <small class="font-weight-bold">8/8/2020 - John Publisher</small>
                     </div>
-                    <div class="d-flex w-100">
+                    <div class="mb-1 d-flex w-100">
                       <small>Voicemail - No Name</small>
                     </div>
                     <div class="d-flex w-100">
@@ -158,10 +166,10 @@
                     </div>
                   </li>
                   <li class="list-group-item flex-column align-items-start">
-                    <div class="mb-1 d-flex w-100 justify-content-between">
+                    <div class="mb-1 d-flex w-100">
                       <small class="font-weight-bold">8/8/2020 - John Publisher</small>
                     </div>
-                    <div class="d-flex w-100">
+                    <div class="mb-1 d-flex w-100">
                       <small>Voicemail - No Name</small>
                     </div>
                     <div class="d-flex w-100">
@@ -205,7 +213,9 @@ export default {
       assigneeSearchToken: undefined,
       availableAssignees: [],
       selectedAssignee: undefined,
+      responseTypeSearch: "",
       phoneResponseTypes: [],
+      selectedResponseType: undefined,
     };
   },
   async created() {
@@ -287,6 +297,23 @@ export default {
       await data.unassignInaccessibleContacts(assignments);
       await this.loadAssignments();
     },
+    async saveResponses() {
+      const assignments = this.availableAssignments.reduce(
+        (a, o) => (o.selected && a.push(o.inaccessibleContactId), a),
+        []
+      );
+      const responseType = this.selectedResponseType.phoneResponseTypeId;
+      await data.saveInaccessibleContactPhoneActivities(
+        responseType,
+        assignments
+      );
+      await this.loadAssignments();
+      this.selectedAssignee = undefined;
+      this.selectedResponseType = undefined;
+      this.assigneeSearch = "";
+      this.responseTypeSearch = "";
+      this.availableAssignees = [];
+    },
     toggleAll(selected) {
       this.availableAssignments.forEach(function (a) {
         a.selected = selected;
@@ -319,6 +346,20 @@ export default {
       }
       this.assigneeSearchToken = after;
       await this.loadAssignees(after);
+    },
+    async responseTypeSearch(after) {
+      // find available assignee that exactly matches
+      const responseType = this.phoneResponseTypes.find(
+        ({ name }) => name.toLowerCase() === after.toLowerCase()
+      );
+
+      // if exact match found, set the selected response type
+      // if not, clear the selected response type
+      if (responseType) {
+        this.selectedResponseType = Object.assign({}, responseType);
+      } else {
+        this.selectedResponseType = undefined;
+      }
     },
   },
 };

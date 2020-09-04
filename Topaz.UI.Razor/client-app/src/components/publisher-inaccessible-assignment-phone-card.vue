@@ -30,7 +30,7 @@
             v-model="clonedContact.responseTypeSearch"
           />
         </div>
-        <div v-if="selectedReponseType" class="form-group">
+        <div v-if="selectedResponseType" class="form-group">
           <label for="notes">Notes</label>
           <textarea
             class="form-control"
@@ -41,7 +41,7 @@
           ></textarea>
         </div>
         <a
-          v-if="selectedReponseType"
+          v-if="selectedResponseType"
           class="btn btn-primary mr-1"
           href="#"
           @click.prevent="save"
@@ -73,7 +73,7 @@ export default {
   data() {
     return {
       clonedContact: { ...this.contact },
-      selectedReponseType: undefined,
+      selectedResponseType: undefined,
     };
   },
   methods: {
@@ -82,25 +82,25 @@ export default {
         this.clonedContact.inaccessibleContactId,
         this.contactActivityType,
         this.clonedContact.notes,
-        this.selectedReponseType.phoneResponseTypeId
+        this.selectedResponseType.phoneResponseTypeId
       );
     },
   },
   watch: {
     "clonedContact.responseTypeSearch": {
       immediate: true,
-      handler(newValue) {
+      handler(after) {
         // find available assignee that exactly matches
-        const reponseType = this.phoneResponseTypes.find(
-          ({ name }) => name.toLowerCase() === newValue.toLowerCase()
+        const responseType = this.phoneResponseTypes.find(
+          ({ name }) => name.toLowerCase() === after.toLowerCase()
         );
 
         // if exact match found, set the selected response type
         // if not, clear the selected response type
-        if (reponseType) {
-          this.selectedReponseType = Object.assign({}, reponseType);
+        if (responseType) {
+          this.selectedResponseType = Object.assign({}, responseType);
         } else {
-          this.selectedReponseType = undefined;
+          this.selectedResponseType = undefined;
         }
       },
     },
