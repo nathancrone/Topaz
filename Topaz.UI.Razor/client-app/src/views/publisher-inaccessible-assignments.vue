@@ -50,7 +50,7 @@
       v-if="activeView === availableViews.PHONE_WITHOUT_VM"
       class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4"
     >
-      <PublisherInaccessibleAssignmentPhoneCard
+      <PublisherInaccessibleAssignmentCard
         v-for="(a, i) in assignmentsPhoneWithoutVoicemail"
         :key="'c' + i"
         :contact="a"
@@ -62,7 +62,7 @@
       v-if="activeView === availableViews.PHONE_WITH_VM"
       class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4"
     >
-      <PublisherInaccessibleAssignmentPhoneCard
+      <PublisherInaccessibleAssignmentCard
         v-for="(a, i) in assignmentsPhoneWithVoicemail"
         :key="'c' + i"
         :contact="a"
@@ -105,12 +105,20 @@
 
 <script>
 import { data } from "../shared";
-import PublisherInaccessibleAssignmentPhoneCard from "../components/publisher-inaccessible-assignment-phone-card";
+import PublisherInaccessibleAssignmentCard from "../components/publisher-inaccessible-assignment-card";
 
 const VIEWS = Object.freeze({
-  PHONE_WITHOUT_VM: { type: "phone", name: "1st Call (no voicemail)" },
-  PHONE_WITH_VM: { type: "vm", name: "2nd Call (leave voicemail)" },
-  LETTER: { type: "letter", name: "Write Letters" },
+  PHONE_WITHOUT_VM: {
+    type: "phone",
+    name: "1st Call (no voicemail)",
+    activityTypeId: 1,
+  },
+  PHONE_WITH_VM: {
+    type: "vm",
+    name: "2nd Call (leave voicemail)",
+    activityTypeId: 2,
+  },
+  LETTER: { type: "letter", name: "Write Letters", activityTypeId: 3 },
 });
 
 export default {
@@ -126,7 +134,7 @@ export default {
     };
   },
   components: {
-    PublisherInaccessibleAssignmentPhoneCard,
+    PublisherInaccessibleAssignmentCard,
   },
   async created() {
     await this.loadPhoneResponseTypes();

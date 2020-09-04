@@ -42,10 +42,16 @@
           <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="loadAssignments">refresh</a>
           <a
             class="btn btn-sm btn-primary mr-1"
-            :class="{ disabled: assignmentCount === assignmentSelectedCount }"
+            :class="{ disabled: assignmentUnassignedSelectedCount === assignmentUnassignedCount }"
             href="#"
-            @click.prevent="toggleAll(true)"
-          >select all</a>
+            @click.prevent="selectUnassigned"
+          >select unassigned</a>
+          <a
+            class="btn btn-sm btn-primary mr-1"
+            :class="{ disabled: assignmentAssignedSelectedCount === assignmentAssignedCount }"
+            href="#"
+            @click.prevent="selectAssigned"
+          >select assigned</a>
           <a
             class="btn btn-sm btn-primary"
             :class="{ disabled: assignmentSelectedCount === 0 }"
@@ -109,85 +115,19 @@
       </div>
     </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
-      <template v-for="(a, i) in availableAssignments">
-        <div :key="'c' + i" class="col mt-3">
-          <div class="card shadow-sm rounded">
-            <div class="card-header d-flex">
-              <div class="flex-grow-1">{{ a.lastName }}, {{ a.firstName }} {{ a.middleInitial }}</div>
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" v-model="a.selected" :id="'cb' + i" />
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="d-flex w-100 justify-content-end">
-                <span
-                  v-if="a.assignPublisher"
-                  class="badge badge-secondary"
-                >{{ a.assignPublisher.firstName }} {{ a.assignPublisher.lastName }}</span>
-              </div>
-              <address>
-                Age: {{ a.age }}
-                <br />
-                {{ a.mailingAddress1 }}
-                <br />
-                {{ a.mailingAddress2 }}
-                <br />
-                Dallas, TX {{ a.postalCode }}
-                <br />
-                {{ a.phoneNumber }}
-              </address>
-              <ul class="list-group">
-                <li class="list-group-item list-group-item-action flex-column align-items-start">
-                  <div class="d-flex w-100 justify-content-end">
-                    <i class="arrow up"></i>
-                  </div>
-                </li>
-                <template>
-                  <li class="list-group-item flex-column align-items-start">
-                    <div class="mb-1 d-flex w-100">
-                      <small class="font-weight-bold">8/8/2020 - John Publisher</small>
-                    </div>
-                    <div class="mb-1 d-flex w-100">
-                      <small>Voicemail - No Name</small>
-                    </div>
-                    <div class="d-flex w-100">
-                      <small class="font-italic">different language. possibly vietnamese</small>
-                    </div>
-                  </li>
-                  <li class="list-group-item flex-column align-items-start">
-                    <div class="mb-1 d-flex w-100">
-                      <small class="font-weight-bold">8/8/2020 - John Publisher</small>
-                    </div>
-                    <div class="mb-1 d-flex w-100">
-                      <small>Voicemail - No Name</small>
-                    </div>
-                    <div class="d-flex w-100">
-                      <small class="font-italic">different language. possibly vietnamese</small>
-                    </div>
-                  </li>
-                  <li class="list-group-item flex-column align-items-start">
-                    <div class="mb-1 d-flex w-100">
-                      <small class="font-weight-bold">8/8/2020 - John Publisher</small>
-                    </div>
-                    <div class="mb-1 d-flex w-100">
-                      <small>Voicemail - No Name</small>
-                    </div>
-                    <div class="d-flex w-100">
-                      <small class="font-italic">different language. possibly vietnamese</small>
-                    </div>
-                  </li>
-                </template>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </template>
+      <PublisherInaccessibleAssignCard
+        v-for="(a, i) in availableAssignments"
+        :key="'c' + i"
+        :contact="a"
+        @change="handleAssignmentChange"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import { data } from "../shared";
+import PublisherInaccessibleAssignCard from "../components/publisher-inaccessible-assign-card";
 
 const VIEWS = Object.freeze({
   PHONE_WITHOUT_VM: {
@@ -226,6 +166,9 @@ export default {
       selectedResponseType: undefined,
     };
   },
+  components: {
+    PublisherInaccessibleAssignCard,
+  },
   async created() {
     await this.loadAssignments();
     await this.loadPhoneResponseTypes();
@@ -249,10 +192,17 @@ export default {
     assignmentSelectedCount() {
       return this.availableAssignments.filter((x) => x.selected).length;
     },
+    assignmentUnassignedCount() {
+      return this.availableAssignments.filter((x) => !x.assignPublisher).length;
+    },
     assignmentUnassignedSelectedCount() {
       return this.availableAssignments.filter(
         (x) => !x.assignPublisher && x.selected
       ).length;
+    },
+    assignmentAssignedCount() {
+      return this.availableAssignments.filter((x) => !!x.assignPublisher)
+        .length;
     },
     assignmentAssignedSelectedCount() {
       return this.availableAssignments.filter(
@@ -269,8 +219,7 @@ export default {
       assignments.forEach(function (a) {
         a.selected = false;
       });
-      this.availableAssignments = [];
-      this.availableAssignments = assignments;
+      this.availableAssignments = [...assignments];
     },
     async loadAssignees(token) {
       const assignees = await data.getPublisherSelectOptions(token);
@@ -325,9 +274,32 @@ export default {
       this.availableAssignees = [];
     },
     toggleAll(selected) {
-      this.availableAssignments.forEach(function (a) {
-        a.selected = selected;
-      });
+      this.availableAssignments
+        .filter((x) => x.selected !== selected)
+        .forEach(function (a) {
+          a.selected = selected;
+        });
+    },
+    selectAssigned() {
+      this.availableAssignments
+        .filter((x) => x.assignPublisher && !x.selected)
+        .forEach(function (a) {
+          a.selected = true;
+        });
+    },
+    selectUnassigned() {
+      this.availableAssignments
+        .filter((x) => !x.assignPublisher && !x.selected)
+        .forEach(function (a) {
+          a.selected = true;
+        });
+    },
+    handleAssignmentChange(assignment) {
+      const index = this.availableAssignments.findIndex(
+        (a) => a.inaccessibleContactId === assignment.inaccessibleContactId
+      );
+      this.availableAssignments.splice(index, 1, assignment);
+      this.availableAssignments = [...this.availableAssignments];
     },
   },
   watch: {

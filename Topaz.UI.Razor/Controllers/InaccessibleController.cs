@@ -99,7 +99,6 @@ namespace MyApi.Controllers
             var Assignments = _context.InaccessibleProperties
                 .Include(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
-                .ThenInclude(x => x.ContactActivity)
                 .Include(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
                 .ThenInclude(x => x.AssignPublisher)
@@ -203,7 +202,6 @@ namespace MyApi.Controllers
             var Assignments = _context.InaccessibleProperties
                 .Include(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
-                .ThenInclude(x => x.ContactActivity)
                 .Include(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
                 .ThenInclude(x => x.AssignPublisher)
@@ -279,6 +277,28 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
+        [Route("/Inaccessible/ResponseType/{responseTypeId:int}/{activityTypeId:int}/PhoneActivities")]
+        public int SavePhoneActivities(int responseTypeId, int activityTypeId, [FromBody] int[] assignments)
+        {
+            var contacts = _context.InaccessibleContacts.Include(x => x.ContactActivity).Where(x => assignments.Contains(x.InaccessibleContactId));
+            contacts.ToList().ForEach(x =>
+            {
+                if (x.AssignPublisherId.HasValue)
+                {
+                    x.ContactActivity.Add(new InaccessibleContactActivity()
+                    {
+                        PublisherId = x.AssignPublisherId.Value,
+                        ActivityDate = DateTime.UtcNow,
+                        ContactActivityTypeId = activityTypeId,
+                        PhoneResponseTypeId = responseTypeId
+                    });
+                    x.AssignPublisherId = null;
+                }
+            });
+            return _context.SaveChanges();
+        }
+
+        [HttpPost]
         [Route("/Inaccessible/Contact/{id:int}/PhoneActivity")]
         public int SavePhoneActivity(int id, [FromBody] SavePhoneActivityDto dto)
         {
@@ -306,28 +326,6 @@ namespace MyApi.Controllers
             public int contactActivityTypeId { get; set; }
             public string notes { get; set; }
             public int phoneResponseTypeId { get; set; }
-        }
-
-        [HttpPost]
-        [Route("/Inaccessible/ResponseType/{responseTypeId:int}/{activityTypeId:int}/PhoneActivities")]
-        public int SavePhoneActivities(int responseTypeId, int activityTypeId, [FromBody] int[] assignments)
-        {
-            var contacts = _context.InaccessibleContacts.Include(x => x.ContactActivity).Where(x => assignments.Contains(x.InaccessibleContactId));
-            contacts.ToList().ForEach(x =>
-            {
-                if (x.AssignPublisherId.HasValue)
-                {
-                    x.ContactActivity.Add(new InaccessibleContactActivity()
-                    {
-                        PublisherId = x.AssignPublisherId.Value,
-                        ActivityDate = DateTime.UtcNow,
-                        ContactActivityTypeId = activityTypeId,
-                        PhoneResponseTypeId = responseTypeId
-                    });
-                    x.AssignPublisherId = null;
-                }
-            });
-            return _context.SaveChanges();
         }
     }
 }
