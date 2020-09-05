@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20200704200114_InitialCreate")]
+    [Migration("20200905014703_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -386,6 +386,11 @@ namespace Topaz.Data.MigrationsApp
                         {
                             PhoneResponseTypeId = 305,
                             Name = "Answered (profanity or threatening)"
+                        },
+                        new
+                        {
+                            PhoneResponseTypeId = 306,
+                            Name = "Answered (doesn't speak English)"
                         });
                 });
 

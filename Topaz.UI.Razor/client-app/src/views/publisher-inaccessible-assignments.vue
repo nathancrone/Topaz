@@ -4,8 +4,13 @@
       <option v-for="(type, r) in phoneResponseTypes" :key="r">{{ type.name }}</option>
     </datalist>
     <div class="row mt-3">
+      <div
+        class="w-100 alert alert-primary"
+        role="alert"
+        v-if="assignmentsPhoneWithoutVoicemail.length === 0 && assignmentsPhoneWithVoicemail.length === 0 && assignmentsLetter.length === 0"
+      >You currently have no assignments.</div>
       <ul class="nav nav-tabs">
-        <li class="nav-item" v-if="assignmentsPhoneWithoutVoicemail.length != 0">
+        <li class="nav-item" v-if="assignmentsPhoneWithoutVoicemail.length !== 0">
           <a
             class="nav-link"
             :class="{ active: activeView === availableViews.PHONE_WITHOUT_VM }"
@@ -18,7 +23,7 @@
             >{{ assignmentsPhoneWithoutVoicemail.length }}</span>
           </a>
         </li>
-        <li class="nav-item" v-if="assignmentsPhoneWithVoicemail.length != 0">
+        <li class="nav-item" v-if="assignmentsPhoneWithVoicemail.length !== 0">
           <a
             class="nav-link"
             :class="{ active: activeView === availableViews.PHONE_WITH_VM }"
@@ -31,7 +36,7 @@
             >{{ assignmentsPhoneWithVoicemail.length }}</span>
           </a>
         </li>
-        <li class="nav-item" v-if="assignmentsLetter.length != 0">
+        <li class="nav-item" v-if="assignmentsLetter.length !== 0">
           <a
             class="nav-link"
             :class="{ active: activeView === availableViews.LETTER }"
@@ -51,11 +56,12 @@
       class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4"
     >
       <PublisherInaccessibleAssignmentCard
-        v-for="(a, i) in assignmentsPhoneWithoutVoicemail"
-        :key="'c' + i"
+        v-for="a in assignmentsPhoneWithoutVoicemail"
+        :key="`card${a.inaccessibleContactId}`"
         :contact="a"
         :contactActivityType="1"
         :phoneResponseTypes="phoneResponseTypes"
+        @saved="handleSaved"
       />
     </div>
     <div
@@ -63,11 +69,12 @@
       class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4"
     >
       <PublisherInaccessibleAssignmentCard
-        v-for="(a, i) in assignmentsPhoneWithVoicemail"
-        :key="'c' + i"
+        v-for="a in assignmentsPhoneWithVoicemail"
+        :key="`card${a.inaccessibleContactId}`"
         :contact="a"
         :contactActivityType="2"
         :phoneResponseTypes="phoneResponseTypes"
+        @saved="handleSaved"
       />
     </div>
     <div
@@ -140,11 +147,11 @@ export default {
     await this.loadPhoneResponseTypes();
     await this.loadAssignments();
 
-    if (this.assignmentsPhoneWithoutVoicemail.length != 0) {
+    if (this.assignmentsPhoneWithoutVoicemail.length !== 0) {
       this.activeView = VIEWS.PHONE_WITHOUT_VM;
-    } else if (this.assignmentsPhoneWithVoicemail.length != 0) {
+    } else if (this.assignmentsPhoneWithVoicemail.length !== 0) {
       this.activeView = VIEWS.PHONE_WITH_VM;
-    } else if (this.assignmentsLetter.length != 0) {
+    } else if (this.assignmentsLetter.length !== 0) {
       this.activeView = VIEWS.LETTER;
     }
   },
@@ -158,22 +165,22 @@ export default {
       this.assignmentsPhoneWithoutVoicemail = [];
       this.assignmentsPhoneWithVoicemail = [];
       this.assignmentsLetter = [];
-
       assignments.phoneWithoutVoicemail.forEach(function (a) {
         a.responseTypeSearch = "";
         a.notes = "";
       });
       this.assignmentsPhoneWithoutVoicemail = assignments.phoneWithoutVoicemail;
-
       assignments.phoneWithVoicemail.forEach(function (a) {
         a.responseTypeSearch = "";
         a.notes = "";
       });
       this.assignmentsPhoneWithVoicemail = assignments.phoneWithVoicemail;
-
       this.assignmentsLetter = assignments.letter;
     },
-    async setActiveView(v) {
+    async handleSaved() {
+      await this.loadAssignments();
+    },
+    setActiveView(v) {
       this.activeView = v;
     },
   },

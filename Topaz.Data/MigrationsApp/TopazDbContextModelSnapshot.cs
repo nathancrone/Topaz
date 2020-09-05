@@ -384,6 +384,11 @@ namespace Topaz.Data.MigrationsApp
                         {
                             PhoneResponseTypeId = 305,
                             Name = "Answered (profanity or threatening)"
+                        },
+                        new
+                        {
+                            PhoneResponseTypeId = 306,
+                            Name = "Answered (doesn't speak English)"
                         });
                 });
 

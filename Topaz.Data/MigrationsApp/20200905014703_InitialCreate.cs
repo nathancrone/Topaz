@@ -362,6 +362,11 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Name" },
+                values: new object[] { 306, "Answered (doesn't speak English)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Name" },
                 values: new object[] { 305, "Answered (profanity or threatening)" });
 
             migrationBuilder.InsertData(

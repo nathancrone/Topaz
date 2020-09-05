@@ -50,12 +50,12 @@
               class="list-group-item flex-column align-items-start"
             >
               <div class="mb-1 d-flex w-100">
-                <small class="font-weight-bold">no history recorded</small>
+                <small>no history recorded</small>
               </div>
             </li>
             <li
-              v-for="(a, i) in contactActivity"
-              :key="i"
+              v-for="a in contactActivity"
+              :key="`item${a.inaccessibleContactActivityId}`"
               class="list-group-item flex-column align-items-start"
             >
               <div class="mb-1 d-flex w-100">
@@ -63,9 +63,6 @@
                   class="font-weight-bold"
                 >{{ displayDate(a.activityDate) }} - {{ a.publisher.firstName }} {{ a.publisher.lastName }}</small>
               </div>
-              <!-- <div class="mb-1 d-flex w-100">
-                <small>{{ a.contactActivityType.name }}</small>
-              </div>-->
               <div class="mb-1 d-flex w-100">
                 <small>{{ a.phoneResponseType.name }}</small>
               </div>
@@ -83,6 +80,7 @@
 <script>
 import { data } from "../shared";
 import { format } from "date-fns";
+
 export default {
   name: "PublisherInaccessibleAssignPhoneCard",
   props: {
@@ -123,6 +121,9 @@ export default {
     contact: {
       handler(after) {
         this.clonedContact = { ...after };
+        this.contactActivityExpanded = false;
+        this.contactActivityLoaded = false;
+        this.contactActivity = [];
       },
     },
     "contact.selected": {
@@ -135,7 +136,6 @@ export default {
       async handler(after) {
         if (after && !this.contactActivityLoaded) {
           await this.loadActivity();
-          //console.log(JSON.stringify(this.clonedContact));
           this.contactActivityLoaded = true;
         }
       },

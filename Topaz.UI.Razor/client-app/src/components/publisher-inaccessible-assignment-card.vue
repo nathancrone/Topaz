@@ -42,10 +42,50 @@
         </div>
         <a
           v-if="selectedResponseType"
-          class="btn btn-primary mr-1"
+          class="btn btn-primary mr-1 mb-4"
           href="#"
           @click.prevent="save"
         >save</a>
+        <ul class="list-group">
+          <li
+            @click="toggle"
+            class="list-group-item list-group-item-action flex-column align-items-start"
+          >
+            <div class="d-flex w-100 justify-content-end">
+              <i
+                class="arrow"
+                :class="{ up: contactActivityExpanded, down: !contactActivityExpanded }"
+              ></i>
+            </div>
+          </li>
+          <template v-if="contactActivityExpanded">
+            <li
+              v-if="contactActivity.length === 0 && contactActivityLoaded"
+              class="list-group-item flex-column align-items-start"
+            >
+              <div class="mb-1 d-flex w-100">
+                <small>no history recorded</small>
+              </div>
+            </li>
+            <li
+              v-for="a in contactActivity"
+              :key="`item${a.inaccessibleContactActivityId}`"
+              class="list-group-item flex-column align-items-start"
+            >
+              <div class="mb-1 d-flex w-100">
+                <small
+                  class="font-weight-bold"
+                >{{ displayDate(a.activityDate) }} - {{ a.publisher.firstName }} {{ a.publisher.lastName }}</small>
+              </div>
+              <div class="mb-1 d-flex w-100">
+                <small>{{ a.phoneResponseType.name }}</small>
+              </div>
+              <div class="d-flex w-100">
+                <small class="font-italic">{{ a.notes }}</small>
+              </div>
+            </li>
+          </template>
+        </ul>
       </div>
     </div>
   </div>
@@ -53,6 +93,7 @@
 
 <script>
 import { data } from "../shared";
+import { format } from "date-fns";
 
 export default {
   name: "PublisherInaccessibleAssignmentPhoneCard",
@@ -73,10 +114,19 @@ export default {
   data() {
     return {
       clonedContact: { ...this.contact },
+      contactActivityExpanded: false,
+      contactActivityLoaded: false,
+      contactActivity: [],
       selectedResponseType: undefined,
     };
   },
   methods: {
+    async loadActivity() {
+      const activity = await data.getContactActivity(
+        this.clonedContact.inaccessibleContactId
+      );
+      this.contactActivity = [...activity];
+    },
     async save() {
       await data.saveInaccessibleContactPhoneActivity(
         this.clonedContact.inaccessibleContactId,
@@ -84,6 +134,13 @@ export default {
         this.clonedContact.notes,
         this.selectedResponseType.phoneResponseTypeId
       );
+      this.$emit("saved");
+    },
+    toggle() {
+      this.contactActivityExpanded = !this.contactActivityExpanded;
+    },
+    displayDate(date) {
+      return format(data.parseDate(date), "MM/dd/yyyy");
     },
   },
   watch: {
@@ -101,6 +158,22 @@ export default {
           this.selectedResponseType = Object.assign({}, responseType);
         } else {
           this.selectedResponseType = undefined;
+        }
+      },
+    },
+    contact: {
+      handler(after) {
+        this.clonedContact = { ...after };
+        this.contactActivityExpanded = false;
+        this.contactActivityLoaded = false;
+        this.contactActivity = [];
+      },
+    },
+    contactActivityExpanded: {
+      async handler(after) {
+        if (after && !this.contactActivityLoaded) {
+          await this.loadActivity();
+          this.contactActivityLoaded = true;
         }
       },
     },

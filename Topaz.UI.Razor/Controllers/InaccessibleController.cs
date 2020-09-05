@@ -124,8 +124,9 @@ namespace MyApi.Controllers
                 FilteredAssignments = FilteredAssignments.Where(x =>
                     // has phone number
                     !string.IsNullOrEmpty(x.PhoneNumber) &&
-                    // phone has been attempted but there has been no answer
+                    // phone has been attempted
                     x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
+                    // there has been no answer
                     x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !answeredCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
                     // phone with voicemail has not been attempted
                     x.ContactActivity.All(y => y.ContactActivityTypeId != (int)ContactActivityTypeEnum.PhoneWithVoicemail)
@@ -140,16 +141,14 @@ namespace MyApi.Controllers
                         // has no phone number
                         string.IsNullOrEmpty(x.PhoneNumber) ||
                         (
-                            // phone has been attempted but there has been no answer
+                            // has phone number
                             !string.IsNullOrEmpty(x.PhoneNumber) &&
+                            // phone has been attempted
                             x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
-                            x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !answeredCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId))
-                        ) ||
-                        (
-                            // all phone with voicemail attempts resulted in no contact and no message left
-                            !string.IsNullOrEmpty(x.PhoneNumber) &&
-                            x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail) &&
-                            x.ContactActivity.Where(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail).All(y => voicemailResponseCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId))
+                            // there has been no answer
+                            x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !answeredCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
+                            // phone with voicemail has been attempted
+                            x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail)
                         )
                     )
                 );
@@ -234,8 +233,9 @@ namespace MyApi.Controllers
                 PhoneWithVoicemail = Assignments.Where(x =>
                     // has phone number
                     !string.IsNullOrEmpty(x.PhoneNumber) &&
-                    // phone has been attempted but there has been no answer
+                    // phone has been attempted
                     x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
+                    // there has been no answer
                     x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !answeredCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
                     // phone with voicemail has not been attempted
                     x.ContactActivity.All(y => y.ContactActivityTypeId != (int)ContactActivityTypeEnum.PhoneWithVoicemail)
@@ -247,16 +247,14 @@ namespace MyApi.Controllers
                         // has no phone number
                         string.IsNullOrEmpty(x.PhoneNumber) ||
                         (
-                            // phone has been attempted but there has been no answer
+                            // has phone number
                             !string.IsNullOrEmpty(x.PhoneNumber) &&
+                            // phone has been attempted
                             x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
-                            x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !answeredCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId))
-                        ) ||
-                        (
-                            // all phone with voicemail attempts resulted in no contact and no message left
-                            !string.IsNullOrEmpty(x.PhoneNumber) &&
-                            x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail) &&
-                            x.ContactActivity.Where(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail).All(y => voicemailResponseCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId))
+                            // there has been no answer
+                            x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !answeredCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
+                            // phone with voicemail has been attempted
+                            x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail)
                         )
                     )
                 )

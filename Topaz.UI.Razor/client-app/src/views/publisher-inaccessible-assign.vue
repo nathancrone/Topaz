@@ -116,8 +116,8 @@
     </div>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
       <PublisherInaccessibleAssignCard
-        v-for="(a, i) in availableAssignments"
-        :key="'c' + i"
+        v-for="a in availableAssignments"
+        :key="`card${a.inaccessibleContactId}`"
         :contact="a"
         @change="handleAssignmentChange"
       />
@@ -219,6 +219,7 @@ export default {
       assignments.forEach(function (a) {
         a.selected = false;
       });
+      //console.log(JSON.stringify(assignments));
       this.availableAssignments = [...assignments];
     },
     async loadAssignees(token) {
