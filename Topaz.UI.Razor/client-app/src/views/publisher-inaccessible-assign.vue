@@ -37,7 +37,7 @@
       </ul>
     </div>
     <div class="row mt-3 no-gutters">
-      <div class="d-flex flex-wrap col">
+      <div v-if="availableAssignments.length !== 0" class="d-flex flex-wrap col">
         <div class="flex-grow-1 mb-2">
           <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="loadAssignments">refresh</a>
           <a
@@ -88,33 +88,45 @@
             <template
               v-if="assignmentUnassignedSelectedCount === 0 && assignmentAssignedSelectedCount !== 0"
             >
-              <input
-                id="phoneResponseType"
-                type="text"
-                class="form-control form-control-sm"
-                v-model="responseTypeSearch"
-                autocomplete="off"
-                placeholder="enter result"
-                list="phoneResponseTypeList"
-              />
-              <datalist id="phoneResponseTypeList">
-                <option v-for="(type, r) in phoneResponseTypes" :key="r">{{ type.name }}</option>
-              </datalist>
-              <div class="input-group-append">
-                <a
-                  class="btn btn-sm btn-primary mr-1"
-                  :class="{ disabled: !isAssignmentSelected || !selectedResponseType }"
-                  href="#"
-                  @click.prevent="saveResponses"
-                >save</a>
-              </div>
+              <a
+                v-if="activeView === availableViews.LETTER"
+                class="btn btn-sm btn-primary mr-1"
+                href="#"
+                @click.prevent="lettersSent"
+              >letters sent</a>
+              <template v-else>
+                <input
+                  id="phoneResponseType"
+                  type="text"
+                  class="form-control form-control-sm"
+                  v-model="responseTypeSearch"
+                  autocomplete="off"
+                  placeholder="enter result"
+                  list="phoneResponseTypeList"
+                />
+                <datalist id="phoneResponseTypeList">
+                  <option v-for="(type, r) in phoneResponseTypes" :key="r">{{ type.name }}</option>
+                </datalist>
+                <div class="input-group-append">
+                  <a
+                    class="btn btn-sm btn-primary mr-1"
+                    :class="{ disabled: !isAssignmentSelected || !selectedResponseType }"
+                    href="#"
+                    @click.prevent="saveResponses"
+                  >save</a>
+                </div>
+              </template>
               <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="unassign">unassign</a>
             </template>
           </div>
         </div>
       </div>
+      <div v-else class="w-100 alert alert-primary" role="alert">no contacts in this category</div>
     </div>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+    <div
+      v-if="availableAssignments.length !== 0"
+      class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4"
+    >
       <PublisherInaccessibleAssignCard
         v-for="a in availableAssignments"
         :key="`card${a.inaccessibleContactId}`"
@@ -271,6 +283,17 @@ export default {
       this.selectedResponseType = undefined;
       this.assigneeSearch = "";
       this.responseTypeSearch = "";
+      this.availableAssignees = [];
+    },
+    async lettersSent() {
+      const assignments = this.availableAssignments.reduce(
+        (a, o) => (o.selected && a.push(o.inaccessibleContactId), a),
+        []
+      );
+      await data.saveInaccessibleContactLetterActivities(assignments);
+      await this.loadAssignments();
+      this.selectedAssignee = undefined;
+      this.assigneeSearch = "";
       this.availableAssignees = [];
     },
     toggleAll(selected) {

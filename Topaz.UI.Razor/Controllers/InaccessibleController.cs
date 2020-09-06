@@ -309,6 +309,28 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
+        [Route("/Inaccessible/LetterActivities")]
+        public int SaveLetterActivities([FromBody] int[] assignments)
+        {
+            var contacts = _context.InaccessibleContacts.Include(x => x.ContactActivity).Where(x => assignments.Contains(x.InaccessibleContactId));
+            contacts.ToList().ForEach(x =>
+            {
+                if (x.AssignPublisherId.HasValue)
+                {
+                    x.ContactActivity.Add(new InaccessibleContactActivity()
+                    {
+                        PublisherId = x.AssignPublisherId.Value,
+                        ActivityDate = DateTime.UtcNow,
+                        ContactActivityTypeId = (int)ContactActivityTypeEnum.Letter,
+                        PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredNotInterested
+                    });
+                    x.AssignPublisherId = null;
+                }
+            });
+            return _context.SaveChanges();
+        }
+
+        [HttpPost]
         [Route("/Inaccessible/Contact/{id:int}/PhoneActivity")]
         public int SavePhoneActivity(int id, [FromBody] SavePhoneActivityDto dto)
         {

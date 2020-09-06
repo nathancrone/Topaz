@@ -121,9 +121,6 @@ export default {
     contact: {
       handler(after) {
         this.clonedContact = { ...after };
-        this.contactActivityExpanded = false;
-        this.contactActivityLoaded = false;
-        this.contactActivity = [];
       },
     },
     "contact.selected": {
