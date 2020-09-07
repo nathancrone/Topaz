@@ -23,19 +23,11 @@ namespace MyApi.Controllers
 
         private static readonly PhoneReponseTypeEnum[] phoneCheck = {
             PhoneReponseTypeEnum.AnsweredRespondedFavorably,
+            PhoneReponseTypeEnum.AnsweredHangUpAfterListening,
             PhoneReponseTypeEnum.AnsweredNotInterested,
             PhoneReponseTypeEnum.AnsweredDoNotContact,
             PhoneReponseTypeEnum.AnsweredProfanityOrThreatening,
             PhoneReponseTypeEnum.AnsweredNoEnglish
-        };
-
-        private static readonly PhoneReponseTypeEnum[] voicemailResponseCheck = {
-            PhoneReponseTypeEnum.VoicemailFullOrNotSetUp,
-            PhoneReponseTypeEnum.NoResponseFaxModem,
-            PhoneReponseTypeEnum.NoResponseBusySignal,
-            PhoneReponseTypeEnum.NoResponseNotWorkingNumber,
-            PhoneReponseTypeEnum.NoResponseRingNoAnswer,
-            PhoneReponseTypeEnum.AnsweredHangUpImmediate
         };
 
         private static readonly PhoneReponseTypeEnum[] voicemailCheck = {

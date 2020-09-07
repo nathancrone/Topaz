@@ -69,6 +69,12 @@ namespace Topaz.Data.Configuration
                 },
                 new PhoneResponseType
                 {
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.NoResponseNotAcceptingCalls,
+                    Name = "No Response (Ring no answer)",
+                    Description = "The call attempt was unsuccessful. Message indicating that the number is not accepting calls."
+                },
+                new PhoneResponseType
+                {
                     PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredRespondedFavorably,
                     Name = "Answered (Responded favorably)",
                     Description = "The caller successfully spoke to a person. The call was positive. This contact will be considered complete. The caller will retain this call for their personal records if they feel a follow up would be appropriate."
@@ -114,6 +120,12 @@ namespace Topaz.Data.Configuration
                     PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredNoEnglish,
                     Name = "Answered (doesn't speak English)",
                     Description = "Someone picked up the phone. Was unable to communicate because they didn't speak English."
+                },
+                new PhoneResponseType
+                {
+                    PhoneResponseTypeId = (int)PhoneReponseTypeEnum.AnsweredBusiness,
+                    Name = "Answered (Business)",
+                    Description = "Someone picked up the phone. The contact was a business and was unable to speak."
                 }
             );
         }

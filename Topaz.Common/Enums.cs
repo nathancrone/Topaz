@@ -29,6 +29,7 @@ namespace Topaz.Common.Enums
         NoResponseBusySignal = 201,
         NoResponseNotWorkingNumber = 202,
         NoResponseRingNoAnswer = 203,
+        NoResponseNotAcceptingCalls = 204,
         AnsweredRespondedFavorably = 300,
         AnsweredNotGoodTime = 301,
         AnsweredHangUpImmediate = 302,
@@ -36,6 +37,7 @@ namespace Topaz.Common.Enums
         AnsweredNotInterested = 304,
         AnsweredDoNotContact = 305,
         AnsweredProfanityOrThreatening = 306,
-        AnsweredNoEnglish = 307
+        AnsweredNoEnglish = 307,
+        AnsweredBusiness = 308
     }
 }
