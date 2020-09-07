@@ -16,27 +16,38 @@ namespace Topaz.Data.Configuration
                 new ContactActivityType
                 {
                     ContactActivityTypeId = (int)ContactActivityTypeEnum.PhoneWithoutVoicemail,
-                    Name = "Phone (don't leave a voicemail)"
+                    Name = "Phone (don't leave a voicemail)",
+                    Description = "Contact this person via telephone. DO NOT leave a message if the phone call goes to voicemail."
                 },
                 new ContactActivityType
                 {
                     ContactActivityTypeId = (int)ContactActivityTypeEnum.PhoneWithVoicemail,
-                    Name = "Phone (leave a voicemail)"
+                    Name = "Phone (leave a voicemail)",
+                    Description = "Contact this person via telephone. Leave a message if the phone call goes to voicemail."
                 },
                 new ContactActivityType
                 {
                     ContactActivityTypeId = (int)ContactActivityTypeEnum.Letter,
-                    Name = "Letter"
+                    Name = "Letter Sent",
+                    Description = "Write a letter to this person."
+                },
+                new ContactActivityType
+                {
+                    ContactActivityTypeId = (int)ContactActivityTypeEnum.LetterReturned,
+                    Name = "Letter Returned",
+                    Description = "Designates that the letter was returned without reaching the intended recipient."
                 },
                 new ContactActivityType
                 {
                     ContactActivityTypeId = (int)ContactActivityTypeEnum.Email,
-                    Name = "Email"
+                    Name = "Email",
+                    Description = "Send an email to this person."
                 },
                 new ContactActivityType
                 {
                     ContactActivityTypeId = (int)ContactActivityTypeEnum.Text,
-                    Name = "Text"
+                    Name = "Text",
+                    Description = "Send a text message to this person."
                 }
             );
         }

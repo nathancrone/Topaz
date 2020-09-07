@@ -63,8 +63,14 @@
                   class="font-weight-bold"
                 >{{ displayDate(a.activityDate) }} - {{ a.publisher.firstName }} {{ a.publisher.lastName }}</small>
               </div>
-              <div class="mb-1 d-flex w-100">
+              <div
+                v-if="a.contactActivityTypeId === 1 || a.contactActivityTypeId === 2 && a.phoneResponseType"
+                class="mb-1 d-flex w-100"
+              >
                 <small>{{ a.phoneResponseType.name }}</small>
+              </div>
+              <div v-if="a.contactActivityTypeId === 3" class="mb-1 d-flex w-100">
+                <small>{{ a.contactActivityType.name }}</small>
               </div>
               <div class="d-flex w-100">
                 <small class="font-italic">{{ a.notes }}</small>

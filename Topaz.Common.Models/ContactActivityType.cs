@@ -12,6 +12,7 @@ namespace Topaz.Common.Models
 
         public int ContactActivityTypeId { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public List<InaccessibleContactActivity> ContactActivity { get; set; }
     }
 }

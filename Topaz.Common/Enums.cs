@@ -13,8 +13,9 @@ namespace Topaz.Common.Enums
         PhoneWithoutVoicemail = 1,
         PhoneWithVoicemail = 2,
         Letter = 3,
-        Email = 4,
-        Text = 5
+        LetterReturned = 4,
+        Email = 5,
+        Text = 6
     }
 
     public enum PhoneReponseTypeEnum
@@ -30,10 +31,11 @@ namespace Topaz.Common.Enums
         NoResponseRingNoAnswer = 203,
         AnsweredRespondedFavorably = 300,
         AnsweredNotGoodTime = 301,
-        AnsweredImmediateHangup = 302,
-        AnsweredNotInterested = 303,
-        AnsweredDoNotContact = 304,
-        AnsweredProfanityOrThreatening = 305,
-        AnsweredNoEnglish = 306
+        AnsweredHangUpImmediate = 302,
+        AnsweredHangUpAfterListening = 303,
+        AnsweredNotInterested = 304,
+        AnsweredDoNotContact = 305,
+        AnsweredProfanityOrThreatening = 306,
+        AnsweredNoEnglish = 307
     }
 }

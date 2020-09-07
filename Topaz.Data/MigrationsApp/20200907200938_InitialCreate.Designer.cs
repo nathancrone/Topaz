@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20200905014703_InitialCreate")]
+    [Migration("20200907200938_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,9 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<int>("ContactActivityTypeId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
@@ -34,26 +37,37 @@ namespace Topaz.Data.MigrationsApp
                         new
                         {
                             ContactActivityTypeId = 1,
+                            Description = "Contact this person via telephone. DO NOT leave a message if the phone call goes to voicemail.",
                             Name = "Phone (don't leave a voicemail)"
                         },
                         new
                         {
                             ContactActivityTypeId = 2,
+                            Description = "Contact this person via telephone. Leave a message if the phone call goes to voicemail.",
                             Name = "Phone (leave a voicemail)"
                         },
                         new
                         {
                             ContactActivityTypeId = 3,
-                            Name = "Letter"
+                            Description = "Write a letter to this person.",
+                            Name = "Letter Sent"
                         },
                         new
                         {
                             ContactActivityTypeId = 4,
-                            Name = "Email"
+                            Description = "Designates that the letter was returned without reaching the intended recipient.",
+                            Name = "Letter Returned"
                         },
                         new
                         {
                             ContactActivityTypeId = 5,
+                            Description = "Send an email to this person.",
+                            Name = "Email"
+                        },
+                        new
+                        {
+                            ContactActivityTypeId = 6,
+                            Description = "Send a text message to this person.",
                             Name = "Text"
                         });
                 });
@@ -206,16 +220,13 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<int>("InaccessibleContactId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime?>("LetterReturnDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("PhoneCallerIdBlocked")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("PhoneResponseTypeId")
+                    b.Property<int?>("PhoneResponseTypeId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("PublisherId")
@@ -304,6 +315,9 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<int>("PhoneResponseTypeId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
@@ -315,81 +329,103 @@ namespace Topaz.Data.MigrationsApp
                         new
                         {
                             PhoneResponseTypeId = 100,
+                            Description = "The call went to voicemail. The voicemail message did not give a name.",
                             Name = "Voicemail (No Name)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 101,
+                            Description = "The call went to voicemail. The name given in the voicemail message matches the contact information.",
                             Name = "Voicemail (Name Matches)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 102,
+                            Description = "The call went to voicemail. The name given in the voicemail message is different from the contact information.",
                             Name = "Voicemail (Different Name)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 103,
+                            Description = "The call went to voicemail. The voicemail message was for a business.",
                             Name = "Voicemail (Business Number)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 104,
+                            Description = "The call went to voicemail but the voicemail account was either not set up or was full.",
                             Name = "Voicemail (Mailbox Full or Not Set Up)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 200,
+                            Description = "The call attempt was unsuccessful. The caller heard a fax or modem signal.",
                             Name = "No Response (Fax / Modem)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 201,
+                            Description = "The call attempt was unsuccessful. The caller heard a busy signal.",
                             Name = "No Response (Busy Signal)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 202,
+                            Description = "The call attempt was unsuccessful. The caller got an automated message indicating that this is not a working number.",
                             Name = "No Response (Not a working number)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 203,
+                            Description = "The call attempt was unsuccessful. The caller let the phone ring multiple times but nobody answered.",
                             Name = "No Response (Ring no answer)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 300,
+                            Description = "The caller successfully spoke to a person. The call was positive. This contact will be considered complete. The caller will retain this call for their personal records if they feel a follow up would be appropriate.",
                             Name = "Answered (Responded favorably)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 301,
+                            Description = "The caller successfully spoke to a person. The contact stated that they weren't able to talk right now. A call back later would be appropriate.",
                             Name = "Answered (\"Not a good time\")"
                         },
                         new
                         {
                             PhoneResponseTypeId = 302,
+                            Description = "Someone picked up the phone. The call immediately disconnected (the caller likely hung up instantly after answering). No communication occurred.",
                             Name = "Answered (Hung up immediately)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 303,
-                            Name = "Answered (\"Not Interested\")"
+                            Description = "Someone picked up the phone. You were able to introduce yourself. The person hung up.",
+                            Name = "Answered (Listened then hung up)"
                         },
                         new
                         {
                             PhoneResponseTypeId = 304,
-                            Name = "Answered (\"Take me off your list\")"
+                            Description = "Someone picked up the phone. The contact indicated that they weren't interested.",
+                            Name = "Answered (\"Not Interested\")"
                         },
                         new
                         {
                             PhoneResponseTypeId = 305,
-                            Name = "Answered (profanity or threatening)"
+                            Description = "Someone picked up the phone. The contact specifically requested to be removed from the calling list.",
+                            Name = "Answered (\"Take me off your list\")"
                         },
                         new
                         {
                             PhoneResponseTypeId = 306,
+                            Description = "Someone picked up the phone. The person was agitated. They possibly used rude, threatening, or profane language.",
+                            Name = "Answered (profanity or threatening)"
+                        },
+                        new
+                        {
+                            PhoneResponseTypeId = 307,
+                            Description = "Someone picked up the phone. Was unable to communicate because they didn't speak English.",
                             Name = "Answered (doesn't speak English)"
                         });
                 });
@@ -398,6 +434,9 @@ namespace Topaz.Data.MigrationsApp
                 {
                     b.Property<int>("PhoneTypeId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -609,9 +648,7 @@ namespace Topaz.Data.MigrationsApp
 
                     b.HasOne("Topaz.Common.Models.PhoneResponseType", "PhoneResponseType")
                         .WithMany("ContactActivity")
-                        .HasForeignKey("PhoneResponseTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PhoneResponseTypeId");
 
                     b.HasOne("Topaz.Common.Models.Publisher", "Publisher")
                         .WithMany("InaccessibleContactActivity")

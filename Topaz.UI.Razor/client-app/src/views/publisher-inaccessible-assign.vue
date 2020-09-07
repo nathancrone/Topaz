@@ -62,7 +62,7 @@
         <div class="flex-grow-1 flex-md-grow-0 mb-2">
           <div class="input-group mr-1">
             <template
-              v-if="assignmentUnassignedSelectedCount !== 0 && assignmentAssignedSelectedCount === 0"
+              v-if="activeView !== availableViews.COMPLETE && assignmentUnassignedSelectedCount !== 0 && assignmentAssignedSelectedCount === 0"
             >
               <input
                 type="text"
@@ -86,7 +86,7 @@
               </div>
             </template>
             <template
-              v-if="assignmentUnassignedSelectedCount === 0 && assignmentAssignedSelectedCount !== 0"
+              v-if="activeView !== availableViews.COMPLETE && assignmentUnassignedSelectedCount === 0 && assignmentAssignedSelectedCount !== 0"
             >
               <a
                 v-if="activeView === availableViews.LETTER"

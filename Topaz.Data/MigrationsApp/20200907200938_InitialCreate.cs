@@ -12,7 +12,8 @@ namespace Topaz.Data.MigrationsApp
                 columns: table => new
                 {
                     ContactActivityTypeId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -54,7 +55,8 @@ namespace Topaz.Data.MigrationsApp
                 columns: table => new
                 {
                     PhoneResponseTypeId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -66,7 +68,8 @@ namespace Topaz.Data.MigrationsApp
                 columns: table => new
                 {
                     PhoneTypeId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -301,8 +304,7 @@ namespace Topaz.Data.MigrationsApp
                     ActivityDate = table.Column<DateTime>(nullable: true),
                     ContactActivityTypeId = table.Column<int>(nullable: false),
                     PhoneCallerIdBlocked = table.Column<bool>(nullable: false),
-                    PhoneResponseTypeId = table.Column<int>(nullable: false),
-                    LetterReturnDate = table.Column<DateTime>(nullable: true),
+                    PhoneResponseTypeId = table.Column<int>(nullable: true),
                     Notes = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -325,7 +327,7 @@ namespace Topaz.Data.MigrationsApp
                         column: x => x.PhoneResponseTypeId,
                         principalTable: "PhoneResponseTypes",
                         principalColumn: "PhoneResponseTypeId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_InaccessibleContactActivities_Publishers_PublisherId",
                         column: x => x.PublisherId,
@@ -336,123 +338,133 @@ namespace Topaz.Data.MigrationsApp
 
             migrationBuilder.InsertData(
                 table: "ContactActivityTypes",
-                columns: new[] { "ContactActivityTypeId", "Name" },
-                values: new object[] { 1, "Phone (don't leave a voicemail)" });
+                columns: new[] { "ContactActivityTypeId", "Description", "Name" },
+                values: new object[] { 1, "Contact this person via telephone. DO NOT leave a message if the phone call goes to voicemail.", "Phone (don't leave a voicemail)" });
 
             migrationBuilder.InsertData(
                 table: "ContactActivityTypes",
-                columns: new[] { "ContactActivityTypeId", "Name" },
-                values: new object[] { 2, "Phone (leave a voicemail)" });
+                columns: new[] { "ContactActivityTypeId", "Description", "Name" },
+                values: new object[] { 2, "Contact this person via telephone. Leave a message if the phone call goes to voicemail.", "Phone (leave a voicemail)" });
 
             migrationBuilder.InsertData(
                 table: "ContactActivityTypes",
-                columns: new[] { "ContactActivityTypeId", "Name" },
-                values: new object[] { 3, "Letter" });
+                columns: new[] { "ContactActivityTypeId", "Description", "Name" },
+                values: new object[] { 3, "Write a letter to this person.", "Letter Sent" });
 
             migrationBuilder.InsertData(
                 table: "ContactActivityTypes",
-                columns: new[] { "ContactActivityTypeId", "Name" },
-                values: new object[] { 4, "Email" });
+                columns: new[] { "ContactActivityTypeId", "Description", "Name" },
+                values: new object[] { 4, "Designates that the letter was returned without reaching the intended recipient.", "Letter Returned" });
 
             migrationBuilder.InsertData(
                 table: "ContactActivityTypes",
-                columns: new[] { "ContactActivityTypeId", "Name" },
-                values: new object[] { 5, "Text" });
+                columns: new[] { "ContactActivityTypeId", "Description", "Name" },
+                values: new object[] { 5, "Send an email to this person.", "Email" });
+
+            migrationBuilder.InsertData(
+                table: "ContactActivityTypes",
+                columns: new[] { "ContactActivityTypeId", "Description", "Name" },
+                values: new object[] { 6, "Send a text message to this person.", "Text" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 306, "Answered (doesn't speak English)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 307, "Someone picked up the phone. Was unable to communicate because they didn't speak English.", "Answered (doesn't speak English)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 305, "Answered (profanity or threatening)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 306, "Someone picked up the phone. The person was agitated. They possibly used rude, threatening, or profane language.", "Answered (profanity or threatening)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 304, "Answered (\"Take me off your list\")" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 305, "Someone picked up the phone. The contact specifically requested to be removed from the calling list.", "Answered (\"Take me off your list\")" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 303, "Answered (\"Not Interested\")" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 304, "Someone picked up the phone. The contact indicated that they weren't interested.", "Answered (\"Not Interested\")" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 302, "Answered (Hung up immediately)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 303, "Someone picked up the phone. You were able to introduce yourself. The person hung up.", "Answered (Listened then hung up)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 301, "Answered (\"Not a good time\")" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 302, "Someone picked up the phone. The call immediately disconnected (the caller likely hung up instantly after answering). No communication occurred.", "Answered (Hung up immediately)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 300, "Answered (Responded favorably)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 301, "The caller successfully spoke to a person. The contact stated that they weren't able to talk right now. A call back later would be appropriate.", "Answered (\"Not a good time\")" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 203, "No Response (Ring no answer)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 300, "The caller successfully spoke to a person. The call was positive. This contact will be considered complete. The caller will retain this call for their personal records if they feel a follow up would be appropriate.", "Answered (Responded favorably)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 201, "No Response (Busy Signal)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 201, "The call attempt was unsuccessful. The caller heard a busy signal.", "No Response (Busy Signal)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 200, "No Response (Fax / Modem)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 202, "The call attempt was unsuccessful. The caller got an automated message indicating that this is not a working number.", "No Response (Not a working number)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 104, "Voicemail (Mailbox Full or Not Set Up)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 200, "The call attempt was unsuccessful. The caller heard a fax or modem signal.", "No Response (Fax / Modem)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 103, "Voicemail (Business Number)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 104, "The call went to voicemail but the voicemail account was either not set up or was full.", "Voicemail (Mailbox Full or Not Set Up)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 102, "Voicemail (Different Name)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 103, "The call went to voicemail. The voicemail message was for a business.", "Voicemail (Business Number)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 101, "Voicemail (Name Matches)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 102, "The call went to voicemail. The name given in the voicemail message is different from the contact information.", "Voicemail (Different Name)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 100, "Voicemail (No Name)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 101, "The call went to voicemail. The name given in the voicemail message matches the contact information.", "Voicemail (Name Matches)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
-                columns: new[] { "PhoneResponseTypeId", "Name" },
-                values: new object[] { 202, "No Response (Not a working number)" });
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 100, "The call went to voicemail. The voicemail message did not give a name.", "Voicemail (No Name)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 203, "The call attempt was unsuccessful. The caller let the phone ring multiple times but nobody answered.", "No Response (Ring no answer)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",
-                columns: new[] { "PhoneTypeId", "Name" },
-                values: new object[] { 2, "Landline" });
+                columns: new[] { "PhoneTypeId", "Description", "Name" },
+                values: new object[] { 2, null, "Landline" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",
-                columns: new[] { "PhoneTypeId", "Name" },
-                values: new object[] { 1, "Mobile" });
+                columns: new[] { "PhoneTypeId", "Description", "Name" },
+                values: new object[] { 1, null, "Mobile" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",
-                columns: new[] { "PhoneTypeId", "Name" },
-                values: new object[] { 3, "Voip" });
+                columns: new[] { "PhoneTypeId", "Description", "Name" },
+                values: new object[] { 3, null, "Voip" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DoNotContactStreets_TerritoryId",

@@ -70,6 +70,20 @@ namespace Topaz.UI.Consoles.MigrationConsole
                 _targetDb.SaveChanges();
             }
 
+            var addUsers = new[] {
+                new {  UserId = Guid.NewGuid(), FirstName = "Carol", LastName = "Alexander" }
+            }.ToList();
+
+            // create the users
+            foreach (var u in addUsers.OrderBy(a => a.LastName))
+            {
+                if (!_targetDb.Publishers.Any(x => x.FirstName == u.FirstName && x.LastName == u.LastName))
+                {
+                    _targetDb.Add(new Publisher { UserId = u.UserId.ToString(), FirstName = u.FirstName, LastName = u.LastName });
+                    _targetDb.SaveChanges();
+                }
+            }
+
             // create the street territories
             foreach (var t in legacyTerritories.OrderBy(a => a.TerritoryCode))
             {
@@ -167,7 +181,6 @@ namespace Topaz.UI.Consoles.MigrationConsole
                                     ContactActivityTypeId = a.ContactActivityTypeId,
                                     PhoneCallerIdBlocked = a.PhoneCallerIdBlocked,
                                     PhoneResponseTypeId = a.PhoneResponseTypeId,
-                                    LetterReturnDate = a.LetterReturnDate,
                                     Notes = a.Notes
                                 });
                             }

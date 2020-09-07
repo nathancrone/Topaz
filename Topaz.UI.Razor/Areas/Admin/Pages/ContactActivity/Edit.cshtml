@@ -34,11 +34,6 @@
                 <select asp-for="InaccessibleContactActivity.PhoneResponseTypeId" class="form-control" asp-items="ViewBag.PhoneResponseTypeId"></select>
                 <span asp-validation-for="InaccessibleContactActivity.PhoneResponseTypeId" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="InaccessibleContactActivity.LetterReturnDate" /> @Html.DisplayNameFor(model => model.InaccessibleContactActivity.LetterReturnDate)
-                </label>
-            </div>
             <div class="form-group">
                 <label asp-for="InaccessibleContactActivity.Notes" class="control-label"></label>
                 <input asp-for="InaccessibleContactActivity.Notes" class="form-control" />
