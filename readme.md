@@ -21,7 +21,7 @@
 ## Command to convert CSV to JSON for import
 
 ```
-> Import-CSV "filename.csv" | Select FirstName,LastName,MiddleInitial,@{Name="Age";Expression={[int32]\$\_.Age}},MailingAddress1,MailingAddress2,PostalCode,PhoneNumber,PhoneType | ConvertTo-Json | Add-Content -Path "filename.json"
+> Import-CSV "filename.csv" | Select FirstName,LastName,MiddleInitial,@{Name="Age";Expression={[int32]$_.Age}},MailingAddress1,MailingAddress2,PostalCode,PhoneNumber,PhoneType | ConvertTo-Json | Add-Content -Path "filename.json"
 ```
 
 ## DB Migration Instructions...

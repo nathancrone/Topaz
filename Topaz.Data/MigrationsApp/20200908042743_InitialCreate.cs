@@ -369,6 +369,11 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 308, "Someone picked up the phone. The contact was a business and was unable to speak.", "Answered (Business)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
                 values: new object[] { 307, "Someone picked up the phone. Was unable to communicate because they didn't speak English.", "Answered (doesn't speak English)" });
 
             migrationBuilder.InsertData(
@@ -409,12 +414,17 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
-                values: new object[] { 201, "The call attempt was unsuccessful. The caller heard a busy signal.", "No Response (Busy Signal)" });
+                values: new object[] { 202, "The call attempt was unsuccessful. The caller got an automated message indicating that this is not a working number.", "No Response (Not a working number)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
-                values: new object[] { 202, "The call attempt was unsuccessful. The caller got an automated message indicating that this is not a working number.", "No Response (Not a working number)" });
+                values: new object[] { 203, "The call attempt was unsuccessful. The caller let the phone ring multiple times but nobody answered.", "No Response (Ring no answer)" });
+
+            migrationBuilder.InsertData(
+                table: "PhoneResponseTypes",
+                columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
+                values: new object[] { 201, "The call attempt was unsuccessful. The caller heard a busy signal.", "No Response (Busy Signal)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
@@ -449,7 +459,7 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
-                values: new object[] { 203, "The call attempt was unsuccessful. The caller let the phone ring multiple times but nobody answered.", "No Response (Ring no answer)" });
+                values: new object[] { 204, "The call attempt was unsuccessful. Message indicating that the number is not accepting calls.", "No Response (Ring no answer)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",

@@ -380,6 +380,12 @@ namespace Topaz.Data.MigrationsApp
                         },
                         new
                         {
+                            PhoneResponseTypeId = 204,
+                            Description = "The call attempt was unsuccessful. Message indicating that the number is not accepting calls.",
+                            Name = "No Response (Ring no answer)"
+                        },
+                        new
+                        {
                             PhoneResponseTypeId = 300,
                             Description = "The caller successfully spoke to a person. The call was positive. This contact will be considered complete. The caller will retain this call for their personal records if they feel a follow up would be appropriate.",
                             Name = "Answered (Responded favorably)"
@@ -425,6 +431,12 @@ namespace Topaz.Data.MigrationsApp
                             PhoneResponseTypeId = 307,
                             Description = "Someone picked up the phone. Was unable to communicate because they didn't speak English.",
                             Name = "Answered (doesn't speak English)"
+                        },
+                        new
+                        {
+                            PhoneResponseTypeId = 308,
+                            Description = "Someone picked up the phone. The contact was a business and was unable to speak.",
+                            Name = "Answered (Business)"
                         });
                 });
 
