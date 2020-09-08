@@ -171,8 +171,9 @@ namespace MyApi.Controllers
                     (
                         // has phone number
                         !string.IsNullOrEmpty(x.PhoneNumber) &&
-                        // phone has been attempted and answered
+                        // phone has been attempted
                         x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
+                        // the phone was answered
                         x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).Any(y => phoneCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId))
                     ) ||
                     (
