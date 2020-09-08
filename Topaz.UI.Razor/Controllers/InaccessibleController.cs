@@ -27,7 +27,8 @@ namespace MyApi.Controllers
             PhoneReponseTypeEnum.AnsweredNotInterested,
             PhoneReponseTypeEnum.AnsweredDoNotContact,
             PhoneReponseTypeEnum.AnsweredProfanityOrThreatening,
-            PhoneReponseTypeEnum.AnsweredNoEnglish
+            PhoneReponseTypeEnum.AnsweredNoEnglish,
+            PhoneReponseTypeEnum.AnsweredBusiness
         };
 
         private static readonly PhoneReponseTypeEnum[] voicemailCheck = {
@@ -41,7 +42,8 @@ namespace MyApi.Controllers
             PhoneReponseTypeEnum.AnsweredNotInterested,
             PhoneReponseTypeEnum.AnsweredDoNotContact,
             PhoneReponseTypeEnum.AnsweredProfanityOrThreatening,
-            PhoneReponseTypeEnum.AnsweredNoEnglish
+            PhoneReponseTypeEnum.AnsweredNoEnglish,
+            PhoneReponseTypeEnum.AnsweredBusiness
         };
 
         private readonly Topaz.Data.TopazDbContext _context;
