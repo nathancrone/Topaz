@@ -22,6 +22,7 @@ namespace MyApi.Controllers
         };
 
         private static readonly PhoneReponseTypeEnum[] phoneCheck = {
+            PhoneReponseTypeEnum.VoicemailBusiness,
             PhoneReponseTypeEnum.AnsweredRespondedFavorably,
             PhoneReponseTypeEnum.AnsweredHangUpAfterListening,
             PhoneReponseTypeEnum.AnsweredNotInterested,
