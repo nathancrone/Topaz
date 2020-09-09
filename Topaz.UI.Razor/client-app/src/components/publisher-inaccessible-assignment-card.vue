@@ -16,7 +16,9 @@
           <br />
           Dallas, TX {{ clonedContact.postalCode }}
           <br />
-          {{ clonedContact.phoneNumber }}
+          <a
+            :href="`tel:${clonedContact.phoneNumber.replace(/\D/g, '')}`"
+          >{{ clonedContact.phoneNumber }}</a>
         </address>
         <div class="form-group">
           <label :for="`phoneResponseType${clonedContact.inaccessibleContactId}`">Response</label>
