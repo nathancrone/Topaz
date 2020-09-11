@@ -43,12 +43,13 @@
                         @if (User.IsInRole("Administrator"))
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="dd-admin" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Admin
                                 </a>
-                                <div class="dropdown-menu" aria-labelledby="adminDropdown">
-                                    <a class="dropdown-item" asp-area="Admin" asp-page="/StreetTerritories/Index">Street</a>
-                                    <a class="dropdown-item" asp-area="Admin" asp-page="/InaccessibleTerritories/Index">Inaccessible</a>
+                                <div class="dropdown-menu" aria-labelledby="dd-admin">
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/StreetTerritories/Index">Street Territory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/InaccessibleTerritories/Index">Inaccessible Territory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/Publishers/Index">Publishers</a>
                                 </div>
                             </li>
                         }
