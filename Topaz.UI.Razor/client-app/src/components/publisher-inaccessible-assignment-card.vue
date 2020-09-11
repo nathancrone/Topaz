@@ -40,6 +40,7 @@
             rows="3"
             placeholder="notes"
             v-model="clonedContact.notes"
+            maxlength="140"
           ></textarea>
         </div>
         <a
