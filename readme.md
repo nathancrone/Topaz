@@ -45,3 +45,5 @@
 [Configuring the web project to be deployed](https://www.hanselman.com/blog/DeployingTWOWebsitesToWindowsAzureFromOneGitRepository.aspx)
 
 [Using Vue CLI Inside an ASP.NET Core Project](https://wildermuth.com/2019/04/08/Using-Vue-CLI-Inside-an-ASP-NET-Core-Project)
+
+[Setting global authorization policies](https://andrewlock.net/setting-global-authorization-policies-using-the-defaultpolicy-and-the-fallbackpolicy-in-aspnet-core-3/)

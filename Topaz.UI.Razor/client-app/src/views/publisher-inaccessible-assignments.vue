@@ -4,11 +4,6 @@
       <option v-for="(type, r) in phoneResponseTypes" :key="r">{{ type.name }}</option>
     </datalist>
     <div class="row mt-3">
-      <div
-        class="w-100 alert alert-primary"
-        role="alert"
-        v-if="assignmentsPhoneWithoutVoicemail.length === 0 && assignmentsPhoneWithVoicemail.length === 0 && assignmentsLetter.length === 0"
-      >You currently have no assignments.</div>
       <ul class="nav nav-tabs">
         <li class="nav-item" v-if="assignmentsPhoneWithoutVoicemail.length !== 0">
           <a
@@ -50,6 +45,16 @@
           </a>
         </li>
       </ul>
+    </div>
+    <div class="row mt-3 no-gutters">
+      <div
+        class="w-100 alert alert-primary"
+        role="alert"
+        v-if="assignmentsPhoneWithoutVoicemail.length === 0 && assignmentsPhoneWithVoicemail.length === 0 && assignmentsLetter.length === 0"
+      >You currently have no assignments.</div>
+      <div v-else class="flex-grow-1 mb-2">
+        <a class="btn btn-sm btn-primary mr-1" href="#" @click="loadAssignments">refresh</a>
+      </div>
     </div>
     <div
       v-if="activeView === availableViews.PHONE_WITHOUT_VM"
