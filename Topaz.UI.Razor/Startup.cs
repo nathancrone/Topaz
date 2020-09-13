@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -42,6 +43,10 @@ namespace Topaz.UI.Razor
 
             services.AddAuthorization(options =>
             {
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
                 options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
             });
 
@@ -54,11 +59,8 @@ namespace Topaz.UI.Razor
             // to enable razor pages
             services.AddRazorPages().AddRazorPagesOptions(options =>
             {
-                options.Conventions.AuthorizePage("/StreetActivity/Index");
-                options.Conventions.AuthorizePage("/InaccessibleActivity/Index");
                 options.Conventions.AuthorizeAreaFolder("Admin", "/", "RequireAdministratorRole");
                 options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage", "RequireAdministratorRole");
-                options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
             });
 
             services.ConfigureApplicationCookie(options =>
