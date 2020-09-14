@@ -53,7 +53,7 @@
         v-if="assignmentsPhoneWithoutVoicemail.length === 0 && assignmentsPhoneWithVoicemail.length === 0 && assignmentsLetter.length === 0"
       >You currently have no assignments.</div>
       <div v-else class="flex-grow-1 mb-2">
-        <a class="btn btn-sm btn-primary mr-1" href="#" @click="loadAssignments">refresh</a>
+        <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="loadAssignments">refresh</a>
       </div>
     </div>
     <div

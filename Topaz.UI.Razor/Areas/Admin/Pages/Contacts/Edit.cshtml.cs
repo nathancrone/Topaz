@@ -69,8 +69,8 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Contacts
                     throw;
                 }
             }
-
-            return RedirectToPage("./Index");
+            var list = await _context.InaccessibleContactLists.FirstOrDefaultAsync(x => x.InaccessibleContactListId == InaccessibleContact.InaccessibleContactListId);
+            return RedirectToPage("../Properties/Details", new { id = list.InaccessiblePropertyId });
         }
 
         private bool InaccessibleContactExists(int id)

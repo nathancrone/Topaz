@@ -25,18 +25,18 @@
           <button
             v-if="t !== checkin && t !== rework"
             class="btn btn-primary mr-1"
-            @click="handleCheckin(t)"
+            @click.prevent="handleCheckin(t)"
           >Check In</button>
           <button
             v-if="t !== checkin && t !== rework"
             class="btn btn-primary"
-            @click="handleRework(t)"
+            @click.prevent="handleRework(t)"
           >Rework</button>
           <div v-if="t === checkin || t === rework">
             <span class="mr-1" v-if="checkin">Check in?</span>
             <span class="mr-1" v-if="rework">Rework?</span>
-            <button class="btn btn-success mr-1" @click="handleConfirm">Confirm</button>
-            <button class="btn btn-danger" @click="handleCancel">Cancel</button>
+            <button class="btn btn-success mr-1" @click.prevent="handleConfirm">Confirm</button>
+            <button class="btn btn-danger" @click.prevent="handleCancel">Cancel</button>
           </div>
         </div>
       </li>
@@ -53,7 +53,7 @@ export default {
     return {
       territories: [],
       checkin: undefined,
-      rework: undefined
+      rework: undefined,
     };
   },
   async created() {
@@ -90,7 +90,7 @@ export default {
     handleCancel() {
       this.checkin = undefined;
       this.rework = undefined;
-    }
-  }
+    },
+  },
 };
 </script>

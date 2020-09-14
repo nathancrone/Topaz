@@ -192,7 +192,7 @@ namespace MyApi.Controllers
                 );
             }
 
-            return FilteredAssignments;
+            return FilteredAssignments.OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName);
         }
 
         [HttpGet]
@@ -233,7 +233,7 @@ namespace MyApi.Controllers
                     !string.IsNullOrEmpty(x.PhoneNumber) &&
                     // phone has not been attempted
                     x.ContactActivity.All(y => !phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId))
-                ),
+                ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName),
                 PhoneWithVoicemail = Assignments.Where(x =>
                     // has phone number
                     !string.IsNullOrEmpty(x.PhoneNumber) &&
@@ -243,7 +243,7 @@ namespace MyApi.Controllers
                     x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !phoneCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
                     // phone with voicemail has not been attempted
                     x.ContactActivity.All(y => y.ContactActivityTypeId != (int)ContactActivityTypeEnum.PhoneWithVoicemail)
-                ),
+                ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName),
                 Letter = Assignments.Where(x =>
                     // has mailing address
                     !string.IsNullOrEmpty(x.MailingAddress1) &&
@@ -263,7 +263,7 @@ namespace MyApi.Controllers
                             !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
                         )
                     )
-                )
+                ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName)
             };
         }
 

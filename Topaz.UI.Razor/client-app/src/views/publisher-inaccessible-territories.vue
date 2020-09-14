@@ -29,18 +29,18 @@
           <div v-if="t === checkin || t === rework">
             <span class="mr-1" v-if="checkin">Check in?</span>
             <span class="mr-1" v-if="rework">Rework?</span>
-            <button class="btn btn-success mr-1" @click="handleConfirm">Confirm</button>
-            <button class="btn btn-danger mr-1" @click="handleCancel">Cancel</button>
+            <button class="btn btn-success mr-1" @click.prevent="handleConfirm">Confirm</button>
+            <button class="btn btn-danger mr-1" @click.prevent="handleCancel">Cancel</button>
           </div>
           <button
             v-if="t !== checkin && t !== rework"
             class="btn btn-primary mr-1"
-            @click="handleCheckin(t)"
+            @click.prevent="handleCheckin(t)"
           >Check In</button>
           <button
             v-if="t !== checkin && t !== rework"
             class="btn btn-primary mr-1"
-            @click="handleRework(t)"
+            @click.prevent="handleRework(t)"
           >Rework</button>
           <router-link
             tag="a"
@@ -62,7 +62,7 @@ export default {
     return {
       territories: [],
       checkin: undefined,
-      rework: undefined
+      rework: undefined,
     };
   },
   async created() {
@@ -70,16 +70,16 @@ export default {
   },
   computed: {
     territoryRows() {
-      return this.territories.map(x => {
+      return this.territories.map((x) => {
         return Object.assign(
           {},
           { ...x },
           {
-            territoryCode: [x.streetTerritoryCode, x.territoryCode].join(" / ")
+            territoryCode: [x.streetTerritoryCode, x.territoryCode].join(" / "),
           }
         );
       });
-    }
+    },
   },
   methods: {
     async loadTerritories() {
@@ -116,7 +116,7 @@ export default {
     handleCancel() {
       this.checkin = undefined;
       this.rework = undefined;
-    }
-  }
+    },
+  },
 };
 </script>
