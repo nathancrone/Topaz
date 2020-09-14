@@ -69,7 +69,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Properties
                 }
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("../InaccessibleTerritories/Details", new { id = InaccessibleProperty.TerritoryId });
         }
 
         private bool InaccessiblePropertyExists(int id)

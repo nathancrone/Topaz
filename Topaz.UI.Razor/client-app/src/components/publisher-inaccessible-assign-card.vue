@@ -25,8 +25,10 @@
           Age: {{ clonedContact.age }}
           <br />
           {{ clonedContact.mailingAddress1 }}
-          <br />
-          {{ clonedContact.mailingAddress2 }}
+          <template v-if="clonedContact.mailingAddress2 != ''">
+            <br />
+            {{ clonedContact.mailingAddress2 }}
+          </template>
           <br />
           Dallas, TX {{ clonedContact.postalCode }}
           <br />
