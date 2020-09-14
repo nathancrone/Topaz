@@ -70,7 +70,7 @@ namespace Topaz.Data.Configuration
                 new PhoneResponseType
                 {
                     PhoneResponseTypeId = (int)PhoneReponseTypeEnum.NoResponseNotAcceptingCalls,
-                    Name = "No Response (Ring no answer)",
+                    Name = "No Response (Not accepting calls)",
                     Description = "The call attempt was unsuccessful. Message indicating that the number is not accepting calls."
                 },
                 new PhoneResponseType
