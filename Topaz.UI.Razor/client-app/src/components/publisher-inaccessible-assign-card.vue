@@ -25,7 +25,9 @@
           Age: {{ clonedContact.age }}
           <br />
           {{ clonedContact.mailingAddress1 }}
-          <template v-if="clonedContact.mailingAddress2 != ''">
+          <template
+            v-if="clonedContact.mailingAddress2 && clonedContact.mailingAddress2 != ''"
+          >
             <br />
             {{ clonedContact.mailingAddress2 }}
           </template>
