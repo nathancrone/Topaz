@@ -14,6 +14,11 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="AppUser.UserName" class="control-label"></label>
+                <input asp-for="AppUser.UserName" class="form-control" />
+                <span asp-validation-for="AppUser.UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="AppUser.FirstName" class="control-label"></label>
                 <input asp-for="AppUser.FirstName" class="form-control" />
                 <span asp-validation-for="AppUser.FirstName" class="text-danger"></span>
@@ -24,84 +29,14 @@
                 <span asp-validation-for="AppUser.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AppUser.PublisherId" class="control-label"></label>
-                <input asp-for="AppUser.PublisherId" class="form-control" />
-                <span asp-validation-for="AppUser.PublisherId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.Id" class="control-label"></label>
-                <input asp-for="AppUser.Id" class="form-control" />
-                <span asp-validation-for="AppUser.Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.UserName" class="control-label"></label>
-                <input asp-for="AppUser.UserName" class="form-control" />
-                <span asp-validation-for="AppUser.UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.NormalizedUserName" class="control-label"></label>
-                <input asp-for="AppUser.NormalizedUserName" class="form-control" />
-                <span asp-validation-for="AppUser.NormalizedUserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="AppUser.Email" class="control-label"></label>
                 <input asp-for="AppUser.Email" class="form-control" />
                 <span asp-validation-for="AppUser.Email" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="AppUser.NormalizedEmail" class="control-label"></label>
-                <input asp-for="AppUser.NormalizedEmail" class="form-control" />
-                <span asp-validation-for="AppUser.NormalizedEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="AppUser.EmailConfirmed" /> @Html.DisplayNameFor(model => model.AppUser.EmailConfirmed)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.PasswordHash" class="control-label"></label>
-                <input asp-for="AppUser.PasswordHash" class="form-control" />
-                <span asp-validation-for="AppUser.PasswordHash" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.SecurityStamp" class="control-label"></label>
-                <input asp-for="AppUser.SecurityStamp" class="form-control" />
-                <span asp-validation-for="AppUser.SecurityStamp" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.ConcurrencyStamp" class="control-label"></label>
-                <input asp-for="AppUser.ConcurrencyStamp" class="form-control" />
-                <span asp-validation-for="AppUser.ConcurrencyStamp" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.PhoneNumber" class="control-label"></label>
-                <input asp-for="AppUser.PhoneNumber" class="form-control" />
-                <span asp-validation-for="AppUser.PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="AppUser.PhoneNumberConfirmed" /> @Html.DisplayNameFor(model => model.AppUser.PhoneNumberConfirmed)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="AppUser.TwoFactorEnabled" /> @Html.DisplayNameFor(model => model.AppUser.TwoFactorEnabled)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.LockoutEnd" class="control-label"></label>
-                <input asp-for="AppUser.LockoutEnd" class="form-control" />
-                <span asp-validation-for="AppUser.LockoutEnd" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="AppUser.LockoutEnabled" /> @Html.DisplayNameFor(model => model.AppUser.LockoutEnabled)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.AccessFailedCount" class="control-label"></label>
-                <input asp-for="AppUser.AccessFailedCount" class="form-control" />
-                <span asp-validation-for="AppUser.AccessFailedCount" class="text-danger"></span>
+            <div>
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -4,7 +4,7 @@
       <option v-for="(type, r) in phoneResponseTypes" :key="r">{{ type.name }}</option>
     </datalist>
     <div class="row mt-3">
-      <ul class="nav nav-tabs">
+      <ul class="nav nav-tabs flex-column flex-md-row">
         <li class="nav-item" v-if="assignmentsPhoneWithoutVoicemail.length !== 0">
           <a
             class="nav-link"

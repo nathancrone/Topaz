@@ -8,20 +8,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
 {
     public class EditModel : PageModel
     {
-        private readonly Topaz.Data.AuthDbContext _context;
-
-        public EditModel(Topaz.Data.AuthDbContext context)
-        {
-            _context = context;
-        }
+        public readonly UserManager<AppUser> _userManager;
 
         [BindProperty]
         public AppUser AppUser { get; set; }
+
+        public EditModel(UserManager<AppUser> userManager)
+        {
+            _userManager = userManager;
+        }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -30,7 +31,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
                 return NotFound();
             }
 
-            AppUser = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+            AppUser = await _userManager.FindByIdAsync(id);
 
             if (AppUser == null)
             {
@@ -48,30 +49,15 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
                 return Page();
             }
 
-            _context.Attach(AppUser).State = EntityState.Modified;
+            var appUserToUpdate = await _userManager.FindByIdAsync(AppUser.Id);
+            appUserToUpdate.UserName = AppUser.UserName;
+            appUserToUpdate.FirstName = AppUser.FirstName;
+            appUserToUpdate.LastName = AppUser.LastName;
+            appUserToUpdate.Email = AppUser.Email;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AppUserExists(AppUser.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _userManager.UpdateAsync(appUserToUpdate);
 
             return RedirectToPage("./Index");
-        }
-
-        private bool AppUserExists(string id)
-        {
-            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

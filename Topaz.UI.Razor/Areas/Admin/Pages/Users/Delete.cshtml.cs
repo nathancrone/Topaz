@@ -7,20 +7,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
 {
     public class DeleteModel : PageModel
     {
-        private readonly Topaz.Data.AuthDbContext _context;
-
-        public DeleteModel(Topaz.Data.AuthDbContext context)
-        {
-            _context = context;
-        }
+        public readonly UserManager<AppUser> _userManager;
 
         [BindProperty]
         public AppUser AppUser { get; set; }
+
+        public DeleteModel(UserManager<AppUser> userManager)
+        {
+            _userManager = userManager;
+        }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -29,7 +30,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
                 return NotFound();
             }
 
-            AppUser = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+            AppUser = await _userManager.FindByIdAsync(id);
 
             if (AppUser == null)
             {
@@ -45,13 +46,14 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
                 return NotFound();
             }
 
-            AppUser = await _context.Users.FindAsync(id);
+            AppUser = await _userManager.FindByIdAsync(id);
 
-            if (AppUser != null)
+            if (AppUser == null)
             {
-                _context.Users.Remove(AppUser);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
+
+            await _userManager.DeleteAsync(AppUser);
 
             return RedirectToPage("./Index");
         }

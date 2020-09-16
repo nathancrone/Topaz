@@ -33,10 +33,10 @@
                             @if (User.IsInRole("Publisher") || User.IsInRole("Administrator"))
                             {
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="dd-territory" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Territory
+                                    <a class="nav-link dropdown-toggle" href="#" id="dd-activity" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Activity
                                     </a>
-                                    <div class="dropdown-menu" aria-labelledby="dd-territory">
+                                    <div class="dropdown-menu" aria-labelledby="dd-activity">
                                         <a class="dropdown-item" asp-area="" asp-page="/Publisher/StreetTerritories">Street</a>
                                         <a class="dropdown-item" asp-area="" asp-page="/Publisher/InaccessibleTerritories">Inaccessible</a>
                                     </div>
@@ -52,6 +52,7 @@
                                 <div class="dropdown-menu" aria-labelledby="dd-admin">
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/StreetTerritories/Index">Street Territory</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/InaccessibleTerritories/Index">Inaccessible Territory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/Users/Index">Users</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/Publishers/Index">Publishers</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/Roles/Index">Roles</a>
                                 </div>

@@ -7,25 +7,29 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Topaz.Common.Models;
 using Topaz.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
 {
     public class CreateModel : PageModel
     {
-        private readonly Topaz.Data.AuthDbContext _context;
+        public readonly UserManager<AppUser> _userManager;
 
-        public CreateModel(Topaz.Data.AuthDbContext context)
+        [BindProperty]
+        public AppUser AppUser { get; set; }
+
+        [BindProperty]
+        public string Password { get; set; }
+
+        public CreateModel(UserManager<AppUser> userManager)
         {
-            _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult OnGet()
         {
             return Page();
         }
-
-        [BindProperty]
-        public AppUser AppUser { get; set; }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
@@ -36,8 +40,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
                 return Page();
             }
 
-            _context.Users.Add(AppUser);
-            await _context.SaveChangesAsync();
+            await _userManager.CreateAsync(AppUser, Password);
 
             return RedirectToPage("./Index");
         }
