@@ -8,20 +8,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Topaz.UI.Razor.Areas.Admin.Pages.Roles
 {
     public class EditModel : PageModel
     {
-        private readonly Topaz.Data.AuthDbContext _context;
-
-        public EditModel(Topaz.Data.AuthDbContext context)
-        {
-            _context = context;
-        }
+        public readonly RoleManager<AppRole> _roleManager;
 
         [BindProperty]
         public AppRole AppRole { get; set; }
+
+        public EditModel(RoleManager<AppRole> roleManager)
+        {
+            _roleManager = roleManager;
+        }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -30,7 +31,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Roles
                 return NotFound();
             }
 
-            AppRole = await _context.Roles.FirstOrDefaultAsync(m => m.Id == id);
+            AppRole = await _roleManager.FindByIdAsync(id);
 
             if (AppRole == null)
             {
@@ -48,30 +49,13 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Roles
                 return Page();
             }
 
-            _context.Attach(AppRole).State = EntityState.Modified;
+            var appRoleToUpdate = await _roleManager.FindByIdAsync(AppRole.Id);
+            appRoleToUpdate.Description = AppRole.Description;
+            appRoleToUpdate.Name = AppRole.Name;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AppRoleExists(AppRole.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _roleManager.UpdateAsync(appRoleToUpdate);
 
             return RedirectToPage("./Index");
-        }
-
-        private bool AppRoleExists(string id)
-        {
-            return _context.Roles.Any(e => e.Id == id);
         }
     }
 }

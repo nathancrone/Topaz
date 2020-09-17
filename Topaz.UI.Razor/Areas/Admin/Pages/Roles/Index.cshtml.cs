@@ -7,23 +7,24 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Topaz.UI.Razor.Areas.Admin.Pages.Roles
 {
     public class IndexModel : PageModel
     {
-        private readonly Topaz.Data.AuthDbContext _context;
+        public readonly RoleManager<AppRole> _roleManager;
 
-        public IndexModel(Topaz.Data.AuthDbContext context)
+        public IList<AppRole> AppRole { get; set; }
+
+        public IndexModel(RoleManager<AppRole> roleManager)
         {
-            _context = context;
+            _roleManager = roleManager;
         }
-
-        public IList<AppRole> AppRole { get;set; }
 
         public async Task OnGetAsync()
         {
-            AppRole = await _context.Roles.ToListAsync();
+            AppRole = await _roleManager.Roles.ToListAsync();
         }
     }
 }

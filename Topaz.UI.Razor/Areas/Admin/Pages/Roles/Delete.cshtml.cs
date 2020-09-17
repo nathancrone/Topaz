@@ -7,20 +7,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Topaz.UI.Razor.Areas.Admin.Pages.Roles
 {
     public class DeleteModel : PageModel
     {
-        private readonly Topaz.Data.AuthDbContext _context;
-
-        public DeleteModel(Topaz.Data.AuthDbContext context)
-        {
-            _context = context;
-        }
+        public readonly RoleManager<AppRole> _roleManager;
 
         [BindProperty]
         public AppRole AppRole { get; set; }
+
+        public DeleteModel(RoleManager<AppRole> roleManager)
+        {
+            _roleManager = roleManager;
+        }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -29,7 +30,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Roles
                 return NotFound();
             }
 
-            AppRole = await _context.Roles.FirstOrDefaultAsync(m => m.Id == id);
+            AppRole = await _roleManager.FindByIdAsync(id);
 
             if (AppRole == null)
             {
@@ -45,13 +46,14 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Roles
                 return NotFound();
             }
 
-            AppRole = await _context.Roles.FindAsync(id);
+            AppRole = await _roleManager.FindByIdAsync(id);
 
-            if (AppRole != null)
+            if (AppRole == null)
             {
-                _context.Roles.Remove(AppRole);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
+
+            await _roleManager.DeleteAsync(AppRole);
 
             return RedirectToPage("./Index");
         }

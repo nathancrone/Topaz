@@ -7,19 +7,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Topaz.UI.Razor.Areas.Admin.Pages.Roles
 {
     public class DetailsModel : PageModel
     {
-        private readonly Topaz.Data.AuthDbContext _context;
+        public readonly RoleManager<AppRole> _roleManager;
 
-        public DetailsModel(Topaz.Data.AuthDbContext context)
-        {
-            _context = context;
-        }
-
+        [BindProperty]
         public AppRole AppRole { get; set; }
+
+        public DetailsModel(RoleManager<AppRole> roleManager)
+        {
+            _roleManager = roleManager;
+        }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -28,12 +30,13 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Roles
                 return NotFound();
             }
 
-            AppRole = await _context.Roles.FirstOrDefaultAsync(m => m.Id == id);
+            AppRole = await _roleManager.FindByIdAsync(id);
 
             if (AppRole == null)
             {
                 return NotFound();
             }
+
             return Page();
         }
     }
