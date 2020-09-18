@@ -43,11 +43,12 @@ namespace Topaz.UI.Razor
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
+                options.AddPolicy("RequirePublisherRole", policy => policy.RequireRole("Administrator", "Publisher"));
+
                 options.FallbackPolicy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
                     .Build();
-
-                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
             });
 
             // to enable web api functionality
@@ -60,7 +61,7 @@ namespace Topaz.UI.Razor
             services.AddRazorPages().AddRazorPagesOptions(options =>
             {
                 options.Conventions.AuthorizeAreaFolder("Admin", "/", "RequireAdministratorRole");
-                options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage", "RequireAdministratorRole");
+                options.Conventions.AuthorizeFolder("/Publisher", "RequirePublisherRole");
             });
 
             services.ConfigureApplicationCookie(options =>

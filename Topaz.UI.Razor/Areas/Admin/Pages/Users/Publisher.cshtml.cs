@@ -17,7 +17,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
         private readonly TopazDbContext _context;
         public readonly UserManager<AppUser> _userManager;
 
-        IEnumerable<Object> Publishers { get; set; }
+        public IEnumerable<SelectListItem> Publishers { get; set; }
 
         [BindProperty]
         public AppUser AppUser { get; set; }
@@ -44,7 +44,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
 
             Publishers = _context.Publishers
                 .Where(x => !x.IsHidden)
-                .Select(x => new { id = x.PublisherId, name = $"{x.LastName}, {x.FirstName}" })
+                .Select(x => new SelectListItem { Value = x.PublisherId.ToString(), Text = $"{x.LastName}, {x.FirstName}", Selected = AppUser.PublisherId == x.PublisherId })
                 .AsNoTracking()
                 .ToList();
 
