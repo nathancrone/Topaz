@@ -28,9 +28,6 @@ namespace MyApi.Controllers
         [Route("[action]/{token?}")]
         public IEnumerable<Object> GetPublisherSelectOptions(string token)
         {
-            // var Claims = (ClaimsIdentity)this.User.Identity;
-            // var UserId = Claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
-
             return _context.Publishers
                 .Where(x => !x.IsHidden && x.FirstName.ToLower().Contains(token.ToLower()) || x.LastName.ToLower().Contains(token.ToLower()))
                 .Select(x => new { id = x.PublisherId, name = $"{x.LastName}, {x.FirstName}" })

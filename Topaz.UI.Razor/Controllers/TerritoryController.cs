@@ -29,10 +29,10 @@ namespace MyApi.Controllers
         public int CurrentUserCheckout(int id)
         {
             var Claims = (ClaimsIdentity)this.User.Identity;
-            var UserId = Claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var PublisherId = int.Parse(Claims.FindFirst("PublisherId").Value);
 
             //get the publisher by the user id
-            var Publisher = _context.Publishers.AsNoTracking().FirstOrDefault(x => x.UserId == UserId);
+            var Publisher = _context.Publishers.AsNoTracking().FirstOrDefault(x => x.PublisherId == PublisherId);
 
             if (Publisher != null)
             {
@@ -47,10 +47,10 @@ namespace MyApi.Controllers
         public int CurrentUserCheckin(int id)
         {
             var Claims = (ClaimsIdentity)this.User.Identity;
-            var UserId = Claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var PublisherId = int.Parse(Claims.FindFirst("PublisherId").Value);
 
             //get the publisher by the user id
-            var Publisher = _context.Publishers.AsNoTracking().FirstOrDefault(x => x.UserId == UserId);
+            var Publisher = _context.Publishers.AsNoTracking().FirstOrDefault(x => x.PublisherId == PublisherId);
 
             if (Publisher != null)
             {
@@ -65,10 +65,10 @@ namespace MyApi.Controllers
         public int CurrentUserRework(int id)
         {
             var Claims = (ClaimsIdentity)this.User.Identity;
-            var UserId = Claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var PublisherId = int.Parse(Claims.FindFirst("PublisherId").Value);
 
             //get the publisher by the user id
-            var Publisher = _context.Publishers.AsNoTracking().FirstOrDefault(x => x.UserId == UserId);
+            var Publisher = _context.Publishers.AsNoTracking().FirstOrDefault(x => x.PublisherId == PublisherId);
 
             if (Publisher != null)
             {

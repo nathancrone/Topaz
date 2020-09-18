@@ -39,7 +39,7 @@ namespace Topaz.UI.Razor
             services.AddDbContext<AuthDbContext>(options => options.UseSqlite(Configuration.GetConnectionString("AuthConnection")));
 
             // add the auth stores for identity
-            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AuthDbContext>().AddClaimsPrincipalFactory<AppUserClaimsPrincipalFactory>().AddDefaultTokenProviders();
 
             services.AddAuthorization(options =>
             {

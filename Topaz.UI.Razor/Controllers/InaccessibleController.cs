@@ -61,10 +61,10 @@ namespace MyApi.Controllers
         public IEnumerable<Object> GetCurrentTerritory()
         {
             var Claims = (ClaimsIdentity)this.User.Identity;
-            var UserId = Claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var PublisherId = int.Parse(Claims.FindFirst("PublisherId").Value);
 
             return _context.TerritoryActivities
-                .Where(x => x.Publisher.UserId == UserId && x.CheckInDate == null && x.InaccessibleTerritory != null)
+                .Where(x => x.PublisherId == PublisherId && x.CheckInDate == null && x.InaccessibleTerritory != null)
                 .Select(x => new
                 {
                     x.TerritoryActivityId,
@@ -212,7 +212,7 @@ namespace MyApi.Controllers
         public Object CurrentUserAssignments()
         {
             var Claims = (ClaimsIdentity)this.User.Identity;
-            var UserId = Claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var PublisherId = int.Parse(Claims.FindFirst("PublisherId").Value);
 
             var Assignments = _context.InaccessibleProperties
                 .Include(x => x.ContactLists)
@@ -223,7 +223,7 @@ namespace MyApi.Controllers
                 .Include(x => x.ContactLists)
                 .ThenInclude(x => x.Contacts)
                 .ThenInclude(x => x.PhoneType)
-                .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId).SelectMany(y => y.Contacts.Where(z => z.AssignPublisher.UserId == UserId)))
+                .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId).SelectMany(y => y.Contacts.Where(z => z.AssignPublisherId == PublisherId)))
                 .AsNoTracking();
 
             return new

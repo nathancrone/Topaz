@@ -29,10 +29,10 @@ namespace MyApi.Controllers
         public IEnumerable<Object> GetCurrentTerritory()
         {
             var Claims = (ClaimsIdentity)this.User.Identity;
-            var UserId = Claims.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var PublisherId = int.Parse(Claims.FindFirst("PublisherId").Value);
 
             return _context.TerritoryActivities
-                .Where(x => x.Publisher.UserId == UserId && x.CheckInDate == null && x.StreetTerritory != null)
+                .Where(x => x.PublisherId == PublisherId && x.CheckInDate == null && x.StreetTerritory != null)
                 .Select(x => new
                 {
                     x.TerritoryActivityId,
