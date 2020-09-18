@@ -15,13 +15,21 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
     public class EditModel : PageModel
     {
         public readonly UserManager<AppUser> _userManager;
+        public readonly RoleManager<AppRole> _roleManager;
 
         [BindProperty]
         public AppUser AppUser { get; set; }
 
-        public EditModel(UserManager<AppUser> userManager)
+        [BindProperty]
+        public string[] selectedRole { get; set; }
+
+        public List<AppRole> Roles { get; set; }
+        public IList<string> UserRoles { get; set; }
+
+        public EditModel(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<IActionResult> OnGetAsync(string id)
@@ -37,6 +45,11 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
             {
                 return NotFound();
             }
+
+            Roles = _roleManager.Roles.ToList();
+            UserRoles = await _userManager.GetRolesAsync(AppUser);
+
+
             return Page();
         }
 
@@ -55,7 +68,20 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
             appUserToUpdate.LastName = AppUser.LastName;
             appUserToUpdate.Email = AppUser.Email;
 
-            await _userManager.UpdateAsync(appUserToUpdate);
+            var result = await _userManager.UpdateAsync(appUserToUpdate);
+
+            if (result.Succeeded)
+            {
+                UserRoles = await _userManager.GetRolesAsync(AppUser);
+                if (selectedRole.Except(UserRoles).Count() != 0)
+                {
+                    await _userManager.AddToRolesAsync(appUserToUpdate, selectedRole.Except(UserRoles).ToList<string>());
+                }
+                if (UserRoles.Except(selectedRole).Count() != 0)
+                {
+                    await _userManager.RemoveFromRolesAsync(appUserToUpdate, UserRoles.Except(selectedRole).ToList<string>());
+                }
+            }
 
             return RedirectToPage("./Index");
         }

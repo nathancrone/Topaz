@@ -14,20 +14,28 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
     public class CreateModel : PageModel
     {
         public readonly UserManager<AppUser> _userManager;
+        public readonly RoleManager<AppRole> _roleManager;
 
         [BindProperty]
         public AppUser AppUser { get; set; }
 
         [BindProperty]
+        public string[] selectedRole { get; set; }
+
+        [BindProperty]
         public string Password { get; set; }
 
-        public CreateModel(UserManager<AppUser> userManager)
+        public List<AppRole> Roles { get; set; }
+
+        public CreateModel(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult OnGet()
         {
+            Roles = _roleManager.Roles.ToList();
             return Page();
         }
 
@@ -40,7 +48,12 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
                 return Page();
             }
 
-            await _userManager.CreateAsync(AppUser, Password);
+            var result = await _userManager.CreateAsync(AppUser, Password);
+
+            if (result.Succeeded && selectedRole.Length != 0)
+            {
+                await _userManager.AddToRolesAsync(AppUser, selectedRole);
+            }
 
             return RedirectToPage("./Index");
         }

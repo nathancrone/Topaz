@@ -1,4 +1,5 @@
 @page
+@using System.Linq
 @model Topaz.UI.Razor.Areas.Admin.Pages.Users.EditModel
 
 @{
@@ -9,37 +10,49 @@
 
 <h4>AppUser</h4>
 <hr />
+<form method="post">
 <div class="row">
     <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="AppUser.Id" />
-            <div class="form-group">
-                <label asp-for="AppUser.UserName" class="control-label"></label>
-                <input asp-for="AppUser.UserName" class="form-control" />
-                <span asp-validation-for="AppUser.UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.FirstName" class="control-label"></label>
-                <input asp-for="AppUser.FirstName" class="form-control" />
-                <span asp-validation-for="AppUser.FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.LastName" class="control-label"></label>
-                <input asp-for="AppUser.LastName" class="form-control" />
-                <span asp-validation-for="AppUser.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppUser.Email" class="control-label"></label>
-                <input asp-for="AppUser.Email" class="form-control" />
-                <span asp-validation-for="AppUser.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="AppUser.Id" />
+        <div class="form-group">
+            <label asp-for="AppUser.UserName" class="control-label"></label>
+            <input asp-for="AppUser.UserName" class="form-control" />
+            <span asp-validation-for="AppUser.UserName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="AppUser.FirstName" class="control-label"></label>
+            <input asp-for="AppUser.FirstName" class="form-control" />
+            <span asp-validation-for="AppUser.FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="AppUser.LastName" class="control-label"></label>
+            <input asp-for="AppUser.LastName" class="form-control" />
+            <span asp-validation-for="AppUser.LastName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="AppUser.Email" class="control-label"></label>
+            <input asp-for="AppUser.Email" class="form-control" />
+            <span asp-validation-for="AppUser.Email" class="text-danger"></span>
+        </div>       
     </div>
 </div>
+<div class="row">
+    <div class="col-md-4">
+        @for (var i = 0; i < Model.Roles.Count(); i++)
+        {
+            var role = Model.Roles[i];
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="@string.Format("selectedRole{0}", i)" name="selectedRole" value="@role.Name" checked="@Model.UserRoles.Any(x => string.Compare(x, role.Name, true) == 0)">
+                <label class="form-check-label" for="@string.Format("selectedRole{0}", i)">@role.Name</label>
+            </div>
+        }
+        <div class="form-group mt-3">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
+</form>
 
 <div>
     <a asp-page="./Index">Back to List</a>
