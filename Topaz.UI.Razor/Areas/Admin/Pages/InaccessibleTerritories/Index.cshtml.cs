@@ -25,6 +25,8 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.InaccessibleTerritories
         {
             InaccessibleTerritory = await _context.InaccessibleTerritories
                 .Include(x => x.StreetTerritory)
+                .OrderBy(x => x.StreetTerritory.TerritoryCode)
+                .ThenBy(x => x.TerritoryCode)
                 .AsNoTracking()
                 .ToListAsync();
         }

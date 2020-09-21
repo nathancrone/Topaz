@@ -44,6 +44,8 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
 
             Publishers = _context.Publishers
                 .Where(x => !x.IsHidden)
+                .OrderBy(x => x.LastName)
+                .ThenBy(x => x.FirstName)
                 .Select(x => new SelectListItem { Value = x.PublisherId.ToString(), Text = $"{x.LastName}, {x.FirstName}", Selected = AppUser.PublisherId == x.PublisherId })
                 .AsNoTracking()
                 .ToList();
