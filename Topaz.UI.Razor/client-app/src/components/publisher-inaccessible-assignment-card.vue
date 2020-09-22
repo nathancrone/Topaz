@@ -24,10 +24,7 @@
             :href="`tel:${clonedContact.phoneNumber.replace(/\D/g, '')}`"
           >{{ clonedContact.phoneNumber }}</a>
         </address>
-        <div
-          v-if="clonedContact.contactActivityTypeId === 1 || clonedContact.contactActivityTypeId === 2"
-          class="form-group"
-        >
+        <div v-if="contactActivityType === 1 || contactActivityType === 2" class="form-group">
           <label :for="`phoneResponseType${clonedContact.inaccessibleContactId}`">Response</label>
           <input
             :id="`phoneResponseType${clonedContact.inaccessibleContactId}`"
