@@ -279,7 +279,11 @@ namespace MyApi.Controllers
         public int Assign(int assignee, [FromBody] int[] assignments)
         {
             var contacts = _context.InaccessibleContacts.Where(x => assignments.Contains(x.InaccessibleContactId));
-            contacts.ToList().ForEach(x => x.AssignPublisherId = assignee);
+            contacts.ToList().ForEach(x =>
+            {
+                x.AssignPublisherId = assignee;
+                x.AssignDate = DateTime.UtcNow;
+            });
             return _context.SaveChanges();
         }
 
@@ -288,7 +292,11 @@ namespace MyApi.Controllers
         public int Unassign([FromBody] int[] assignments)
         {
             var contacts = _context.InaccessibleContacts.Where(x => assignments.Contains(x.InaccessibleContactId));
-            contacts.ToList().ForEach(x => x.AssignPublisherId = null);
+            contacts.ToList().ForEach(x =>
+            {
+                x.AssignPublisherId = null;
+                x.AssignDate = null;
+            });
             return _context.SaveChanges();
         }
 
@@ -363,6 +371,34 @@ namespace MyApi.Controllers
             public int contactActivityTypeId { get; set; }
             public string notes { get; set; }
             public int phoneResponseTypeId { get; set; }
+        }
+
+        [HttpPost]
+        [Route("/Inaccessible/Contact/{id:int}/LetterActivity")]
+        public int SaveLetterActivity(int id, [FromBody] SaveLetterActivityDto dto)
+        {
+            var contact = _context.InaccessibleContacts.Find(id);
+
+            if (contact != null && contact.AssignPublisherId.HasValue)
+            {
+                _context.InaccessibleContactActivities.Add(new InaccessibleContactActivity()
+                {
+                    InaccessibleContactId = id,
+                    PublisherId = contact.AssignPublisherId.Value,
+                    ActivityDate = System.DateTime.UtcNow,
+                    ContactActivityTypeId = (int)ContactActivityTypeEnum.Letter,
+                    Notes = dto.notes
+                });
+            }
+
+            contact.AssignPublisherId = null;
+
+            return _context.SaveChanges();
+        }
+
+        public class SaveLetterActivityDto
+        {
+            public string notes { get; set; }
         }
     }
 }

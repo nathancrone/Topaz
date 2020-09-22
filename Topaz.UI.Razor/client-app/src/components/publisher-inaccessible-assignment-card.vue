@@ -24,7 +24,10 @@
             :href="`tel:${clonedContact.phoneNumber.replace(/\D/g, '')}`"
           >{{ clonedContact.phoneNumber }}</a>
         </address>
-        <div class="form-group">
+        <div
+          v-if="clonedContact.contactActivityTypeId === 1 || clonedContact.contactActivityTypeId === 2"
+          class="form-group"
+        >
           <label :for="`phoneResponseType${clonedContact.inaccessibleContactId}`">Response</label>
           <input
             :id="`phoneResponseType${clonedContact.inaccessibleContactId}`"
@@ -33,10 +36,22 @@
             autocomplete="off"
             placeholder="enter result"
             list="phoneResponseTypeList"
-            v-model="clonedContact.responseTypeSearch"
+            v-model="responseTypeSearch"
           />
         </div>
-        <div v-if="selectedResponseType" class="form-group">
+        <div v-else class="form-group form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            :id="`letterSent${clonedContact.inaccessibleContactId}`"
+            v-model="letterSent"
+          />
+          <label
+            class="form-check-label"
+            :for="`letterSent${clonedContact.inaccessibleContactId}`"
+          >Letter sent?</label>
+        </div>
+        <div v-if="selectedResponseType || letterSent" class="form-group">
           <label for="notes">Notes</label>
           <textarea
             class="form-control"
@@ -48,7 +63,7 @@
           ></textarea>
         </div>
         <a
-          v-if="selectedResponseType"
+          v-if="selectedResponseType || letterSent"
           class="btn btn-primary mr-1 mb-4"
           href="#"
           @click.prevent="save"
@@ -130,7 +145,9 @@ export default {
       contactActivityExpanded: false,
       contactActivityLoaded: false,
       contactActivity: [],
+      responseTypeSearch: "",
       selectedResponseType: undefined,
+      letterSent: false,
     };
   },
   methods: {
@@ -141,12 +158,17 @@ export default {
       this.contactActivity = [...activity];
     },
     async save() {
-      await data.saveInaccessibleContactPhoneActivity(
-        this.clonedContact.inaccessibleContactId,
-        this.contactActivityType,
-        this.clonedContact.notes,
-        this.selectedResponseType.phoneResponseTypeId
-      );
+      this.letterSent
+        ? await data.saveInaccessibleContactLetterActivity(
+            this.clonedContact.inaccessibleContactId,
+            this.clonedContact.notes
+          )
+        : await data.saveInaccessibleContactPhoneActivity(
+            this.clonedContact.inaccessibleContactId,
+            this.contactActivityType,
+            this.clonedContact.notes,
+            this.selectedResponseType.phoneResponseTypeId
+          );
       this.$emit("saved");
     },
     toggle() {
@@ -157,7 +179,7 @@ export default {
     },
   },
   watch: {
-    "clonedContact.responseTypeSearch": {
+    responseTypeSearch: {
       immediate: true,
       handler(after) {
         // find available assignee that exactly matches

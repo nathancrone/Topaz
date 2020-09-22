@@ -86,31 +86,14 @@
       v-if="activeView === availableViews.LETTER"
       class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4"
     >
-      <template v-for="(a, i) in assignmentsLetter">
-        <div :key="'c' + i" class="col mt-3">
-          <div class="card shadow-sm rounded">
-            <div class="card-header d-flex">
-              <div class="flex-grow-1">{{ a.lastName }}, {{ a.firstName }} {{ a.middleInitial }}</div>
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" v-model="a.selected" :id="'cb' + i" />
-              </div>
-            </div>
-            <div class="card-body">
-              <address>
-                Age: {{ a.age }}
-                <br />
-                {{ a.mailingAddress1 }}
-                <br />
-                {{ a.mailingAddress2 }}
-                <br />
-                Dallas, TX {{ a.postalCode }}
-                <br />
-                {{ a.phoneNumber }}
-              </address>
-            </div>
-          </div>
-        </div>
-      </template>
+      <PublisherInaccessibleAssignmentCard
+        v-for="a in assignmentsLetter"
+        :key="`card${a.inaccessibleContactId}`"
+        :contact="a"
+        :contactActivityType="3"
+        :phoneResponseTypes="phoneResponseTypes"
+        @saved="handleSaved"
+      />
     </div>
   </div>
 </template>

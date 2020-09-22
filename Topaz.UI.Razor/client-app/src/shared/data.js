@@ -210,6 +210,24 @@ const saveInaccessibleContactPhoneActivities = async function(
   }
 };
 
+const saveInaccessibleContactLetterActivity = async function(
+  inaccessibleContactId,
+  notes
+) {
+  try {
+    const response = await axios.post(
+      `/Inaccessible/Contact/${inaccessibleContactId}/LetterActivity`,
+      { notes }
+    );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
 const saveInaccessibleContactLetterActivities = async function(assignments) {
   try {
     const response = await axios.post(
@@ -298,6 +316,7 @@ export const data = {
   getPhoneResponseTypes,
   saveInaccessibleContactPhoneActivity,
   saveInaccessibleContactPhoneActivities,
+  saveInaccessibleContactLetterActivity,
   saveInaccessibleContactLetterActivities,
   currentUserCheckout,
   currentUserCheckin,
