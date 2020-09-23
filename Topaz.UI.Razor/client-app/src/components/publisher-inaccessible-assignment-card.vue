@@ -21,6 +21,7 @@
           Dallas, TX {{ clonedContact.postalCode }}
           <br />
           <a
+            v-if="clonedContact.phoneNumber"
             :href="`tel:${clonedContact.phoneNumber.replace(/\D/g, '')}`"
           >{{ clonedContact.phoneNumber }}</a>
         </address>
