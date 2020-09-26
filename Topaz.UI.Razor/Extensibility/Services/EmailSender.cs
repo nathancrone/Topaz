@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
-namespace Topaz.UI.Razor.Services
+namespace Topaz.UI.Razor.Extensibility.Services
 {
     public class EmailSender : IEmailSender
     {

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using System.Security.Claims;
 
-namespace Topaz.UI.Razor.Services
+namespace Topaz.UI.Razor.Extensibility
 {
     public class AppUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<AppUser, AppRole>
     {

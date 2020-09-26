@@ -26,6 +26,9 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
         [BindProperty]
         public string ChangePassword { get; set; }
 
+        [BindProperty]
+        public bool LockoutEnabled { get; set; }
+
         public List<AppRole> Roles { get; set; }
         public IList<string> UserRoles { get; set; }
 
@@ -51,8 +54,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
 
             Roles = _roleManager.Roles.ToList();
             UserRoles = await _userManager.GetRolesAsync(AppUser);
-
-
+            LockoutEnabled = await _userManager.IsLockedOutAsync(AppUser);
             return Page();
         }
 
@@ -97,6 +99,11 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
                         }
                     }
                 }
+
+                // if (LockoutEnabled != await _userManager.IsLockedOutAsync(appUserToUpdate) && await _userManager.GetLockoutEnabledAsync(appUserToUpdate))
+                // {
+                //     var resultLockout = await _userManager.SetLockoutEnabledAsync(appUserToUpdate, LockoutEnabled);
+                // }
             }
 
             return RedirectToPage("./Index");

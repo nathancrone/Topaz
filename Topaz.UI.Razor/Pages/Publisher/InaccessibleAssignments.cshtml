@@ -1,4 +1,5 @@
 ﻿@page
+@inject IOptions<AppSettingsOptions> AppSettings
 @model InaccessibleAssignmentsModel
 @{
     ViewData["Title"] = "Publisher's Inaccesible Assignments";
@@ -7,10 +8,10 @@
 <div id="app"></div>
 
 @section Styles {
-    <link rel="stylesheet" href="~/client-app/css/app.css" />
+    <link rel="stylesheet" href="@Url.Content($"~/client-app/css/app.css?i={AppSettings.Value.CacheInvalidator}")" />
 }
 
 @section Scripts {
-    <script type="text/javascript" src="~/client-app/js/app.js"></script>
-    <script type="text/javascript" src="~/client-app/js/chunk-vendors.js"></script>
+    <script type="text/javascript" src="@Url.Content($"~/client-app/js/app.js?i={AppSettings.Value.CacheInvalidator}")"></script>
+    <script type="text/javascript" src="@Url.Content($"~/client-app/js/chunk-vendors.js?i={AppSettings.Value.CacheInvalidator}")"></script>
 }
