@@ -21,7 +21,10 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
         public AppUser AppUser { get; set; }
 
         [BindProperty]
-        public string[] selectedRole { get; set; }
+        public string[] SelectedRole { get; set; }
+
+        [BindProperty]
+        public string ChangePassword { get; set; }
 
         public List<AppRole> Roles { get; set; }
         public IList<string> UserRoles { get; set; }
@@ -68,18 +71,31 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
             appUserToUpdate.LastName = AppUser.LastName;
             appUserToUpdate.Email = AppUser.Email;
 
-            var result = await _userManager.UpdateAsync(appUserToUpdate);
+            var resultUpdate = await _userManager.UpdateAsync(appUserToUpdate);
 
-            if (result.Succeeded)
+            if (resultUpdate.Succeeded)
             {
                 UserRoles = await _userManager.GetRolesAsync(AppUser);
-                if (selectedRole.Except(UserRoles).Count() != 0)
+                if (SelectedRole.Except(UserRoles).Count() != 0)
                 {
-                    await _userManager.AddToRolesAsync(appUserToUpdate, selectedRole.Except(UserRoles).ToList<string>());
+                    var resultRoleAdd = await _userManager.AddToRolesAsync(appUserToUpdate, SelectedRole.Except(UserRoles).ToList<string>());
                 }
-                if (UserRoles.Except(selectedRole).Count() != 0)
+                if (UserRoles.Except(SelectedRole).Count() != 0)
                 {
-                    await _userManager.RemoveFromRolesAsync(appUserToUpdate, UserRoles.Except(selectedRole).ToList<string>());
+                    var resultRoleRemove = await _userManager.RemoveFromRolesAsync(appUserToUpdate, UserRoles.Except(SelectedRole).ToList<string>());
+                }
+
+                if (!string.IsNullOrEmpty(ChangePassword))
+                {
+                    var resultCheckPassword = await _userManager.CheckPasswordAsync(appUserToUpdate, ChangePassword);
+                    if (resultCheckPassword)
+                    {
+                        var resultRemove = await _userManager.RemovePasswordAsync(appUserToUpdate);
+                        if (resultRemove.Succeeded)
+                        {
+                            var resultAdd = await _userManager.AddPasswordAsync(appUserToUpdate, ChangePassword);
+                        }
+                    }
                 }
             }
 
