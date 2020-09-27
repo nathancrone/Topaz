@@ -89,15 +89,11 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.Users
 
                 if (!string.IsNullOrEmpty(ChangePassword))
                 {
-                    var resultCheckPassword = await _userManager.CheckPasswordAsync(appUserToUpdate, ChangePassword);
-                    if (resultCheckPassword)
+                    if (await _userManager.HasPasswordAsync(appUserToUpdate))
                     {
                         var resultRemove = await _userManager.RemovePasswordAsync(appUserToUpdate);
-                        if (resultRemove.Succeeded)
-                        {
-                            var resultAdd = await _userManager.AddPasswordAsync(appUserToUpdate, ChangePassword);
-                        }
                     }
+                    var resultAdd = await _userManager.AddPasswordAsync(appUserToUpdate, ChangePassword);
                 }
 
                 // if (LockoutEnabled != await _userManager.IsLockedOutAsync(appUserToUpdate) && await _userManager.GetLockoutEnabledAsync(appUserToUpdate))
