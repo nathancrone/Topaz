@@ -249,7 +249,7 @@ namespace MyApi.Controllers
                     !string.IsNullOrEmpty(x.MailingAddress1) &&
                     (
                         // has no phone number
-                        string.IsNullOrEmpty(x.PhoneNumber) ||
+                        string.IsNullOrEmpty(x.PhoneNumber) && !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter) ||
                         (
                             // has phone number
                             !string.IsNullOrEmpty(x.PhoneNumber) &&
