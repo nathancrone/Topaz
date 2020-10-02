@@ -147,8 +147,8 @@ namespace MyApi.Controllers
                     // has mailing address
                     !string.IsNullOrEmpty(x.MailingAddress1) &&
                     (
-                        // has no phone number
-                        string.IsNullOrEmpty(x.PhoneNumber) ||
+                        // has no phone number but no letter has been sent
+                        string.IsNullOrEmpty(x.PhoneNumber) && !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter) ||
                         (
                             // has phone number
                             !string.IsNullOrEmpty(x.PhoneNumber) &&
