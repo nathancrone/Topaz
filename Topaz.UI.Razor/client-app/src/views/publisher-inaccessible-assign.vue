@@ -312,7 +312,7 @@ export default {
     },
     selectUnassigned() {
       this.availableAssignments
-        .filter((x) => !x.assignPublisher && !x.selected)
+        .filter((x) => !x.doNotContactPhone && !x.assignPublisher && !x.selected)
         .forEach(function (a) {
           a.selected = true;
         });

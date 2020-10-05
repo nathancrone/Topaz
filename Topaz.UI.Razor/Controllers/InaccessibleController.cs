@@ -9,6 +9,7 @@ using Topaz.Common.Models;
 using Topaz.Data;
 using System.Security.Claims;
 using Topaz.Common.Enums;
+using System.Text.RegularExpressions;
 
 namespace MyApi.Controllers
 {
@@ -118,10 +119,22 @@ namespace MyApi.Controllers
                 .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId).SelectMany(y => y.Contacts))
                 .AsNoTracking();
 
+
+            // list of valid phone numbers
+            var territoryPhoneNumbers = Assignments
+                .Where(x => !string.IsNullOrEmpty(x.PhoneNumber))
+                .Select(x => new { x.InaccessibleContactId, PhoneNumber = Regex.Replace(x.PhoneNumber, @"\D", "") }).ToList();
+
+            // compare phone numbers to the do not contact phone list
+            var territoryDoNoCallPhoneNumbers = _context.DoNotContactPhones.Where(x => territoryPhoneNumbers.Select(y => y.PhoneNumber).Contains(x.PhoneNumber)).Select(x => x.PhoneNumber).ToList();
+            var territoryDoNoCallContactIds = territoryPhoneNumbers.Where(x => territoryDoNoCallPhoneNumbers.Contains(x.PhoneNumber)).Select(x => x.InaccessibleContactId);
+
             var FilteredAssignments = Assignments;
             if (type == "phone")
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
+                    // is not a 'do not contact' phone
+                    !territoryDoNoCallContactIds.Contains(x.InaccessibleContactId) &&
                     // has phone number
                     !string.IsNullOrEmpty(x.PhoneNumber) &&
                     // phone has not been attempted
@@ -131,6 +144,8 @@ namespace MyApi.Controllers
             else if (type == "vm")
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
+                    // is not a 'do not contact' phone
+                    !territoryDoNoCallContactIds.Contains(x.InaccessibleContactId) &&
                     // has phone number
                     !string.IsNullOrEmpty(x.PhoneNumber) &&
                     // phone has been attempted
@@ -144,6 +159,8 @@ namespace MyApi.Controllers
             else if (type == "letter")
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
+                    // is not a 'do not contact' phone
+                    !territoryDoNoCallContactIds.Contains(x.InaccessibleContactId) &&
                     // has mailing address
                     !string.IsNullOrEmpty(x.MailingAddress1) &&
                     (
@@ -169,6 +186,8 @@ namespace MyApi.Controllers
             else
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
+                    // is a 'do not contact' phone
+                    territoryDoNoCallContactIds.Contains(x.InaccessibleContactId) ||
                     (
                         // has phone number
                         !string.IsNullOrEmpty(x.PhoneNumber) &&
@@ -192,7 +211,15 @@ namespace MyApi.Controllers
                 );
             }
 
-            return FilteredAssignments.OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName);
+            var results = FilteredAssignments.ToList();
+
+            // set the do not contact phone flag to true
+            results.ForEach(x => x.DoNotContactPhone = territoryDoNoCallContactIds.Contains(x.InaccessibleContactId));
+
+            return results
+                .OrderBy(x => x.MailingAddress1)
+                .ThenBy(x => x.MailingAddress2)
+                .ThenBy(x => x.LastName);
         }
 
         [HttpGet]

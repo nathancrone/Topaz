@@ -1,32 +1,47 @@
 <template>
   <div class="col mt-3">
-    <div class="card shadow-sm rounded">
+    <div
+      class="card shadow-sm rounded"
+      :class="{ 'border-danger': clonedContact.doNotContactPhone }"
+    >
       <div class="card-header d-flex">
-        <div
-          class="flex-grow-1"
-        >{{ clonedContact.lastName }}, {{ clonedContact.firstName }} {{ clonedContact.middleInitial }}</div>
+        <div class="flex-grow-1">
+          {{ clonedContact.lastName }}, {{ clonedContact.firstName }}
+          {{ clonedContact.middleInitial }}
+        </div>
         <div class="form-check">
           <input
             type="checkbox"
             class="form-check-input"
             v-model="clonedContact.selected"
             :id="`cb${clonedContact.inaccessibleContactId}`"
+            :disabled="clonedContact.doNotContactPhone"
           />
         </div>
       </div>
       <div class="card-body">
         <div class="d-flex w-100 justify-content-end">
           <span
+            v-if="clonedContact.doNotContactPhone"
+            class="badge badge-danger"
+            >Do Not Phone</span
+          >
+          <span
             v-if="clonedContact.assignPublisher"
             class="badge badge-secondary"
-          >{{ clonedContact.assignPublisher.firstName }} {{ clonedContact.assignPublisher.lastName }}</span>
+            >{{ clonedContact.assignPublisher.firstName }}
+            {{ clonedContact.assignPublisher.lastName }}</span
+          >
         </div>
         <address>
           Age: {{ clonedContact.age }}
           <br />
           {{ clonedContact.mailingAddress1 }}
           <template
-            v-if="clonedContact.mailingAddress2 && clonedContact.mailingAddress2 != ''"
+            v-if="
+              clonedContact.mailingAddress2 &&
+              clonedContact.mailingAddress2 != ''
+            "
           >
             <br />
             {{ clonedContact.mailingAddress2 }}
@@ -44,7 +59,10 @@
             <div class="d-flex w-100 justify-content-end">
               <i
                 class="arrow"
-                :class="{ up: contactActivityExpanded, down: !contactActivityExpanded }"
+                :class="{
+                  up: contactActivityExpanded,
+                  down: !contactActivityExpanded,
+                }"
               ></i>
             </div>
           </li>
@@ -63,17 +81,24 @@
               class="list-group-item flex-column align-items-start"
             >
               <div class="mb-1 d-flex w-100">
-                <small
-                  class="font-weight-bold"
-                >{{ displayDate(a.activityDate) }} - {{ a.publisher.firstName }} {{ a.publisher.lastName }}</small>
+                <small class="font-weight-bold"
+                  >{{ displayDate(a.activityDate) }} -
+                  {{ a.publisher.firstName }} {{ a.publisher.lastName }}</small
+                >
               </div>
               <div
-                v-if="a.contactActivityTypeId === 1 || a.contactActivityTypeId === 2 && a.phoneResponseType"
+                v-if="
+                  a.contactActivityTypeId === 1 ||
+                  (a.contactActivityTypeId === 2 && a.phoneResponseType)
+                "
                 class="mb-1 d-flex w-100"
               >
                 <small>{{ a.phoneResponseType.name }}</small>
               </div>
-              <div v-if="a.contactActivityTypeId === 3" class="mb-1 d-flex w-100">
+              <div
+                v-if="a.contactActivityTypeId === 3"
+                class="mb-1 d-flex w-100"
+              >
                 <small>{{ a.contactActivityType.name }}</small>
               </div>
               <div class="d-flex w-100">

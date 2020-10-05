@@ -27,6 +27,8 @@ namespace Topaz.Common.Models
         public int? AssignPublisherId { get; set; }
         public DateTime? AssignDate { get; set; }
         public int? AssignContactActivityTypeId { get; set; }
+        public bool DoNotContactPhone { get; set; }
+        public bool DoNotContactLetter { get; set; }
         public InaccessibleContactList ContactList { get; set; }
         public List<InaccessibleContactActivity> ContactActivity { get; set; }
         public PhoneType PhoneType { get; set; }
