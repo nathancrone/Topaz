@@ -23,6 +23,18 @@ namespace Topaz.Data.Configuration
             builder.HasMany(x => x.InaccessibleContactActivity)
             .WithOne(x => x.Publisher)
             .HasForeignKey(x => x.PublisherId);
+
+            builder.HasMany(x => x.StreetDoNotContacts)
+            .WithOne(x => x.Publisher)
+            .HasForeignKey(x => x.PublisherId);
+
+            builder.HasMany(x => x.LetterDoNotContacts)
+            .WithOne(x => x.Publisher)
+            .HasForeignKey(x => x.PublisherId);
+
+            builder.HasMany(x => x.PhoneDoNotContacts)
+            .WithOne(x => x.Publisher)
+            .HasForeignKey(x => x.PublisherId);
         }
     }
 }

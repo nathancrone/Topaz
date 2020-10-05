@@ -17,5 +17,7 @@ namespace Topaz.Common.Models
         public List<InaccessibleTerritory> InaccessibleTerritories { get; set; }
         public int? RefId { get; set; }
         public List<TerritoryActivity> Activity { get; set; }
+        public List<DoNotContactStreet> StreetDoNotContacts { get; set; }
+        public List<DoNotContactLetter> LetterDoNotContacts { get; set; }
     }
 }
