@@ -9,14 +9,14 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsAuth
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20200908042819_InitialCreate")]
+    [Migration("20201006180647_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.3");
+                .HasAnnotation("ProductVersion", "3.1.8");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {

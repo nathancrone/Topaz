@@ -36,7 +36,7 @@ namespace Topaz.UI.Consoles.MigrationConsole
             services.AddTransient<TargetDbContext, TargetDbContext>();
             services.AddDbContext<TargetDbContext>(options => options.UseSqlite("Data Source=TopazDb.db"));
             // IMPORTANT! Register our application entry point
-            services.AddTransient<ConsoleApp>();
+            services.AddSingleton<ConsoleApp>();
             return services;
         }
     }
@@ -45,6 +45,11 @@ namespace Topaz.UI.Consoles.MigrationConsole
         private TopazDbContext _sourceDb;
         private TopazDbContext _targetDb;
         private LegacyDbContext _legacyDb;
+
+        private Dictionary<string, int> mapLegacyUserTargetPublisher;
+        private Dictionary<int, int> mapSourcePublisherTargetPublisher;
+        private Dictionary<int, int> mapLegacyTerritoryTargetStreetTerritory;
+
         public ConsoleApp(LegacyDbContext legacyDb, SourceDbContext sourceDb, TargetDbContext targetDb)
         {
             _legacyDb = legacyDb;
@@ -63,27 +68,37 @@ namespace Topaz.UI.Consoles.MigrationConsole
             // distinct list of legacy users
             var legacyUsers = legacyTerritories.SelectMany(a => a.LedgerEntries.Select(b => new { b.User.UserId, b.User.FirstName, b.User.LastName })).Distinct().ToList();
 
-            // create the users
+            mapLegacyUserTargetPublisher = new Dictionary<string, int>();
+            // create the publishers in the target db
             foreach (var u in legacyUsers.OrderBy(a => a.LastName))
             {
-                _targetDb.Add(new Publisher { UserId = u.UserId, FirstName = u.FirstName, LastName = u.LastName });
+                var pub = new Publisher { FirstName = u.FirstName, LastName = u.LastName };
+                _targetDb.Add(pub);
                 _targetDb.SaveChanges();
+                mapLegacyUserTargetPublisher.Add(u.UserId, pub.PublisherId);
             }
 
-            var addUsers = new[] {
-                new {  UserId = Guid.NewGuid(), FirstName = "Carol", LastName = "Alexander" }
-            }.ToList();
-
-            // create the users
-            foreach (var u in addUsers.OrderBy(a => a.LastName))
+            mapSourcePublisherTargetPublisher = new Dictionary<int, int>();
+            // create the publishers in the target db
+            foreach (var srcPub in _sourceDb.Publishers.OrderBy(a => a.LastName))
             {
-                if (!_targetDb.Publishers.Any(x => x.FirstName == u.FirstName && x.LastName == u.LastName))
+                if (!_targetDb.Publishers.Any(x => x.FirstName == srcPub.FirstName && x.LastName == srcPub.LastName))
                 {
-                    _targetDb.Add(new Publisher { UserId = u.UserId.ToString(), FirstName = u.FirstName, LastName = u.LastName });
+                    var pub = new Publisher { FirstName = srcPub.FirstName, LastName = srcPub.LastName };
+                    _targetDb.Add(pub);
                     _targetDb.SaveChanges();
+                    mapSourcePublisherTargetPublisher.Add(srcPub.PublisherId, pub.PublisherId);
+                }
+                else
+                {
+                    foreach (var pub in _targetDb.Publishers.Where(x => x.FirstName == srcPub.FirstName && x.LastName == srcPub.LastName))
+                    {
+                        mapSourcePublisherTargetPublisher.Add(srcPub.PublisherId, pub.PublisherId);
+                    }
                 }
             }
 
+            mapLegacyTerritoryTargetStreetTerritory = new Dictionary<int, int>();
             // create the street territories
             foreach (var t in legacyTerritories.OrderBy(a => a.TerritoryCode))
             {
@@ -91,11 +106,12 @@ namespace Topaz.UI.Consoles.MigrationConsole
                 var street = new StreetTerritory { TerritoryCode = territoryCode, InActive = t.InActive, RefId = t.TerritoryId };
                 _targetDb.Add(street);
                 _targetDb.SaveChanges();
+                mapLegacyTerritoryTargetStreetTerritory.Add(t.TerritoryId, street.TerritoryId);
                 foreach (var entry in t.LedgerEntries.OrderBy(x => x.CheckOutDate))
                 {
                     street.Activity.Add(new TerritoryActivity
                     {
-                        PublisherId = _targetDb.Publishers.FirstOrDefault(x => x.UserId == entry.UserId).PublisherId,
+                        PublisherId = mapLegacyUserTargetPublisher[entry.UserId],
                         CheckOutDate = entry.CheckOutDate,
                         CheckInDate = entry.CheckInDate
                     });
@@ -119,8 +135,7 @@ namespace Topaz.UI.Consoles.MigrationConsole
 
             foreach (var t in sourceTerritories)
             {
-                var refId = t.StreetTerritory.RefId;
-                var streetTerritoryId = _targetDb.StreetTerritories.Where(x => x.RefId == refId).Select(x => x.TerritoryId).FirstOrDefault();
+                var streetTerritoryId = _targetDb.StreetTerritories.Where(x => x.TerritoryCode == t.StreetTerritory.TerritoryCode).Select(x => x.TerritoryId).FirstOrDefault();
 
                 var territory = new InaccessibleTerritory
                 {
@@ -153,9 +168,16 @@ namespace Topaz.UI.Consoles.MigrationConsole
 
                         foreach (var c in l.Contacts)
                         {
+                            int? assign = null;
+                            if (c.AssignPublisherId.HasValue)
+                            {
+                                assign = mapSourcePublisherTargetPublisher[c.AssignPublisherId.Value];
+                            }
+
                             var contact = new InaccessibleContact
                             {
-                                AssignPublisherId = c.AssignPublisherId,
+                                AssignPublisherId = assign,
+                                AssignDate = c.AssignDate,
                                 FirstName = c.FirstName,
                                 LastName = c.LastName,
                                 MiddleInitial = c.MiddleInitial,
@@ -172,11 +194,11 @@ namespace Topaz.UI.Consoles.MigrationConsole
 
                             foreach (var a in c.ContactActivity)
                             {
-                                var publisherId = _targetDb.Publishers.Where(x => x.UserId == a.Publisher.UserId).AsNoTracking().Select(x => x.PublisherId).FirstOrDefault();
+                                int pub = mapSourcePublisherTargetPublisher[a.PublisherId];
 
                                 contact.ContactActivity.Add(new InaccessibleContactActivity
                                 {
-                                    PublisherId = publisherId,
+                                    PublisherId = pub,
                                     ActivityDate = a.ActivityDate,
                                     ContactActivityTypeId = a.ContactActivityTypeId,
                                     PhoneCallerIdBlocked = a.PhoneCallerIdBlocked,
@@ -192,6 +214,7 @@ namespace Topaz.UI.Consoles.MigrationConsole
                 }
                 _targetDb.Add(territory);
             }
+
             _targetDb.SaveChanges();
 
             //this will set the current contact list for the property
@@ -205,6 +228,25 @@ namespace Topaz.UI.Consoles.MigrationConsole
                     WHERE i.InaccessiblePropertyId = InaccessibleProperties.InaccessiblePropertyId 
                 )"
             );
+
+            var srcTerritories = _sourceDb.InaccessibleTerritories.Include(x => x.Activity);
+
+            foreach (var srcTerritory in srcTerritories)
+            {
+                var targetTerritory = _targetDb.InaccessibleTerritories.Where(x => x.TerritoryCode == srcTerritory.TerritoryCode).FirstOrDefault();
+                foreach (var srcActivity in srcTerritory.Activity)
+                {
+                    targetTerritory.Activity.Add(new TerritoryActivity
+                    {
+                        PublisherId = mapSourcePublisherTargetPublisher[srcActivity.PublisherId],
+                        CheckOutDate = srcActivity.CheckOutDate,
+                        CheckInDate = srcActivity.CheckInDate,
+                        Notes = srcActivity.Notes
+                    });
+                }
+                _targetDb.SaveChanges();
+            }
+
         }
     }
 }

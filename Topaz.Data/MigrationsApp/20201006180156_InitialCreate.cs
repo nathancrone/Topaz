@@ -21,36 +21,6 @@ namespace Topaz.Data.MigrationsApp
                 });
 
             migrationBuilder.CreateTable(
-                name: "DoNotContactLetters",
-                columns: table => new
-                {
-                    DoNotContactLetterId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ReportedDate = table.Column<DateTime>(nullable: true),
-                    MailingAddress1 = table.Column<string>(nullable: true),
-                    Notes = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DoNotContactLetters", x => x.DoNotContactLetterId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DoNotContactPhones",
-                columns: table => new
-                {
-                    DoNotContactPhoneId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ReportedDate = table.Column<DateTime>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    Notes = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DoNotContactPhones", x => x.DoNotContactPhoneId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PhoneResponseTypes",
                 columns: table => new
                 {
@@ -129,12 +99,65 @@ namespace Topaz.Data.MigrationsApp
                 });
 
             migrationBuilder.CreateTable(
+                name: "DoNotContactPhones",
+                columns: table => new
+                {
+                    DoNotContactPhoneId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PublisherId = table.Column<int>(nullable: false),
+                    ReportedDate = table.Column<DateTime>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    Notes = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoNotContactPhones", x => x.DoNotContactPhoneId);
+                    table.ForeignKey(
+                        name: "FK_DoNotContactPhones_Publishers_PublisherId",
+                        column: x => x.PublisherId,
+                        principalTable: "Publishers",
+                        principalColumn: "PublisherId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DoNotContactLetters",
+                columns: table => new
+                {
+                    DoNotContactLetterId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TerritoryId = table.Column<int>(nullable: false),
+                    PublisherId = table.Column<int>(nullable: false),
+                    ReportedDate = table.Column<DateTime>(nullable: true),
+                    MailingAddress1 = table.Column<string>(nullable: true),
+                    MailingAddress2 = table.Column<string>(nullable: true),
+                    Notes = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoNotContactLetters", x => x.DoNotContactLetterId);
+                    table.ForeignKey(
+                        name: "FK_DoNotContactLetters_Publishers_PublisherId",
+                        column: x => x.PublisherId,
+                        principalTable: "Publishers",
+                        principalColumn: "PublisherId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DoNotContactLetters_Territories_TerritoryId",
+                        column: x => x.TerritoryId,
+                        principalTable: "Territories",
+                        principalColumn: "TerritoryId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DoNotContactStreets",
                 columns: table => new
                 {
                     DoNotContactStreetId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     TerritoryId = table.Column<int>(nullable: false),
+                    PublisherId = table.Column<int>(nullable: false),
                     ReportedDate = table.Column<DateTime>(nullable: true),
                     StreetAddress = table.Column<string>(nullable: true),
                     Coordinates = table.Column<string>(nullable: true),
@@ -143,6 +166,12 @@ namespace Topaz.Data.MigrationsApp
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DoNotContactStreets", x => x.DoNotContactStreetId);
+                    table.ForeignKey(
+                        name: "FK_DoNotContactStreets_Publishers_PublisherId",
+                        column: x => x.PublisherId,
+                        principalTable: "Publishers",
+                        principalColumn: "PublisherId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_DoNotContactStreets_Territories_TerritoryId",
                         column: x => x.TerritoryId,
@@ -459,7 +488,7 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
                 columns: new[] { "PhoneResponseTypeId", "Description", "Name" },
-                values: new object[] { 204, "The call attempt was unsuccessful. Message indicating that the number is not accepting calls.", "No Response (Ring no answer)" });
+                values: new object[] { 204, "The call attempt was unsuccessful. Message indicating that the number is not accepting calls.", "No Response (Not accepting calls)" });
 
             migrationBuilder.InsertData(
                 table: "PhoneType",
@@ -475,6 +504,26 @@ namespace Topaz.Data.MigrationsApp
                 table: "PhoneType",
                 columns: new[] { "PhoneTypeId", "Description", "Name" },
                 values: new object[] { 3, null, "Voip" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoNotContactLetters_PublisherId",
+                table: "DoNotContactLetters",
+                column: "PublisherId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoNotContactLetters_TerritoryId",
+                table: "DoNotContactLetters",
+                column: "TerritoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoNotContactPhones_PublisherId",
+                table: "DoNotContactPhones",
+                column: "PublisherId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoNotContactStreets_PublisherId",
+                table: "DoNotContactStreets",
+                column: "PublisherId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DoNotContactStreets_TerritoryId",

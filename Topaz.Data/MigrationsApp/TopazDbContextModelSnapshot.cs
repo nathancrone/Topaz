@@ -14,7 +14,7 @@ namespace Topaz.Data.MigrationsApp
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.3");
+                .HasAnnotation("ProductVersion", "3.1.8");
 
             modelBuilder.Entity("Topaz.Common.Models.ContactActivityType", b =>
                 {
@@ -79,13 +79,26 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<string>("MailingAddress1")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("MailingAddress2")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("ReportedDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("TerritoryId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("DoNotContactLetterId");
+
+                    b.HasIndex("PublisherId");
+
+                    b.HasIndex("TerritoryId");
 
                     b.ToTable("DoNotContactLetters");
                 });
@@ -102,10 +115,15 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime?>("ReportedDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("DoNotContactPhoneId");
+
+                    b.HasIndex("PublisherId");
 
                     b.ToTable("DoNotContactPhones");
                 });
@@ -122,6 +140,9 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime?>("ReportedDate")
                         .HasColumnType("TEXT");
 
@@ -132,6 +153,8 @@ namespace Topaz.Data.MigrationsApp
                         .HasColumnType("INTEGER");
 
                     b.HasKey("DoNotContactStreetId");
+
+                    b.HasIndex("PublisherId");
 
                     b.HasIndex("TerritoryId");
 
@@ -382,7 +405,7 @@ namespace Topaz.Data.MigrationsApp
                         {
                             PhoneResponseTypeId = 204,
                             Description = "The call attempt was unsuccessful. Message indicating that the number is not accepting calls.",
-                            Name = "No Response (Ring no answer)"
+                            Name = "No Response (Not accepting calls)"
                         },
                         new
                         {
@@ -616,10 +639,40 @@ namespace Topaz.Data.MigrationsApp
                     b.HasDiscriminator().HasValue("StreetTerritory");
                 });
 
+            modelBuilder.Entity("Topaz.Common.Models.DoNotContactLetter", b =>
+                {
+                    b.HasOne("Topaz.Common.Models.Publisher", "Publisher")
+                        .WithMany("LetterDoNotContacts")
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Topaz.Common.Models.StreetTerritory", "Territory")
+                        .WithMany("LetterDoNotContacts")
+                        .HasForeignKey("TerritoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Topaz.Common.Models.DoNotContactPhone", b =>
+                {
+                    b.HasOne("Topaz.Common.Models.Publisher", "Publisher")
+                        .WithMany("PhoneDoNotContacts")
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Topaz.Common.Models.DoNotContactStreet", b =>
                 {
+                    b.HasOne("Topaz.Common.Models.Publisher", "Publisher")
+                        .WithMany("StreetDoNotContacts")
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Topaz.Common.Models.StreetTerritory", "Territory")
-                        .WithMany()
+                        .WithMany("StreetDoNotContacts")
                         .HasForeignKey("TerritoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
