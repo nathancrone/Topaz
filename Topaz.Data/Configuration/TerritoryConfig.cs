@@ -11,6 +11,7 @@ namespace Topaz.Data.Configuration
         {
             builder.HasKey(x => x.TerritoryId);
             builder.Property(x => x.TerritoryId).ValueGeneratedOnAdd();
+            builder.HasIndex(x => x.TerritoryCode).IsUnique();
         }
     }
 }
