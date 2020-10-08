@@ -1,0 +1,49 @@
+@page
+@model Topaz.UI.Razor.Areas.Admin.Pages.LetterDoNotContact.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>DoNotContactLetter</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DoNotContactLetter.ReportedDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DoNotContactLetter.ReportedDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DoNotContactLetter.MailingAddress1)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DoNotContactLetter.MailingAddress1)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DoNotContactLetter.MailingAddress2)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DoNotContactLetter.MailingAddress2)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DoNotContactLetter.Notes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DoNotContactLetter.Notes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DoNotContactLetter.Publisher)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DoNotContactLetter.Publisher.PublisherId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.DoNotContactLetter.DoNotContactLetterId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

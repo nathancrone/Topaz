@@ -1,0 +1,57 @@
+@page
+@model Topaz.UI.Razor.Areas.Admin.Pages.StreetDoNotContact.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>DoNotContactStreet</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DoNotContactStreet.TerritoryId" class="control-label"></label>
+                <select asp-for="DoNotContactStreet.TerritoryId" class ="form-control" asp-items="ViewBag.TerritoryId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="DoNotContactStreet.PublisherId" class="control-label"></label>
+                <select asp-for="DoNotContactStreet.PublisherId" class ="form-control" asp-items="ViewBag.PublisherId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="DoNotContactStreet.ReportedDate" class="control-label"></label>
+                <input asp-for="DoNotContactStreet.ReportedDate" class="form-control" />
+                <span asp-validation-for="DoNotContactStreet.ReportedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DoNotContactStreet.StreetAddress" class="control-label"></label>
+                <input asp-for="DoNotContactStreet.StreetAddress" class="form-control" />
+                <span asp-validation-for="DoNotContactStreet.StreetAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DoNotContactStreet.Coordinates" class="control-label"></label>
+                <input asp-for="DoNotContactStreet.Coordinates" class="form-control" />
+                <span asp-validation-for="DoNotContactStreet.Coordinates" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DoNotContactStreet.Notes" class="control-label"></label>
+                <input asp-for="DoNotContactStreet.Notes" class="form-control" />
+                <span asp-validation-for="DoNotContactStreet.Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

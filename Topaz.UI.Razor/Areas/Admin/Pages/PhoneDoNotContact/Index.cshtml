@@ -1,0 +1,54 @@
+@page
+@model Topaz.UI.Razor.Areas.Admin.Pages.PhoneDoNotContact.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DoNotContactPhone[0].ReportedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoNotContactPhone[0].PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoNotContactPhone[0].Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoNotContactPhone[0].Publisher)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.DoNotContactPhone) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReportedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Publisher.PublisherId)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.DoNotContactPhoneId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.DoNotContactPhoneId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.DoNotContactPhoneId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

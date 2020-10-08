@@ -1,0 +1,60 @@
+@page
+@model Topaz.UI.Razor.Areas.Admin.Pages.StreetDoNotContact.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DoNotContactStreet[0].ReportedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoNotContactStreet[0].StreetAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoNotContactStreet[0].Coordinates)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoNotContactStreet[0].Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoNotContactStreet[0].Publisher)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.DoNotContactStreet) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReportedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StreetAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Coordinates)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Publisher.PublisherId)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.DoNotContactStreetId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.DoNotContactStreetId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.DoNotContactStreetId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

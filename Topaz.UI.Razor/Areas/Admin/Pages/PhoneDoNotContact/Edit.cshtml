@@ -1,0 +1,50 @@
+@page
+@model Topaz.UI.Razor.Areas.Admin.Pages.PhoneDoNotContact.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>DoNotContactPhone</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="DoNotContactPhone.DoNotContactPhoneId" />
+            <div class="form-group">
+                <label asp-for="DoNotContactPhone.PublisherId" class="control-label"></label>
+                <select asp-for="DoNotContactPhone.PublisherId" class="form-control" asp-items="ViewBag.PublisherId"></select>
+                <span asp-validation-for="DoNotContactPhone.PublisherId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DoNotContactPhone.ReportedDate" class="control-label"></label>
+                <input asp-for="DoNotContactPhone.ReportedDate" class="form-control" />
+                <span asp-validation-for="DoNotContactPhone.ReportedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DoNotContactPhone.PhoneNumber" class="control-label"></label>
+                <input asp-for="DoNotContactPhone.PhoneNumber" class="form-control" />
+                <span asp-validation-for="DoNotContactPhone.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DoNotContactPhone.Notes" class="control-label"></label>
+                <input asp-for="DoNotContactPhone.Notes" class="form-control" />
+                <span asp-validation-for="DoNotContactPhone.Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
