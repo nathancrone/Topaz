@@ -219,6 +219,9 @@ namespace Topaz.Data.MigrationsAuth
                         .IsUnique()
                         .HasName("UserNameIndex");
 
+                    b.HasIndex("UserName")
+                        .IsUnique();
+
                     b.ToTable("AspNetUsers");
                 });
 

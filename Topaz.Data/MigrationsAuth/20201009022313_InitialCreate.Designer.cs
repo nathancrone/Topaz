@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsAuth
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20201006180647_InitialCreate")]
+    [Migration("20201009022313_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -220,6 +220,9 @@ namespace Topaz.Data.MigrationsAuth
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasName("UserNameIndex");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("AspNetUsers");
                 });
