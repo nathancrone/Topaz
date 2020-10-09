@@ -11,7 +11,7 @@ using Topaz.Data;
 
 namespace Topaz.UI.Razor.Areas.Admin.Pages.PhoneDoNotContact
 {
-    public class EditModel : PageModel
+    public class EditModel : FormModel
     {
         private readonly Topaz.Data.TopazDbContext _context;
 
@@ -37,7 +37,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.PhoneDoNotContact
             {
                 return NotFound();
             }
-           ViewData["PublisherId"] = new SelectList(_context.Publishers, "PublisherId", "PublisherId");
+            PopulateSelectLists(_context);
             return Page();
         }
 
@@ -47,6 +47,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.PhoneDoNotContact
         {
             if (!ModelState.IsValid)
             {
+                PopulateSelectLists(_context, DoNotContactPhone.PublisherId);
                 return Page();
             }
 

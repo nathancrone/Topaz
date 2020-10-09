@@ -11,7 +11,7 @@ using Topaz.Data;
 
 namespace Topaz.UI.Razor.Areas.Admin.Pages.StreetDoNotContact
 {
-    public class EditModel : PageModel
+    public class EditModel : FormModel
     {
         private readonly Topaz.Data.TopazDbContext _context;
 
@@ -38,7 +38,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.StreetDoNotContact
             {
                 return NotFound();
             }
-            ViewData["PublisherId"] = new SelectList(_context.Publishers, "PublisherId", "PublisherId");
+            PopulateSelectLists(_context);
             return Page();
         }
 
@@ -48,6 +48,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.StreetDoNotContact
         {
             if (!ModelState.IsValid)
             {
+                PopulateSelectLists(_context, DoNotContactStreet.TerritoryId, DoNotContactStreet.PublisherId);
                 return Page();
             }
 

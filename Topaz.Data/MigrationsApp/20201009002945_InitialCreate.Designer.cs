@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20201006180156_InitialCreate")]
+    [Migration("20201009002945_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -102,6 +102,9 @@ namespace Topaz.Data.MigrationsApp
 
                     b.HasIndex("TerritoryId");
 
+                    b.HasIndex("MailingAddress1", "MailingAddress2")
+                        .IsUnique();
+
                     b.ToTable("DoNotContactLetters");
                 });
 
@@ -124,6 +127,9 @@ namespace Topaz.Data.MigrationsApp
                         .HasColumnType("TEXT");
 
                     b.HasKey("DoNotContactPhoneId");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
 
                     b.HasIndex("PublisherId");
 
@@ -157,6 +163,9 @@ namespace Topaz.Data.MigrationsApp
                     b.HasKey("DoNotContactStreetId");
 
                     b.HasIndex("PublisherId");
+
+                    b.HasIndex("StreetAddress")
+                        .IsUnique();
 
                     b.HasIndex("TerritoryId");
 
@@ -541,6 +550,9 @@ namespace Topaz.Data.MigrationsApp
                         .HasColumnType("TEXT");
 
                     b.HasKey("TerritoryId");
+
+                    b.HasIndex("TerritoryCode")
+                        .IsUnique();
 
                     b.ToTable("Territories");
 

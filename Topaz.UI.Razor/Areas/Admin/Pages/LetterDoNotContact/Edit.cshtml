@@ -14,11 +14,22 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="DoNotContactLetter.DoNotContactLetterId" />
+
             <div class="form-group">
-                <label asp-for="DoNotContactLetter.PublisherId" class="control-label"></label>
-                <select asp-for="DoNotContactLetter.PublisherId" class="form-control" asp-items="ViewBag.PublisherId"></select>
-                <span asp-validation-for="DoNotContactLetter.PublisherId" class="text-danger"></span>
+                <label asp-for="DoNotContactLetter.Territory" class="control-label"></label>
+                <select asp-for="DoNotContactLetter.TerritoryId" class="form-control" asp-items="@Model.SelectListStreetTerritory">
+                    <option value="">-- Select Street Territory --</option>
+                </select>
+                <span asp-validation-for="DoNotContactLetter.TerritoryId" class="text-danger" />
             </div>
+            <div class="form-group">
+                <label asp-for="DoNotContactLetter.Publisher" class="control-label"></label>
+                <select asp-for="DoNotContactLetter.PublisherId" class="form-control" asp-items="@Model.SelectListPublisher">
+                    <option value="">-- Select Publisher --</option>
+                </select>
+                <span asp-validation-for="DoNotContactLetter.PublisherId" class="text-danger" />
+            </div>
+
             <div class="form-group">
                 <label asp-for="DoNotContactLetter.ReportedDate" class="control-label"></label>
                 <input asp-for="DoNotContactLetter.ReportedDate" class="form-control" />

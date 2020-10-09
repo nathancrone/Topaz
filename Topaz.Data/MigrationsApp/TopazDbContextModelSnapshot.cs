@@ -100,6 +100,9 @@ namespace Topaz.Data.MigrationsApp
 
                     b.HasIndex("TerritoryId");
 
+                    b.HasIndex("MailingAddress1", "MailingAddress2")
+                        .IsUnique();
+
                     b.ToTable("DoNotContactLetters");
                 });
 
@@ -122,6 +125,9 @@ namespace Topaz.Data.MigrationsApp
                         .HasColumnType("TEXT");
 
                     b.HasKey("DoNotContactPhoneId");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
 
                     b.HasIndex("PublisherId");
 
@@ -155,6 +161,9 @@ namespace Topaz.Data.MigrationsApp
                     b.HasKey("DoNotContactStreetId");
 
                     b.HasIndex("PublisherId");
+
+                    b.HasIndex("StreetAddress")
+                        .IsUnique();
 
                     b.HasIndex("TerritoryId");
 
@@ -539,6 +548,9 @@ namespace Topaz.Data.MigrationsApp
                         .HasColumnType("TEXT");
 
                     b.HasKey("TerritoryId");
+
+                    b.HasIndex("TerritoryCode")
+                        .IsUnique();
 
                     b.ToTable("Territories");
 

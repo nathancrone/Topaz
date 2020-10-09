@@ -516,6 +516,18 @@ namespace Topaz.Data.MigrationsApp
                 column: "TerritoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DoNotContactLetters_MailingAddress1_MailingAddress2",
+                table: "DoNotContactLetters",
+                columns: new[] { "MailingAddress1", "MailingAddress2" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoNotContactPhones_PhoneNumber",
+                table: "DoNotContactPhones",
+                column: "PhoneNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DoNotContactPhones_PublisherId",
                 table: "DoNotContactPhones",
                 column: "PublisherId");
@@ -524,6 +536,12 @@ namespace Topaz.Data.MigrationsApp
                 name: "IX_DoNotContactStreets_PublisherId",
                 table: "DoNotContactStreets",
                 column: "PublisherId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoNotContactStreets_StreetAddress",
+                table: "DoNotContactStreets",
+                column: "StreetAddress",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_DoNotContactStreets_TerritoryId",
@@ -584,6 +602,12 @@ namespace Topaz.Data.MigrationsApp
                 name: "IX_Territories_Inaccessible_StreetTerritoryId",
                 table: "Territories",
                 column: "Inaccessible_StreetTerritoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Territories_TerritoryCode",
+                table: "Territories",
+                column: "TerritoryCode",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_TerritoryActivities_PublisherId",

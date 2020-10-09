@@ -10,7 +10,7 @@ using Topaz.Data;
 
 namespace Topaz.UI.Razor.Areas.Admin.Pages.LetterDoNotContact
 {
-    public class CreateModel : PageModel
+    public class CreateModel : FormModel
     {
         private readonly Topaz.Data.TopazDbContext _context;
 
@@ -21,7 +21,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.LetterDoNotContact
 
         public IActionResult OnGet()
         {
-            ViewData["PublisherId"] = new SelectList(_context.Publishers, "PublisherId", "PublisherId");
+            PopulateSelectLists(_context);
             return Page();
         }
 
@@ -34,6 +34,7 @@ namespace Topaz.UI.Razor.Areas.Admin.Pages.LetterDoNotContact
         {
             if (!ModelState.IsValid)
             {
+                PopulateSelectLists(_context);
                 return Page();
             }
 
