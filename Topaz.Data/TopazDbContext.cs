@@ -14,13 +14,16 @@ namespace Topaz.Data
         {
             modelBuilder.ApplyConfiguration(new ApartmentTerritoryConfig());
             modelBuilder.ApplyConfiguration(new BusinessTerritoryConfig());
-            modelBuilder.ApplyConfiguration(new InaccessiblePropertyConfig());
+            modelBuilder.ApplyConfiguration(new ContactActivityTypeConfig());
+            modelBuilder.ApplyConfiguration(new DoNotContactLetterConfig());
+            modelBuilder.ApplyConfiguration(new DoNotContactPhoneConfig());
+            modelBuilder.ApplyConfiguration(new DoNotContactStreetConfig());
             modelBuilder.ApplyConfiguration(new InaccessibleContactActivityConfig());
             modelBuilder.ApplyConfiguration(new InaccessibleContactConfig());
             modelBuilder.ApplyConfiguration(new InaccessibleContactListConfig());
+            modelBuilder.ApplyConfiguration(new InaccessiblePropertyConfig());
             modelBuilder.ApplyConfiguration(new InaccessibleTerritoryConfig());
             modelBuilder.ApplyConfiguration(new PhoneResponseTypeConfig());
-            modelBuilder.ApplyConfiguration(new ContactActivityTypeConfig());
             modelBuilder.ApplyConfiguration(new PhoneTypeConfig());
             modelBuilder.ApplyConfiguration(new PublisherConfig());
             modelBuilder.ApplyConfiguration(new StreetTerritoryConfig());

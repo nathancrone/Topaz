@@ -10,6 +10,7 @@ namespace Topaz.Data.Configuration
         public void Configure(EntityTypeBuilder<AppUser> builder)
         {
             builder.Property(p => p.Id).HasColumnName("UserId");
+            builder.HasIndex(x => x.UserName).IsUnique();
         }
     }
 }
