@@ -27,7 +27,7 @@ namespace Topaz.UI.Consoles.TestingConsole
             IServiceCollection services = new ServiceCollection();
             services.AddTransient<TopazDbContext, TopazDbContext>();
             services.AddDbContext<TopazDbContext>(options => options.UseSqlite("Data Source=TopazDb.db"));
-            services.AddTransient<ConsoleApp>();
+            services.AddSingleton<ConsoleApp>();
             return services;
         }
     }

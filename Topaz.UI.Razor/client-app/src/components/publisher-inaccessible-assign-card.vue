@@ -2,7 +2,10 @@
   <div class="col mt-3">
     <div
       class="card shadow-sm rounded"
-      :class="{ 'border-danger': clonedContact.doNotContactPhone }"
+      :class="{ 
+        'border-warning': clonedContact.doNotContactPhone || clonedContact.doNotContactLetter, 
+        'border-danger': clonedContact.doNotContactPhone && clonedContact.doNotContactLetter
+        }"
     >
       <div class="card-header d-flex">
         <div class="flex-grow-1">
@@ -15,16 +18,26 @@
             class="form-check-input"
             v-model="clonedContact.selected"
             :id="`cb${clonedContact.inaccessibleContactId}`"
-            :disabled="clonedContact.doNotContactPhone"
+            :disabled="clonedContact.doNotContactPhone && clonedContact.doNotContactLetter"
           />
         </div>
       </div>
       <div class="card-body">
         <div class="d-flex w-100 justify-content-end">
           <span
-            v-if="clonedContact.doNotContactPhone"
-            class="badge badge-danger"
+            v-if="clonedContact.doNotContactPhone && !clonedContact.doNotContactLetter"
+            class="badge badge-warning"
             >Do Not Phone</span
+          >
+          <span
+            v-if="!clonedContact.doNotContactPhone && clonedContact.doNotContactLetter"
+            class="badge badge-warning"
+            >Do Not Write</span
+          >
+          <span
+            v-if="clonedContact.doNotContactPhone && clonedContact.doNotContactLetter"
+            class="badge badge-danger"
+            >Do Not Phone or Write</span
           >
           <span
             v-if="clonedContact.assignPublisher"

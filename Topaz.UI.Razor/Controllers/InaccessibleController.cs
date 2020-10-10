@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
 using System.Security.Claims;
+using Topaz.Common;
 using Topaz.Common.Enums;
 using System.Text.RegularExpressions;
 
@@ -47,6 +48,16 @@ namespace MyApi.Controllers
             PhoneReponseTypeEnum.AnsweredNoEnglish,
             PhoneReponseTypeEnum.AnsweredBusiness
         };
+
+        private static readonly PhoneReponseTypeEnum[] doNotContact = {
+            PhoneReponseTypeEnum.AnsweredDoNotContact,
+            PhoneReponseTypeEnum.AnsweredProfanityOrThreatening
+        };
+
+        private static readonly Regex regexPhoneNumber = new Regex(@"\D");
+        private static readonly Regex regexMailingAddress1 = new Regex(@"^(\w+)\s(.*)");
+        private static readonly Regex regexMailingAddress2 = new Regex(@"\w+$");
+
 
         private readonly Topaz.Data.TopazDbContext _context;
         private readonly ILogger<InaccessibleController> _logger;
@@ -119,22 +130,69 @@ namespace MyApi.Controllers
                 .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId).SelectMany(y => y.Contacts))
                 .AsNoTracking();
 
-
-            // list of valid phone numbers
+            // list of phone numbers
             var territoryPhoneNumbers = Assignments
-                .Where(x => !string.IsNullOrEmpty(x.PhoneNumber))
-                .Select(x => new { x.InaccessibleContactId, PhoneNumber = Regex.Replace(x.PhoneNumber, @"\D", "") }).ToList();
+                .Where(x => !string.IsNullOrEmpty(x.PhoneNumber)).AsNoTracking().ToList()
+                .Select(x => new { x.InaccessibleContactId, PhoneNumber = regexPhoneNumber.Replace(x.PhoneNumber, "") });
 
             // compare phone numbers to the do not contact phone list
-            var territoryDoNoCallPhoneNumbers = _context.DoNotContactPhones.Where(x => territoryPhoneNumbers.Select(y => y.PhoneNumber).Contains(x.PhoneNumber)).Select(x => x.PhoneNumber).ToList();
-            var territoryDoNoCallContactIds = territoryPhoneNumbers.Where(x => territoryDoNoCallPhoneNumbers.Contains(x.PhoneNumber)).Select(x => x.InaccessibleContactId);
+            var territoryDoNotContactPhoneNumbers = _context.DoNotContactPhones.Where(x => territoryPhoneNumbers.Select(y => y.PhoneNumber).Contains(x.PhoneNumber)).Select(x => x.PhoneNumber).ToList();
+            var territoryDoNotContactPhoneContactIds = territoryPhoneNumbers.Where(x => territoryDoNotContactPhoneNumbers.Contains(x.PhoneNumber)).Select(x => x.InaccessibleContactId);
+
+            // get this territory's associated street territory
+            var streetTerritoryId = _context.InaccessibleProperties.Where(x => x.TerritoryId == id).Select(x => x.Territory.StreetTerritoryId).FirstOrDefault();
+
+            // list of this territory's mailing addresses
+            var territoryMailingAddresses = Assignments
+                .Where(x => !string.IsNullOrEmpty(x.MailingAddress1))
+                .Select(x => new { x.InaccessibleContactId, x.MailingAddress1, x.MailingAddress2 }).AsNoTracking().ToList();
+
+            // list of 'do not contact' addresses for this territories associated street territory
+            var territoryDoNotContactMailingAddresses = _context.DoNotContactLetters.Where(x => x.TerritoryId == streetTerritoryId).Select(x => new { x.MailingAddress1, x.MailingAddress2 }).AsNoTracking().ToList();
+
+            // compare the mailing addresses to the list of 'do not contact' addresses
+            var territoryDoNotContactLetterContactIds = territoryMailingAddresses.Where((x) =>
+            {
+                if (!regexMailingAddress1.IsMatch(x.MailingAddress1))
+                    return false;
+
+                if (!string.IsNullOrEmpty(x.MailingAddress2) && !regexMailingAddress2.IsMatch(x.MailingAddress2))
+                    return false;
+
+                return territoryDoNotContactMailingAddresses.Any((y) =>
+                {
+                    if (!regexMailingAddress1.IsMatch(y.MailingAddress1))
+                        return false;
+
+                    var yMailingStreetNumber = regexMailingAddress1.Match(y.MailingAddress1).Groups[1].Value.ToLower();
+                    var xMailingStreetNumber = regexMailingAddress1.Match(x.MailingAddress1).Groups[1].Value.ToLower();
+
+                    var yMailingStreetName = Regex.Replace(regexMailingAddress1.Match(y.MailingAddress1).Groups[2].Value, @"\W", "").ToLower();
+                    var xMailingStreetName = Regex.Replace(regexMailingAddress1.Match(x.MailingAddress1).Groups[2].Value, @"\W", "").ToLower();
+
+                    var similarityScore = (xMailingStreetName.Length >= yMailingStreetName.Length) ?
+                        (double)yMailingStreetName.DamerauLevenshteinDistanceTo(xMailingStreetName) / xMailingStreetName.Length :
+                        (double)xMailingStreetName.DamerauLevenshteinDistanceTo(yMailingStreetName) / yMailingStreetName.Length;
+
+                    if (string.IsNullOrEmpty(x.MailingAddress2) && string.IsNullOrEmpty(y.MailingAddress2))
+                        return similarityScore <= .35 && yMailingStreetNumber == xMailingStreetNumber;
+
+                    if (!regexMailingAddress2.IsMatch(y.MailingAddress2))
+                        return false;
+
+                    var yMailingAddress2 = regexMailingAddress2.Match(y.MailingAddress2).Value.ToLower();
+                    var xMailingAddress2 = regexMailingAddress2.Match(x.MailingAddress2).Value.ToLower();
+
+                    return similarityScore <= .35 && yMailingStreetNumber == xMailingStreetNumber && yMailingAddress2 == xMailingAddress2;
+                });
+            }).Select(x => x.InaccessibleContactId);
 
             var FilteredAssignments = Assignments;
             if (type == "phone")
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
                     // is not a 'do not contact' phone
-                    !territoryDoNoCallContactIds.Contains(x.InaccessibleContactId) &&
+                    !territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) &&
                     // has phone number
                     !string.IsNullOrEmpty(x.PhoneNumber) &&
                     // phone has not been attempted
@@ -145,7 +203,7 @@ namespace MyApi.Controllers
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
                     // is not a 'do not contact' phone
-                    !territoryDoNoCallContactIds.Contains(x.InaccessibleContactId) &&
+                    !territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) &&
                     // has phone number
                     !string.IsNullOrEmpty(x.PhoneNumber) &&
                     // phone has been attempted
@@ -159,13 +217,21 @@ namespace MyApi.Controllers
             else if (type == "letter")
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
-                    // is not a 'do not contact' phone
-                    !territoryDoNoCallContactIds.Contains(x.InaccessibleContactId) &&
                     // has mailing address
                     !string.IsNullOrEmpty(x.MailingAddress1) &&
                     (
-                        // has no phone number but no letter has been sent
-                        string.IsNullOrEmpty(x.PhoneNumber) && !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter) ||
+                        // is a 'do not contact' phone, not a 'do not contact' letter, and letter has NOT been sent
+                        (
+                            territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) &&
+                            !territoryDoNotContactLetterContactIds.Contains(x.InaccessibleContactId)) &&
+                            !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter
+                        ) ||
+                        // has no phone number, not a 'do not contact' letter, and letter has NOT been sent
+                        (
+                            string.IsNullOrEmpty(x.PhoneNumber) &&
+                            !territoryDoNotContactLetterContactIds.Contains(x.InaccessibleContactId) &&
+                            !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
+                        ) ||
                         (
                             // has phone number
                             !string.IsNullOrEmpty(x.PhoneNumber) &&
@@ -177,6 +243,8 @@ namespace MyApi.Controllers
                             x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail) &&
                             // no voicemail left and no answer
                             x.ContactActivity.Where(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail).All(y => !voicemailCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
+                            // not a 'do not contact' letter
+                            !territoryDoNotContactLetterContactIds.Contains(x.InaccessibleContactId) &&
                             // a letter has NOT been sent
                             !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
                         )
@@ -186,8 +254,8 @@ namespace MyApi.Controllers
             else
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
-                    // is a 'do not contact' phone
-                    territoryDoNoCallContactIds.Contains(x.InaccessibleContactId) ||
+                    // is a 'do not contact' phone and a 'do not contact' letter
+                    (territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) && territoryDoNotContactLetterContactIds.Contains(x.InaccessibleContactId)) ||
                     (
                         // has phone number
                         !string.IsNullOrEmpty(x.PhoneNumber) &&
@@ -205,6 +273,12 @@ namespace MyApi.Controllers
                         x.ContactActivity.Where(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail).Any(y => voicemailCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId))
                     ) ||
                     (
+                        // does not have phone number
+                        string.IsNullOrEmpty(x.PhoneNumber) &&
+                        // is 'do not contact' letter
+                        territoryDoNotContactLetterContactIds.Contains(x.InaccessibleContactId)
+                    ) ||
+                    (
                         // letter has been sent
                         x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
                     )
@@ -214,7 +288,11 @@ namespace MyApi.Controllers
             var results = FilteredAssignments.ToList();
 
             // set the do not contact phone flag to true
-            results.ForEach(x => x.DoNotContactPhone = territoryDoNoCallContactIds.Contains(x.InaccessibleContactId));
+            results.ForEach((x) =>
+            {
+                x.DoNotContactPhone = territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId);
+                x.DoNotContactLetter = territoryDoNotContactLetterContactIds.Contains(x.InaccessibleContactId);
+            });
 
             return results
                 .OrderBy(x => x.MailingAddress1)
@@ -253,15 +331,28 @@ namespace MyApi.Controllers
                 .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId).SelectMany(y => y.Contacts.Where(z => z.AssignPublisherId == PublisherId)))
                 .AsNoTracking();
 
+            // list of phone numbers
+            var territoryPhoneNumbers = Assignments
+                .Where(x => !string.IsNullOrEmpty(x.PhoneNumber)).AsNoTracking().ToList()
+                .Select(x => new { x.InaccessibleContactId, PhoneNumber = regexPhoneNumber.Replace(x.PhoneNumber, "") });
+
+            // compare phone numbers to the do not contact phone list
+            var territoryDoNotContactPhoneNumbers = _context.DoNotContactPhones.Where(x => territoryPhoneNumbers.Select(y => y.PhoneNumber).Contains(x.PhoneNumber)).Select(x => x.PhoneNumber).ToList();
+            var territoryDoNotContactPhoneContactIds = territoryPhoneNumbers.Where(x => territoryDoNotContactPhoneNumbers.Contains(x.PhoneNumber)).Select(x => x.InaccessibleContactId);
+
             return new
             {
                 PhoneWithoutVoicemail = Assignments.Where(x =>
+                    // is not a 'do not contact' phone
+                    !territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) &&
                     // has phone number
                     !string.IsNullOrEmpty(x.PhoneNumber) &&
                     // phone has not been attempted
                     x.ContactActivity.All(y => !phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId))
                 ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName),
                 PhoneWithVoicemail = Assignments.Where(x =>
+                    // is not a 'do not contact' phone
+                    !territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) &&
                     // has phone number
                     !string.IsNullOrEmpty(x.PhoneNumber) &&
                     // phone has been attempted
@@ -275,8 +366,16 @@ namespace MyApi.Controllers
                     // has mailing address
                     !string.IsNullOrEmpty(x.MailingAddress1) &&
                     (
-                        // has no phone number
-                        string.IsNullOrEmpty(x.PhoneNumber) && !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter) ||
+                        // is a 'do not contact' phone and letter has NOT been sent
+                        (
+                            territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) &&
+                            !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
+                        ) ||
+                        // has no phone number and letter has NOT been sent
+                        (
+                            string.IsNullOrEmpty(x.PhoneNumber) &&
+                            !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
+                        ) ||
                         (
                             // has phone number
                             !string.IsNullOrEmpty(x.PhoneNumber) &&
@@ -286,6 +385,8 @@ namespace MyApi.Controllers
                             x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !phoneCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
                             // phone with voicemail has been attempted
                             x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail) &&
+                            // no voicemail left and no answer
+                            x.ContactActivity.Where(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail).All(y => !voicemailCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
                             // a letter has NOT been sent
                             !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
                         )
@@ -343,6 +444,19 @@ namespace MyApi.Controllers
                         ContactActivityTypeId = activityTypeId,
                         PhoneResponseTypeId = responseTypeId
                     });
+
+                    // if contact has a phone number and the response is do not contact
+                    if (doNotContact.Contains((PhoneReponseTypeEnum)responseTypeId) && !string.IsNullOrEmpty(x.PhoneNumber))
+                    {
+                        _context.DoNotContactPhones.Add(new DoNotContactPhone()
+                        {
+                            PublisherId = x.AssignPublisherId.Value,
+                            ReportedDate = DateTime.UtcNow,
+                            PhoneNumber = regexPhoneNumber.Replace(x.PhoneNumber, ""),
+                            Notes = _context.PhoneResponseTypes.Find(responseTypeId).Name
+                        });
+                    }
+
                     x.AssignPublisherId = null;
                 }
             });
@@ -387,9 +501,21 @@ namespace MyApi.Controllers
                     PhoneResponseTypeId = dto.phoneResponseTypeId,
                     Notes = dto.notes
                 });
-            }
 
-            contact.AssignPublisherId = null;
+                // if contact has a phone number and the response is do not contact
+                if (doNotContact.Contains((PhoneReponseTypeEnum)dto.phoneResponseTypeId) && !string.IsNullOrEmpty(contact.PhoneNumber))
+                {
+                    _context.DoNotContactPhones.Add(new DoNotContactPhone()
+                    {
+                        PublisherId = contact.AssignPublisherId.Value,
+                        ReportedDate = DateTime.UtcNow,
+                        PhoneNumber = Regex.Replace(contact.PhoneNumber, @"\D", ""),
+                        Notes = $"{_context.PhoneResponseTypes.Find(dto.phoneResponseTypeId).Name}: {dto.notes}"
+                    });
+                }
+
+                contact.AssignPublisherId = null;
+            }
 
             return _context.SaveChanges();
         }
