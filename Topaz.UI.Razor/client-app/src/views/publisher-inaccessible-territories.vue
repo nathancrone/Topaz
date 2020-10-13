@@ -44,6 +44,11 @@
           >Rework</button>
           <router-link
             tag="a"
+            class="btn btn-primary mr-1"
+            :to="{ name: 'PublisherInaccessibleImport', params: { id: t.territoryId } }"
+          >Properties</router-link>
+          <router-link
+            tag="a"
             class="btn btn-primary"
             :to="{ name: 'PublisherInaccessibleAssign', params: { id: t.territoryId } }"
           >Assign</router-link>

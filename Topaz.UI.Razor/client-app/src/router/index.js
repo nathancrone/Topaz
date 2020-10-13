@@ -5,6 +5,7 @@ import PublisherStreetCheckout from "../views/publisher-street-checkout.vue";
 import PublisherInaccessibleTerritories from "../views/publisher-inaccessible-territories.vue";
 import PublisherInaccessibleCheckout from "../views/publisher-inaccessible-checkout.vue";
 import PublisherInaccessibleAssign from "../views/publisher-inaccessible-assign.vue";
+import PublisherInaccessibleImport from "../views/publisher-inaccessible-import.vue";
 import PublisherInaccessibleAssignments from "../views/publisher-inaccessible-assignments.vue";
 
 Vue.use(VueRouter);
@@ -37,6 +38,12 @@ const routes = [
     name: "PublisherInaccessibleAssign",
     props: parseProps,
     component: PublisherInaccessibleAssign,
+  },
+  {
+    path: "/Publisher/InaccessibleTerritories/Import/:id",
+    name: "PublisherInaccessibleImport",
+    props: parseProps,
+    component: PublisherInaccessibleImport,
   },
   {
     path: "/Publisher/InaccessibleAssignments",
