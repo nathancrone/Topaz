@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
-using Topaz.Common.Models;
-using Topaz.Data;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic.FileIO;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 using Topaz.Common;
 using Topaz.Common.Enums;
-using System.Text.RegularExpressions;
+using Topaz.Common.Models;
+using Topaz.Data;
 
 namespace MyApi.Controllers
 {
@@ -429,7 +436,7 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
-        [Route("/Inaccessible/ResponseType/{responseTypeId:int}/{activityTypeId:int}/PhoneActivities")]
+        [Route("/[controller]/ResponseType/{responseTypeId:int}/{activityTypeId:int}/PhoneActivities")]
         public int SavePhoneActivities(int responseTypeId, int activityTypeId, [FromBody] int[] assignments)
         {
             var contacts = _context.InaccessibleContacts.Include(x => x.ContactActivity).Where(x => assignments.Contains(x.InaccessibleContactId));
@@ -464,7 +471,7 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
-        [Route("/Inaccessible/LetterActivities")]
+        [Route("/[controller]/LetterActivities")]
         public int SaveLetterActivities([FromBody] int[] assignments)
         {
             var contacts = _context.InaccessibleContacts.Include(x => x.ContactActivity).Where(x => assignments.Contains(x.InaccessibleContactId));
@@ -485,7 +492,7 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
-        [Route("/Inaccessible/Contact/{id:int}/PhoneActivity")]
+        [Route("/[controller]/Contact/{id:int}/PhoneActivity")]
         public int SavePhoneActivity(int id, [FromBody] SavePhoneActivityDto dto)
         {
             var contact = _context.InaccessibleContacts.Find(id);
@@ -527,7 +534,7 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
-        [Route("/Inaccessible/Contact/{id:int}/LetterActivity")]
+        [Route("/[controller]/Contact/{id:int}/LetterActivity")]
         public int SaveLetterActivity(int id, [FromBody] SaveLetterActivityDto dto)
         {
             var contact = _context.InaccessibleContacts.Find(id);
@@ -552,6 +559,53 @@ namespace MyApi.Controllers
         public class SaveLetterActivityDto
         {
             public string notes { get; set; }
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public IEnumerable<Object> ConvertPropertyContactListCsv(int id, [FromBody] IFormFile csvFile)
+        {
+
+            JArray resultArray = new JArray();
+
+            using (var parser = new TextFieldParser(csvFile.OpenReadStream()))
+            {
+                parser.TextFieldType = FieldType.Delimited;
+                parser.Delimiters = new string[] { "," };
+
+                var rowIndex = 0;
+                string[] columns;
+                string[] currentRow;
+                while (!parser.EndOfData)
+                {
+                    try
+                    {
+                        if (rowIndex == 0)
+                        {
+                            columns = parser.ReadFields();
+                        }
+                        else
+                        {
+                            currentRow = parser.ReadFields();
+                            var columnIndex = 0;
+                            JObject resultObject = new JObject();
+                            foreach (var currentColumn in currentRow)
+                            {
+                                resultObject.Add(new JProperty("Halo", 9));
+                                columnIndex++;
+                            }
+                            resultArray.Add(resultObject);
+                        }
+                    }
+                    catch (MalformedLineException ex)
+                    {
+
+                    }
+                    rowIndex++;
+                }
+            }
+
+            return new List<string>() { };
         }
     }
 }

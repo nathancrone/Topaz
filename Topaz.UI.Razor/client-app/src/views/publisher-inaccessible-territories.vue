@@ -46,7 +46,7 @@
             tag="a"
             class="btn btn-primary mr-1"
             :to="{ name: 'PublisherInaccessibleImport', params: { id: t.territoryId } }"
-          >Properties</router-link>
+          >Import</router-link>
           <router-link
             tag="a"
             class="btn btn-primary"
