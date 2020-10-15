@@ -512,12 +512,16 @@ namespace MyApi.Controllers
                 // if contact has a phone number and the response is do not contact
                 if (doNotContact.Contains((PhoneReponseTypeEnum)dto.phoneResponseTypeId) && !string.IsNullOrEmpty(contact.PhoneNumber))
                 {
+                    var notesValue = new List<string>() { _context.PhoneResponseTypes.Find(dto.phoneResponseTypeId).Name };
+                    if (!string.IsNullOrEmpty(dto.notes))
+                        notesValue.Add(dto.notes);
+
                     _context.DoNotContactPhones.Add(new DoNotContactPhone()
                     {
                         PublisherId = contact.AssignPublisherId.Value,
                         ReportedDate = DateTime.UtcNow,
                         PhoneNumber = Regex.Replace(contact.PhoneNumber, @"\D", ""),
-                        Notes = $"{_context.PhoneResponseTypes.Find(dto.phoneResponseTypeId).Name}: {dto.notes}"
+                        Notes = String.Join(": ", notesValue.ToArray())
                     });
                 }
 
