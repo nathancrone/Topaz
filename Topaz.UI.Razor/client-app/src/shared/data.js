@@ -259,6 +259,29 @@ const saveInaccessibleContactLetterActivities = async function(assignments) {
   }
 };
 
+const uploadContactsCsv = async function(file) {
+  try {
+    console.log(file);
+    var formData = new FormData();
+    formData.append("csvFile", file);
+    const response = await axios.post(
+      `/Inaccessible/ConvertPropertyContactListCsv`,
+      formData,
+      {
+        headers: {
+          Accept: "application/vnd.ms-excel",
+        },
+      }
+    );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
 const currentUserCheckout = async function(territory) {
   try {
     const response = await axios.post(
@@ -335,6 +358,7 @@ export const data = {
   saveInaccessibleContactPhoneActivities,
   saveInaccessibleContactLetterActivity,
   saveInaccessibleContactLetterActivities,
+  uploadContactsCsv,
   currentUserCheckout,
   currentUserCheckin,
   currentUserRework,

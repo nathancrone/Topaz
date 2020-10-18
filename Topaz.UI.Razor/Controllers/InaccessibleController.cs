@@ -182,7 +182,7 @@ namespace MyApi.Controllers
                         (double)xMailingStreetName.DamerauLevenshteinDistanceTo(yMailingStreetName) / yMailingStreetName.Length;
 
                     if (string.IsNullOrEmpty(x.MailingAddress2) && string.IsNullOrEmpty(y.MailingAddress2))
-                        return similarityScore <= .35 && yMailingStreetNumber == xMailingStreetNumber;
+                        return similarityScore <= .5 && yMailingStreetNumber == xMailingStreetNumber;
 
                     if (!regexMailingAddress2.IsMatch(y.MailingAddress2))
                         return false;
@@ -190,7 +190,7 @@ namespace MyApi.Controllers
                     var yMailingAddress2 = regexMailingAddress2.Match(y.MailingAddress2).Value.ToLower();
                     var xMailingAddress2 = regexMailingAddress2.Match(x.MailingAddress2).Value.ToLower();
 
-                    return similarityScore <= .35 && yMailingStreetNumber == xMailingStreetNumber && yMailingAddress2 == xMailingAddress2;
+                    return similarityScore <= .5 && yMailingStreetNumber == xMailingStreetNumber && yMailingAddress2 == xMailingAddress2;
                 });
             }).Select(x => x.InaccessibleContactId);
 
@@ -574,9 +574,8 @@ namespace MyApi.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public IEnumerable<Object> ConvertPropertyContactListCsv(int id, [FromBody] IFormFile csvFile)
+        public Object ConvertPropertyContactListCsv([FromForm] IFormFile csvFile)
         {
-
             JArray resultArray = new JArray();
 
             using (var parser = new TextFieldParser(csvFile.OpenReadStream()))
@@ -585,7 +584,7 @@ namespace MyApi.Controllers
                 parser.Delimiters = new string[] { "," };
 
                 var rowIndex = 0;
-                string[] columns;
+                var columns = new List<string>();
                 string[] currentRow;
                 while (!parser.EndOfData)
                 {
@@ -593,7 +592,7 @@ namespace MyApi.Controllers
                     {
                         if (rowIndex == 0)
                         {
-                            columns = parser.ReadFields();
+                            columns.AddRange(parser.ReadFields());
                         }
                         else
                         {
@@ -602,7 +601,10 @@ namespace MyApi.Controllers
                             JObject resultObject = new JObject();
                             foreach (var currentColumn in currentRow)
                             {
-                                resultObject.Add(new JProperty("Halo", 9));
+                                if (columnIndex < columns.Count())
+                                {
+                                    resultObject.Add(new JProperty(columns[columnIndex], currentRow[columnIndex]));
+                                }
                                 columnIndex++;
                             }
                             resultArray.Add(resultObject);
@@ -616,7 +618,7 @@ namespace MyApi.Controllers
                 }
             }
 
-            return new List<string>() { };
+            return resultArray;
         }
     }
 }
