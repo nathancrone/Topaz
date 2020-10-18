@@ -409,6 +409,13 @@ namespace MyApi.Controllers
             return _context.PhoneResponseTypes.OrderBy(x => x.Name);
         }
 
+        [HttpGet]
+        [Route("[action]/{id:int}")]
+        public IEnumerable<Object> GetTerritoryProperties(int id)
+        {
+            return _context.InaccessibleProperties.Where(x => x.TerritoryId == id);
+        }
+
         [HttpPost]
         [Route("[action]/{assignee:int}")]
         public int Assign(int assignee, [FromBody] int[] assignments)
