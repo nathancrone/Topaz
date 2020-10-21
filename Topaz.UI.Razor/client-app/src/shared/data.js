@@ -261,7 +261,6 @@ const saveInaccessibleContactLetterActivities = async function(assignments) {
 
 const uploadContactsCsv = async function(file) {
   try {
-    console.log(file);
     var formData = new FormData();
     formData.append("csvFile", file);
     const response = await axios.post(

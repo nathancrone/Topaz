@@ -106,11 +106,10 @@ namespace MyApi.Controllers
             //only allow the check in if the territory is checked out
             var activity = _context.TerritoryActivities.Where(x =>
                 x.TerritoryId == territoryId &&
-                x.PublisherId == publisherId &&
                 x.CheckOutDate != null &&
                 x.CheckInDate == null).FirstOrDefault();
 
-            if (activity != null)
+            if (activity != null && activity.PublisherId == publisherId)
             {
                 activity.CheckInDate = DateTime.UtcNow;
                 _context.SaveChanges();

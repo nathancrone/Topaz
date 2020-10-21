@@ -64,7 +64,17 @@ namespace MyApi.Controllers
         private static readonly Regex regexPhoneNumber = new Regex(@"\D");
         private static readonly Regex regexMailingAddress1 = new Regex(@"^(\w+)\s(.*)");
         private static readonly Regex regexMailingAddress2 = new Regex(@"\w+$");
-
+        private (string name, int? columnIndex, bool columnrequired)[] columnInformation = new (string name, int? columnIndex, bool columnrequired)[] {
+            ("FirstName", null, true),
+            ("LastName", null, true),
+            ("MiddleInitial", null, false),
+            ("Age", null, false),
+            ("MailingAddress1", null, true),
+            ("MailingAddress2", null, false),
+            ("PostalCode", null, true),
+            ("PhoneNumber", null, true),
+            ("PhoneType", null, true)
+        };
 
         private readonly Topaz.Data.TopazDbContext _context;
         private readonly ILogger<InaccessibleController> _logger;
@@ -528,7 +538,7 @@ namespace MyApi.Controllers
                         PublisherId = contact.AssignPublisherId.Value,
                         ReportedDate = DateTime.UtcNow,
                         PhoneNumber = Regex.Replace(contact.PhoneNumber, @"\D", ""),
-                        Notes = String.Join(": ", notesValue.ToArray())
+                        Notes = string.Join(": ", notesValue.ToArray())
                     });
                 }
 
@@ -576,6 +586,12 @@ namespace MyApi.Controllers
         [Route("[action]")]
         public Object ConvertPropertyContactListCsv([FromForm] IFormFile csvFile)
         {
+            JObject resultObject = new JObject();
+
+            JArray messagesError = new JArray();
+            JArray messagesWarning = new JArray();
+            JArray messagesSuccess = new JArray();
+
             JArray resultArray = new JArray();
 
             using (var parser = new TextFieldParser(csvFile.OpenReadStream()))
@@ -590,35 +606,159 @@ namespace MyApi.Controllers
                 {
                     try
                     {
+                        // on the first row
                         if (rowIndex == 0)
                         {
-                            columns.AddRange(parser.ReadFields());
+                            // add the column names
+                            columns.AddRange(parser.ReadFields().Select(x => x.Trim()));
+
+                            // calculate the index of each column
+                            var lower = columns.Select(x => x.ToLower()).ToArray();
+                            for (var i = 0; i < columnInformation.Length; i++)
+                                columnInformation[i].columnIndex = Array.IndexOf(lower, columnInformation[i].name.ToLower());
+
+                            // if there are columns without name specified
+                            if (columns.Where(x => string.IsNullOrEmpty(x)).Count() != 0)
+                                messagesError.Add("This file has one or more empty column headers. This is not allowed.");
+
+                            // if there are duplicate columns
+                            if (columns.Distinct().Count() != columns.Count())
+                                messagesError.Add("There are multiple columns with the same name. This is not allowed.");
+
+                            // check the columns against the required columns
+                            var missingRequiredColumns = columnInformation.Where(x => x.columnrequired && x.columnIndex == -1).Select(x => x.name);
+
+                            // if there are any missing required columns
+                            if (missingRequiredColumns.Any())
+                            {
+                                if (missingRequiredColumns.Count() == 1)
+                                    messagesError.Add($"The following required column is missing: {string.Join(", ", missingRequiredColumns)}");
+                                else
+                                    messagesError.Add($"The following {missingRequiredColumns.Count()} required columns are missing: {string.Join(", ", missingRequiredColumns)}");
+                            }
+
+                            // exit if there are any column errors...
+                            if (messagesError.Any())
+                                break;
+
+                            // check the columns against the optional columns
+                            var missingOptionalColumns = columnInformation.Where(x => !x.columnrequired && x.columnIndex == -1).Select(x => x.name); ;
+
+                            // if there are any missing optional columns
+                            if (missingOptionalColumns.Any())
+                            {
+                                if (missingOptionalColumns.Count() == 1)
+                                    messagesWarning.Add($"The following optional column is missing: {string.Join(", ", missingOptionalColumns)}");
+                                else
+                                    messagesWarning.Add($"The following {missingOptionalColumns.Count()} optional columns are missing: {string.Join(", ", missingOptionalColumns)}");
+                            }
+
+                            // if there are any columns that will be ignored
+                            var ignoredColumns = columns.Where(x => !columnInformation.Any(y => string.Compare(x, y.name, true) == 0));
+                            if (ignoredColumns.Any())
+                            {
+                                if (ignoredColumns.Count() == 1)
+                                    messagesWarning.Add($"The following column will be ignored: {string.Join(", ", ignoredColumns)}");
+                                else
+                                    messagesWarning.Add($"The following {ignoredColumns.Count()} columns will be ignored: {string.Join(", ", ignoredColumns)}");
+                            }
                         }
                         else
                         {
-                            currentRow = parser.ReadFields();
+                            currentRow = parser.ReadFields().Select(x => x.Trim()).ToArray();
+
+                            JObject objContact = new JObject();
+
                             var columnIndex = 0;
-                            JObject resultObject = new JObject();
                             foreach (var currentColumn in currentRow)
                             {
-                                if (columnIndex < columns.Count())
+                                if (columnInformation.Any(x => x.columnIndex == columnIndex))
                                 {
-                                    resultObject.Add(new JProperty(columns[columnIndex], currentRow[columnIndex]));
+                                    objContact.Add(new JProperty(columnInformation.FirstOrDefault(x => x.columnIndex == columnIndex).name, currentRow[columnIndex]));
                                 }
                                 columnIndex++;
                             }
-                            resultArray.Add(resultObject);
+
+                            var rowContact = objContact.ToObject<PropertyContactDto>();
+
+                            rowContact.Validate();
+
+                            resultArray.Add(JObject.FromObject(rowContact));
                         }
                     }
                     catch (MalformedLineException ex)
                     {
-
+                        messagesError.Add($"Unable to import the file. There is something wrong with the file format. {ex.Message}");
+                        break;
                     }
                     rowIndex++;
                 }
             }
 
-            return resultArray;
+            resultObject.Add(new JProperty("errors", messagesError));
+            resultObject.Add(new JProperty("warnings", messagesWarning));
+            resultObject.Add(new JProperty("success", messagesSuccess));
+            resultObject.Add(new JProperty("contacts", resultArray));
+
+            return resultObject;
+        }
+
+        public class PropertyContactDto
+        {
+            public PropertyContactDto()
+            {
+                Errors = new List<string>();
+                Warnings = new List<string>();
+            }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string MiddleInitial { get; set; }
+            public string Age { get; set; }
+            public string MailingAddress1 { get; set; }
+            public string MailingAddress2 { get; set; }
+            public string PostalCode { get; set; }
+            public string PhoneNumber { get; set; }
+            public string PhoneType { get; set; }
+            public List<string> Errors { get; set; }
+            public List<string> Warnings { get; set; }
+        }
+    }
+
+    public static class ExtensionMethods
+    {
+        public static void Validate(this MyApi.Controllers.InaccessibleController.PropertyContactDto contact)
+        {
+            if (string.IsNullOrEmpty(contact.FirstName) || string.IsNullOrEmpty(contact.LastName))
+            {
+                contact.Errors.Add("Contacts must have a first and last name. This record will not be imported.");
+            }
+
+            if (string.IsNullOrEmpty(contact.MailingAddress1) && string.IsNullOrEmpty(contact.PhoneNumber))
+            {
+                contact.Errors.Add("Contacts must have either an address or a phone number. This record will not be imported.");
+            }
+
+            if (
+                (!string.IsNullOrEmpty(contact.MailingAddress1) && string.IsNullOrEmpty(contact.PostalCode)) ||
+                (string.IsNullOrEmpty(contact.MailingAddress1) && !string.IsNullOrEmpty(contact.PostalCode))
+            )
+            {
+                contact.Errors.Add("An address must have a mailing address and postal code. This record will not be imported.");
+            }
+
+            if (
+                (!string.IsNullOrEmpty(contact.PhoneNumber) && string.IsNullOrEmpty(contact.PhoneType)) ||
+                (string.IsNullOrEmpty(contact.PhoneNumber) && !string.IsNullOrEmpty(contact.PhoneType))
+            )
+            {
+                contact.Errors.Add("A phone number must include the number and the type. This record will not be imported.");
+            }
+
+            int age;
+            if (!string.IsNullOrEmpty(contact.Age) && !int.TryParse(contact.Age, out age))
+            {
+                contact.Warnings.Add("This contact has an invalid age. The age will be ignored.");
+            }
         }
     }
 }
