@@ -3,7 +3,9 @@
       <div v-if="true" class="d-flex">
         <div class="flex-grow-1 mb-2">&nbsp;</div>
         <div class="flex-grow-1 flex-md-grow-0 mb-2">
-          <a class="btn btn-sm btn-primary" href="#">save</a>
+          <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
       </div>
       <div v-else class="w-100 alert alert-primary" role="alert">no properties found for this territory</div>
@@ -21,19 +23,14 @@
             </a>
         </ul>
         <div :class="{'card-body': true, 'collapse': true, 'show': p.isExpanded}">
-          <div v-if="p.errorMessages.length !== 0" class="alert alert-danger" role="alert">
+          <div v-if="p.errors.length !== 0" class="alert alert-danger" role="alert">
             <ul>
-              <li v-for="(m, i) in p.errorMessages" :key="i">{{ m }}</li>
+              <li v-for="(m, i) in p.errors" :key="i">{{ m }}</li>
             </ul>
           </div>
-          <div v-if="p.warningMessages.length !== 0" class="alert alert-warning" role="alert">
+          <div v-if="p.warnings.length !== 0" class="alert alert-warning" role="alert">
             <ul>
-              <li v-for="(m, i) in p.warningMessages" :key="i">{{ m }}</li>
-            </ul>
-          </div>
-          <div v-if="p.successMessages.length !== 0" class="alert alert-success" role="alert">
-            <ul>
-              <li v-for="(m, i) in p.successMessages" :key="i">{{ m }}</li>
+              <li v-for="(m, i) in p.warnings" :key="i">{{ m }}</li>
             </ul>
           </div>
           <form v-if="p.fileContacts.length === 0 && p.contacts.length === 0">
@@ -43,7 +40,7 @@
               </div>
               <a v-if="p.file" class="btn btn-primary" href="#" role="button" @click.prevent="uploadFile(p.inaccessiblePropertyId)">Upload</a>
           </form>
-          <table v-else class="table">
+          <table v-else class="table table-bordered">
               <thead>
                   <tr>
                       <th>
@@ -106,7 +103,7 @@
                             {{ c.PhoneType }}
                         </td>
                     </tr>
-                    <tr class="table-light" :key="`row-message-${i}`" v-if="c.Errors.length !== 0 || c.Warnings.length !== 0">
+                    <tr :key="`row-message-${i}`" v-if="c.Errors.length !== 0 || c.Warnings.length !== 0">
                       <td colspan="9">
                         <div v-if="c.Errors.length !== 0" class="alert alert-danger" role="alert">
                           <h5 class="alert-heading">Errors</h5>
@@ -142,9 +139,9 @@
                       <td>
                           {{ c.MailingAddress2 }}
                       </td>
-                        <td>
-                            {{ c.PostalCode }}
-                        </td>
+                      <td>
+                          {{ c.PostalCode }}
+                      </td>
                       <td>
                           {{ c.PhoneNumber }}
                       </td>
@@ -154,6 +151,15 @@
                   </tr>
               </tbody>
           </table>
+
+          <div v-if="p.fileContacts.length > p.rowErrors" :class="{ 'alert': true, 'alert-success': !(p.rowErrors|p.rowWarnings), 'alert-warning': (p.rowErrors|p.rowWarnings) }" role="alert">
+            <h5 class="alert-heading">Please Review...</h5>
+            <p v-if="!(p.rowErrors|p.rowWarnings)">There are {{ p.fileContacts.length }} contacts in this file. Are you ready to import these contacts?</p>
+            <p v-else>There are {{ p.fileContacts.length }} contacts in this file. {{p.rowErrors}} contacts have errors and will not be imported. {{ p.rowWarnings }} contacts with warnings have some information that cannot be imported. Are you sure you want to import these contacts?</p>
+            <hr>
+            <button type="button" class="btn btn-secondary btn-sm mr-1" @click.prevent="fileContactCancel(p.inaccessiblePropertyId)">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm">Confirm</button>
+          </div>
 
         </div>
     </div>
@@ -185,9 +191,10 @@ export default {
       );
       properties.forEach(function (p) {
         p.isExpanded = false;
-        p.errorMessages = [];
-        p.warningMessages = [];
-        p.successMessages = [];
+        p.errors = [];
+        p.warnings = [];
+        p.rowErrors = 0;
+        p.rowWarnings = 0;
         p.file = null;
         p.fileContacts = [];
         p.contacts = [];
@@ -201,10 +208,20 @@ export default {
     async uploadFile(id) {
       var property = this.properties.find((p) => p.inaccessiblePropertyId === id);
       var result = await data.uploadContactsCsv(property.file);
-      property.errorMessages = result.errors;
-      property.warningMessages = result.warnings;
-      property.successMessages = result.success;
-      property.fileContacts = result.contacts;
+      property.errors = result.errors;
+      property.warnings = result.warnings;
+      property.rowErrors = result.rowErrors;
+      property.rowWarnings = result.rowWarnings;
+      property.fileContacts = result.rows;
+    }, 
+    fileContactCancel(id) {
+      var property = this.properties.find((p) => p.inaccessiblePropertyId === id);
+      property.errors = [];
+      property.warnings = [];
+      property.rowErrors = 0;
+      property.rowWarnings = 0;
+      property.file = null;
+      property.fileContacts = [];
     }, 
     toggle(p) {
       p.isExpanded = !p.isExpanded;

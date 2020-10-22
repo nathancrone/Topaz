@@ -9,7 +9,7 @@ using Topaz.Common.Models;
 using Topaz.Data;
 using System.Security.Claims;
 
-namespace MyApi.Controllers
+namespace Topaz.UI.Razor.Controllers
 {
     [ApiController]
     [Route("[controller]")]

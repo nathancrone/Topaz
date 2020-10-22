@@ -19,7 +19,7 @@ using Topaz.Common.Enums;
 using Topaz.Common.Models;
 using Topaz.Data;
 
-namespace MyApi.Controllers
+namespace Topaz.UI.Razor.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -590,10 +590,11 @@ namespace MyApi.Controllers
 
             JArray messagesError = new JArray();
             JArray messagesWarning = new JArray();
-            JArray messagesSuccess = new JArray();
 
-            JArray resultArray = new JArray();
+            JArray rowArray = new JArray();
 
+            int rowErrors = 0;
+            int rowWarnings = 0;
             using (var parser = new TextFieldParser(csvFile.OpenReadStream()))
             {
                 parser.TextFieldType = FieldType.Delimited;
@@ -683,7 +684,10 @@ namespace MyApi.Controllers
 
                             rowContact.Validate();
 
-                            resultArray.Add(JObject.FromObject(rowContact));
+                            rowErrors += rowContact.Errors.Count();
+                            rowWarnings += rowContact.Warnings.Count();
+
+                            rowArray.Add(JObject.FromObject(rowContact));
                         }
                     }
                     catch (MalformedLineException ex)
@@ -697,8 +701,9 @@ namespace MyApi.Controllers
 
             resultObject.Add(new JProperty("errors", messagesError));
             resultObject.Add(new JProperty("warnings", messagesWarning));
-            resultObject.Add(new JProperty("success", messagesSuccess));
-            resultObject.Add(new JProperty("contacts", resultArray));
+            resultObject.Add(new JProperty("rowErrors", rowErrors));
+            resultObject.Add(new JProperty("rowWarnings", rowWarnings));
+            resultObject.Add(new JProperty("rows", rowArray));
 
             return resultObject;
         }
@@ -726,7 +731,7 @@ namespace MyApi.Controllers
 
     public static class ExtensionMethods
     {
-        public static void Validate(this MyApi.Controllers.InaccessibleController.PropertyContactDto contact)
+        public static void Validate(this Topaz.UI.Razor.Controllers.InaccessibleController.PropertyContactDto contact)
         {
             if (string.IsNullOrEmpty(contact.FirstName) || string.IsNullOrEmpty(contact.LastName))
             {
@@ -738,24 +743,39 @@ namespace MyApi.Controllers
                 contact.Errors.Add("Contacts must have either an address or a phone number. This record will not be imported.");
             }
 
-            if (
+            var isMailingError = (
                 (!string.IsNullOrEmpty(contact.MailingAddress1) && string.IsNullOrEmpty(contact.PostalCode)) ||
                 (string.IsNullOrEmpty(contact.MailingAddress1) && !string.IsNullOrEmpty(contact.PostalCode))
-            )
+            );
+            if (isMailingError)
             {
                 contact.Errors.Add("An address must have a mailing address and postal code. This record will not be imported.");
             }
 
-            if (
+            var isPhoneError = (
                 (!string.IsNullOrEmpty(contact.PhoneNumber) && string.IsNullOrEmpty(contact.PhoneType)) ||
                 (string.IsNullOrEmpty(contact.PhoneNumber) && !string.IsNullOrEmpty(contact.PhoneType))
-            )
+            );
+            if (isPhoneError)
             {
-                contact.Errors.Add("A phone number must include the number and the type. This record will not be imported.");
+                contact.Errors.Add("A phone number must include the number and the phone type. This record will not be imported.");
+            }
+
+            var phoneTypes = new string[] { "C", "L", "V" };
+            if (contact.Errors.Count() == 0 && !string.IsNullOrEmpty(contact.PhoneType) && !phoneTypes.Any(x => string.Compare(contact.PhoneType, x, true) == 0))
+            {
+                if (!isMailingError)
+                {
+                    contact.Warnings.Add("This contact has an invalid phone type. The phone number will be ignored.");
+                }
+                else
+                {
+                    contact.Errors.Add("This contact has an invalid phone type. This record will not be imported.");
+                }
             }
 
             int age;
-            if (!string.IsNullOrEmpty(contact.Age) && !int.TryParse(contact.Age, out age))
+            if (contact.Errors.Count() == 0 && !string.IsNullOrEmpty(contact.Age) && !int.TryParse(contact.Age, out age))
             {
                 contact.Warnings.Add("This contact has an invalid age. The age will be ignored.");
             }
