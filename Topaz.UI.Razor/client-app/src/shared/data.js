@@ -259,18 +259,47 @@ const saveInaccessibleContactLetterActivities = async function(assignments) {
   }
 };
 
+const removePropertyContactList = async function(id) {
+  try {
+    const response = await axios.post(
+      `/Inaccessible/RemovePropertyContactList/${id}`
+    );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
 const uploadContactsCsv = async function(file) {
   try {
     var formData = new FormData();
     formData.append("csvFile", file);
     const response = await axios.post(
-      `/Inaccessible/ConvertPropertyContactListCsv`,
+      `/Inaccessible/UploadContactsCsv`,
       formData,
       {
         headers: {
           Accept: "application/vnd.ms-excel",
         },
       }
+    );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
+const uploadContacts = async function(id, contacts) {
+  try {
+    const response = await axios.post(
+      `/Inaccessible/UploadContacts/${id}`,
+      contacts
     );
     if (response.status !== 200) throw Error(response.message);
     if (!response.data) return;
@@ -357,7 +386,9 @@ export const data = {
   saveInaccessibleContactPhoneActivities,
   saveInaccessibleContactLetterActivity,
   saveInaccessibleContactLetterActivities,
+  removePropertyContactList,
   uploadContactsCsv,
+  uploadContacts,
   currentUserCheckout,
   currentUserCheckin,
   currentUserRework,

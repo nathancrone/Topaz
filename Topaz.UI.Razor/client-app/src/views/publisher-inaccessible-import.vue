@@ -13,11 +13,12 @@
       v-for="p in properties"
       :key="`card${p.inaccessiblePropertyId}`">
         <ul class="bg-light list-group list-group-flush">
-            <a href="#" class="d-flex list-group-item list-group-item-action" v-on:click.prevent="toggle(p)">
-            <div class="w-100 justify-content-between">
-                <strong>{{ p.street }} ({{ p.streetNumbers }}) - {{ p.propertyName }}</strong>
+            <a href="#" class="d-flex justify-content-between list-group-item list-group-item-action" v-on:click.prevent="toggle(p)">
+            <div>
+                <strong>{{ p.streetNumbers }} {{ p.street }}<template v-if="p.propertyName"> ({{ p.propertyName }})</template></strong>
             </div>
-            <div class="justify-content-end">
+            <div>
+                <span class="badge badge-secondary mr-2">{{p.contacts.length}}</span>
                 <i :class="{'arrow': true, 'down': !p.isExpanded, 'up': p.isExpanded }"></i>
             </div>
             </a>
@@ -76,45 +77,45 @@
                   <template v-for="(c, i) in p.fileContacts">
                     <tr :key="`row-contact-${i}`">
                         <td>
-                            {{ c.FirstName }}
+                            {{ c.firstName }}
                         </td>
                         <td>
-                            {{ c.LastName }}
+                            {{ c.lastName }}
                         </td>
                         <td>
-                            {{ c.MiddleInitial }}
+                            {{ c.middleInitial }}
                         </td>
                         <td>
-                            {{ c.Age }}
+                            {{ c.age }}
                         </td>
                         <td>
-                            {{ c.MailingAddress1 }}
+                            {{ c.mailingAddress1 }}
                         </td>
                         <td>
-                            {{ c.MailingAddress2 }}
+                            {{ c.mailingAddress2 }}
                         </td>
                         <td>
-                            {{ c.PostalCode }}
+                            {{ c.postalCode }}
                         </td>
                         <td>
-                            {{ c.PhoneNumber }}
+                            {{ c.phoneNumber }}
                         </td>
                         <td>
-                            {{ c.PhoneType }}
+                            {{ c.phoneType }}
                         </td>
                     </tr>
-                    <tr :key="`row-message-${i}`" v-if="c.Errors.length !== 0 || c.Warnings.length !== 0">
+                    <tr :key="`row-message-${i}`" v-if="c.errors.length !== 0 || c.warnings.length !== 0">
                       <td colspan="9">
-                        <div v-if="c.Errors.length !== 0" class="alert alert-danger" role="alert">
+                        <div v-if="c.errors.length !== 0" class="alert alert-danger" role="alert">
                           <h5 class="alert-heading">Errors</h5>
                           <ul>
-                            <li v-for="(e, x) in c.Errors" :key="`err-${i}-${x}`">{{ e }}</li>
+                            <li v-for="(e, x) in c.errors" :key="`err-${i}-${x}`">{{ e }}</li>
                           </ul>
                         </div>
-                        <div v-if="c.Warnings.length !== 0" class="alert alert-warning" role="alert">
+                        <div v-if="c.warnings.length !== 0" class="alert alert-warning" role="alert">
                           <h5 class="alert-warning">Warnings</h5>
                           <ul>
-                            <li v-for="(w, x) in c.Warnings" :key="`warn-${i}-${x}`">{{ w }}</li>
+                            <li v-for="(w, x) in c.warnings" :key="`warn-${i}-${x}`">{{ w }}</li>
                           </ul>
                         </div>
                       </td>
@@ -122,35 +123,45 @@
                   </template>
                   <tr v-for="(c, i) in p.contacts" :key="i">
                       <td>
-                          {{ c.FirstName }}
+                          {{ c.firstName }}
                       </td>
                       <td>
-                          {{ c.LastName }}
+                          {{ c.lastName }}
                       </td>
                       <td>
-                          {{ c.MiddleInitial }}
+                          {{ c.middleInitial }}
                       </td>
                       <td>
-                          {{ c.Age }}
+                          {{ c.age }}
                       </td>
                       <td>
-                          {{ c.MailingAddress1 }}
+                          {{ c.mailingAddress1 }}
                       </td>
                       <td>
-                          {{ c.MailingAddress2 }}
+                          {{ c.mailingAddress2 }}
                       </td>
                       <td>
-                          {{ c.PostalCode }}
+                          {{ c.postalCode }}
                       </td>
                       <td>
-                          {{ c.PhoneNumber }}
+                          {{ c.phoneNumber }}
                       </td>
                       <td>
-                          {{ c.PhoneType }}
+                          {{ c.phoneType.name }}
                       </td>
                   </tr>
               </tbody>
           </table>
+
+          <button v-if="p.fileContacts.length === 0 && p.contacts.length !== 0 && !p.removeContacts" @click.prevent="p.removeContacts = true" type="button" class="btn btn-primary">Remove Contacts</button>
+
+          <div v-if="p.fileContacts.length === 0 && p.contacts.length !== 0 && p.removeContacts" class="alert alert-warning" role="alert">
+            <h5 class="alert-heading">Remove Contacts</h5>
+            <p>Are you sure you want to remove these {{ p.contacts.length }} contacts from this property?</p>
+            <hr>
+            <button type="button" class="btn btn-secondary btn-sm mr-1" @click.prevent="p.removeContacts = false">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" @click.prevent="removeContactsConfirm(p.inaccessiblePropertyId)">Confirm</button>
+          </div>
 
           <div v-if="p.fileContacts.length > p.rowErrors" :class="{ 'alert': true, 'alert-success': !(p.rowErrors|p.rowWarnings), 'alert-warning': (p.rowErrors|p.rowWarnings) }" role="alert">
             <h5 class="alert-heading">Please Review...</h5>
@@ -158,7 +169,7 @@
             <p v-else>There are {{ p.fileContacts.length }} contacts in this file. {{p.rowErrors}} contacts have errors and will not be imported. {{ p.rowWarnings }} contacts with warnings have some information that cannot be imported. Are you sure you want to import these contacts?</p>
             <hr>
             <button type="button" class="btn btn-secondary btn-sm mr-1" @click.prevent="fileContactCancel(p.inaccessiblePropertyId)">Cancel</button>
-            <button type="button" class="btn btn-primary btn-sm">Confirm</button>
+            <button type="button" class="btn btn-primary btn-sm" @click.prevent="fileContactConfirm(p.inaccessiblePropertyId)">Confirm</button>
           </div>
 
         </div>
@@ -197,9 +208,13 @@ export default {
         p.rowWarnings = 0;
         p.file = null;
         p.fileContacts = [];
-        p.contacts = [];
+        p.removeContacts = false;
+        p.contacts = (p.contacts) ? p.contacts : [];
       });
       this.properties = [...properties];
+    }, 
+    toggle(p) {
+      p.isExpanded = !p.isExpanded;
     },
     changeFile(evt, id) {
       var property = this.properties.find((p) => p.inaccessiblePropertyId === id);
@@ -223,8 +238,28 @@ export default {
       property.file = null;
       property.fileContacts = [];
     }, 
-    toggle(p) {
-      p.isExpanded = !p.isExpanded;
+    async fileContactConfirm(id) {
+      var property = this.properties.find((p) => p.inaccessiblePropertyId === id);
+      var result = await data.uploadContacts(id, property.fileContacts);
+      property.errors = [];
+      property.warnings = [];
+      property.rowErrors = 0;
+      property.rowWarnings = 0;
+      property.file = null;
+      property.fileContacts = [];
+      property.contacts = result;
+    }, 
+    async removeContactsConfirm(id) {
+      var property = this.properties.find((p) => p.inaccessiblePropertyId === id);
+      await data.removePropertyContactList(id);
+      property.errors = [];
+      property.warnings = [];
+      property.rowErrors = 0;
+      property.rowWarnings = 0;
+      property.file = null;
+      property.fileContacts = [];
+      property.contacts = [];
+      property.removeContacts = false;
     }
   }
 }

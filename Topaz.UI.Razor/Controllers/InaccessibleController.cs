@@ -13,6 +13,7 @@ using Microsoft.VisualBasic.FileIO;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 using Topaz.Common;
 using Topaz.Common.Enums;
@@ -61,7 +62,7 @@ namespace Topaz.UI.Razor.Controllers
             PhoneReponseTypeEnum.AnsweredProfanityOrThreatening
         };
 
-        private static readonly Regex regexPhoneNumber = new Regex(@"\D");
+        private static readonly Regex regexNonDigit = new Regex(@"\D");
         private static readonly Regex regexMailingAddress1 = new Regex(@"^(\w+)\s(.*)");
         private static readonly Regex regexMailingAddress2 = new Regex(@"\w+$");
         private (string name, int? columnIndex, bool columnrequired)[] columnInformation = new (string name, int? columnIndex, bool columnrequired)[] {
@@ -150,7 +151,7 @@ namespace Topaz.UI.Razor.Controllers
             // list of phone numbers
             var territoryPhoneNumbers = Assignments
                 .Where(x => !string.IsNullOrEmpty(x.PhoneNumber)).AsNoTracking().ToList()
-                .Select(x => new { x.InaccessibleContactId, PhoneNumber = regexPhoneNumber.Replace(x.PhoneNumber, "") });
+                .Select(x => new { x.InaccessibleContactId, PhoneNumber = regexNonDigit.Replace(x.PhoneNumber, "") });
 
             // compare phone numbers to the do not contact phone list
             var territoryDoNotContactPhoneNumbers = _context.DoNotContactPhones.Where(x => territoryPhoneNumbers.Select(y => y.PhoneNumber).Contains(x.PhoneNumber)).Select(x => x.PhoneNumber).ToList();
@@ -351,7 +352,7 @@ namespace Topaz.UI.Razor.Controllers
             // list of phone numbers
             var territoryPhoneNumbers = Assignments
                 .Where(x => !string.IsNullOrEmpty(x.PhoneNumber)).AsNoTracking().ToList()
-                .Select(x => new { x.InaccessibleContactId, PhoneNumber = regexPhoneNumber.Replace(x.PhoneNumber, "") });
+                .Select(x => new { x.InaccessibleContactId, PhoneNumber = regexNonDigit.Replace(x.PhoneNumber, "") });
 
             // compare phone numbers to the do not contact phone list
             var territoryDoNotContactPhoneNumbers = _context.DoNotContactPhones.Where(x => territoryPhoneNumbers.Select(y => y.PhoneNumber).Contains(x.PhoneNumber)).Select(x => x.PhoneNumber).ToList();
@@ -421,9 +422,27 @@ namespace Topaz.UI.Razor.Controllers
 
         [HttpGet]
         [Route("[action]/{id:int}")]
-        public IEnumerable<Object> GetTerritoryProperties(int id)
+        public IEnumerable<JObject> GetTerritoryProperties(int id)
         {
-            return _context.InaccessibleProperties.Where(x => x.TerritoryId == id);
+            return _context.InaccessibleProperties
+                .Include(x => x.ContactLists)
+                .ThenInclude(x => x.Contacts)
+                .ThenInclude(x => x.PhoneType)
+                .Where(x => x.TerritoryId == id)
+                .AsNoTracking()
+                .ToList()
+                .Select((x) =>
+                {
+                    var p = JObject.FromObject(x, new JsonSerializer() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, ContractResolver = new CamelCasePropertyNamesContractResolver() });
+
+                    if (x.CurrentContactListId.HasValue)
+                        p.Add(new JProperty("contacts", JArray.FromObject(x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId).FirstOrDefault().Contacts, new JsonSerializer() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, ContractResolver = new CamelCasePropertyNamesContractResolver() })));
+                    else
+                        p.Add(new JProperty("contacts", null));
+
+                    p.Remove("contactLists");
+                    return p;
+                });
         }
 
         [HttpPost]
@@ -476,7 +495,7 @@ namespace Topaz.UI.Razor.Controllers
                         {
                             PublisherId = x.AssignPublisherId.Value,
                             ReportedDate = DateTime.UtcNow,
-                            PhoneNumber = regexPhoneNumber.Replace(x.PhoneNumber, ""),
+                            PhoneNumber = regexNonDigit.Replace(x.PhoneNumber, ""),
                             Notes = _context.PhoneResponseTypes.Find(responseTypeId).Name
                         });
                     }
@@ -583,8 +602,19 @@ namespace Topaz.UI.Razor.Controllers
         }
 
         [HttpPost]
+        [Route("[action]/{id}")]
+        public int RemovePropertyContactList(int id)
+        {
+            var property = new InaccessibleProperty() { InaccessiblePropertyId = id, CurrentContactListId = null };
+            _context.InaccessibleProperties.Attach(property);
+            _context.Entry(property).State = EntityState.Unchanged;
+            _context.Entry(property).Property(X => X.CurrentContactListId).IsModified = true;
+            return _context.SaveChanges();
+        }
+
+        [HttpPost]
         [Route("[action]")]
-        public Object ConvertPropertyContactListCsv([FromForm] IFormFile csvFile)
+        public Object UploadContactsCsv([FromForm] IFormFile csvFile)
         {
             JObject resultObject = new JObject();
 
@@ -687,7 +717,7 @@ namespace Topaz.UI.Razor.Controllers
                             rowErrors += rowContact.Errors.Count();
                             rowWarnings += rowContact.Warnings.Count();
 
-                            rowArray.Add(JObject.FromObject(rowContact));
+                            rowArray.Add(JObject.FromObject(rowContact, new JsonSerializer() { ContractResolver = new CamelCasePropertyNamesContractResolver() }));
                         }
                     }
                     catch (MalformedLineException ex)
@@ -707,7 +737,76 @@ namespace Topaz.UI.Razor.Controllers
 
             return resultObject;
         }
+        [HttpPost]
+        [Route("[action]/{id}")]
+        public List<InaccessibleContact> UploadContacts(int id, [FromBody] List<PropertyContactDto> contactDtos)
+        {
+            var list = new InaccessibleContactList()
+            {
+                InaccessiblePropertyId = id,
+                CreateDate = DateTime.UtcNow
+            };
 
+            foreach (var contactDto in contactDtos)
+            {
+                contactDto.Validate();
+
+                if (contactDto.Errors.Count == 0)
+                {
+                    PhoneTypeEnum phoneType;
+
+                    switch (contactDto.PhoneType)
+                    {
+                        case "C":
+                            phoneType = PhoneTypeEnum.Mobile;
+                            break;
+                        case "M":
+                            phoneType = PhoneTypeEnum.Mobile;
+                            break;
+                        case "L":
+                            phoneType = PhoneTypeEnum.Landline;
+                            break;
+                        case "V":
+                            phoneType = PhoneTypeEnum.Voip;
+                            break;
+                        default:
+                            phoneType = PhoneTypeEnum.Landline;
+                            break;
+                    }
+
+                    contactDto.Age = regexNonDigit.Replace(contactDto.Age, "");
+                    int age;
+
+                    list.Contacts.Add(
+                        new InaccessibleContact()
+                        {
+                            FirstName = contactDto.FirstName,
+                            LastName = contactDto.LastName,
+                            MiddleInitial = contactDto.MiddleInitial,
+                            Age = (int.TryParse(contactDto.Age, out age)) ? (int?)age : null,
+                            MailingAddress1 = contactDto.MailingAddress1,
+                            MailingAddress2 = contactDto.MailingAddress2,
+                            PostalCode = contactDto.PostalCode,
+                            PhoneNumber = contactDto.PhoneNumber,
+                            PhoneTypeId = (!string.IsNullOrEmpty(contactDto.PhoneNumber)) ? (int?)phoneType : null
+                        }
+                    );
+                }
+            }
+
+            _context.InaccessibleContactLists.Add(list);
+            _context.SaveChanges();
+
+            var property = new InaccessibleProperty() { InaccessiblePropertyId = id, CurrentContactListId = list.InaccessibleContactListId };
+            _context.InaccessibleProperties.Attach(property);
+            _context.Entry(property).State = EntityState.Unchanged;
+            _context.Entry(property).Property(X => X.CurrentContactListId).IsModified = true;
+            _context.SaveChanges();
+
+            return _context.InaccessibleContacts
+                    .Include(x => x.PhoneType)
+                    .Where(x => x.InaccessibleContactListId == list.InaccessibleContactListId).AsNoTracking().ToList();
+        }
         public class PropertyContactDto
         {
             public PropertyContactDto()
