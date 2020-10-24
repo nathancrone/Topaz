@@ -1,0 +1,14 @@
+@page "{id:int}"
+@inject IOptions<AppSettingsOptions> AppSettings
+@model Topaz.UI.Razor.Areas.Admin.Pages.InaccessibleTerritories.ContactsImportModel
+
+@{
+    ViewData["Title"] = "Contacts Import";
+}
+
+<div id="app"></div>
+
+@section Scripts {
+    <script type="text/javascript" src="@Url.Content($"~/client-app/js/app.js?i={AppSettings.Value.CacheInvalidator}")"></script>
+    <script type="text/javascript" src="@Url.Content($"~/client-app/js/chunk-vendors.js?i={AppSettings.Value.CacheInvalidator}")"></script>
+}

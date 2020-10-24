@@ -29,26 +29,28 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.InaccessibleTerritory) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TerritoryCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StreetTerritory.TerritoryCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.InActive)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.TerritoryId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.TerritoryId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.TerritoryId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.InaccessibleTerritory)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TerritoryCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StreetTerritory.TerritoryCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Notes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InActive)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.TerritoryId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.TerritoryId">Details</a> |
+                    <a asp-page="./ContactsImport" asp-route-id="@item.TerritoryId">Import</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.TerritoryId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

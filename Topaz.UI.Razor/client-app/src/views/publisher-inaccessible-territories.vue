@@ -30,7 +30,7 @@
             <span class="mr-1" v-if="checkin">Check in?</span>
             <span class="mr-1" v-if="rework">Rework?</span>
             <button class="btn btn-success mr-1" @click.prevent="handleConfirm">Confirm</button>
-            <button class="btn btn-danger mr-1" @click.ctrl.exact="importContacts(t.territoryId)" @click.prevent.exact="handleCancel">Cancel</button>
+            <button class="btn btn-danger mr-1" @click.prevent="handleCancel">Cancel</button>
           </div>
           <button
             v-if="t !== checkin && t !== rework"
@@ -55,7 +55,6 @@
 
 <script>
 import { data } from "../shared";
-import router from "../router";
 
 export default {
   name: "PublisherInaccessibleTerritories",
@@ -117,9 +116,6 @@ export default {
     handleCancel() {
       this.checkin = undefined;
       this.rework = undefined;
-    },
-    importContacts(id) {
-      router.push({ name: 'PublisherInaccessibleImport', params: { id: id } })
     }
   },
 };

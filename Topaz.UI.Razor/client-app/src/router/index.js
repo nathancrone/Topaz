@@ -48,17 +48,20 @@ const routes = [
       ),
   },
   {
-    path: "/Publisher/InaccessibleTerritories/Import/:id",
-    name: "PublisherInaccessibleImport",
-    props: parseProps,
-    component: PublisherInaccessibleImport,
-  },
-  {
     path: "/Publisher/InaccessibleAssignments",
     name: "PublisherInaccessibleAssignments",
     component: () =>
       import(
         /* webpackChunkName: "chunk-publisher" */ "../views/publisher-inaccessible-assignments.vue"
+      ),
+  },
+  {
+    path: "/Admin/InaccessibleTerritories/ContactsImport/:id",
+    name: "AdminContactsImport",
+    props: parseProps,
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-admin" */ "../views/admin-contacts-import.vue"
       ),
   },
   {

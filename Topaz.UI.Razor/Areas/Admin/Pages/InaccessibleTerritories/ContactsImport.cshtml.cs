@@ -9,11 +9,11 @@ using Topaz.Common.Models;
 using Topaz.Data;
 using Microsoft.AspNetCore.Identity;
 
-namespace Topaz.UI.Razor.Areas.Admin.Pages.TerritoryActivities
+namespace Topaz.UI.Razor.Areas.Admin.Pages.InaccessibleTerritories
 {
-    public class IndexModel : PageModel
+    public class ContactsImportModel : PageModel
     {
-        public IndexModel()
+        public ContactsImportModel()
         {
 
         }

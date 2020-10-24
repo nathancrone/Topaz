@@ -147,7 +147,7 @@
                           {{ c.phoneNumber }}
                       </td>
                       <td>
-                          {{ c.phoneType.name }}
+                          <template v-if="c.phoneType">{{ c.phoneType.name }}</template>
                       </td>
                   </tr>
               </tbody>
@@ -180,7 +180,7 @@
 import { data } from "../shared";
 
 export default {
-  name: "PublisherInaccessibleImport",
+  name: "AdminContactsImport",
   props: {
     id: {
       type: Number,
