@@ -238,11 +238,11 @@ namespace Topaz.UI.Razor.Controllers
                     // has mailing address
                     !string.IsNullOrEmpty(x.MailingAddress1) &&
                     (
-                        // is a 'do not contact' phone, not a 'do not contact' letter, and letter has NOT been sent
+                        // is a 'do not contact' phone, not a 'do not contact' letter, and there is no activity
                         (
                             territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) &&
-                            !territoryDoNotContactLetterContactIds.Contains(x.InaccessibleContactId)) &&
-                            !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter
+                            !territoryDoNotContactLetterContactIds.Contains(x.InaccessibleContactId) &&
+                            !x.ContactActivity.Any()
                         ) ||
                         // has no phone number, not a 'do not contact' letter, and letter has NOT been sent
                         (
