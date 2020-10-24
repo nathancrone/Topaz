@@ -1,12 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import PublisherStreetTerritories from "../views/publisher-street-territories.vue";
-import PublisherStreetCheckout from "../views/publisher-street-checkout.vue";
-import PublisherInaccessibleTerritories from "../views/publisher-inaccessible-territories.vue";
-import PublisherInaccessibleCheckout from "../views/publisher-inaccessible-checkout.vue";
-import PublisherInaccessibleAssign from "../views/publisher-inaccessible-assign.vue";
-import PublisherInaccessibleImport from "../views/publisher-inaccessible-import.vue";
-import PublisherInaccessibleAssignments from "../views/publisher-inaccessible-assignments.vue";
 
 Vue.use(VueRouter);
 
@@ -16,28 +9,43 @@ const routes = [
   {
     path: "/Publisher/StreetTerritories",
     name: "PublisherStreetTerritories",
-    component: PublisherStreetTerritories,
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-publisher" */ "../views/publisher-street-territories.vue"
+      ),
   },
   {
     path: "/Publisher/StreetTerritories/Checkout",
     name: "PublisherStreetCheckout",
-    component: PublisherStreetCheckout,
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-publisher" */ "../views/publisher-street-checkout.vue"
+      ),
   },
   {
     path: "/Publisher/InaccessibleTerritories",
     name: "PublisherInaccessibleTerritories",
-    component: PublisherInaccessibleTerritories,
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-publisher" */ "../views/publisher-inaccessible-territories.vue"
+      ),
   },
   {
     path: "/Publisher/InaccessibleTerritories/Checkout",
     name: "PublisherInaccessibleCheckout",
-    component: PublisherInaccessibleCheckout,
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-publisher" */ "../views/publisher-inaccessible-checkout.vue"
+      ),
   },
   {
     path: "/Publisher/InaccessibleTerritories/Assign/:id",
     name: "PublisherInaccessibleAssign",
     props: parseProps,
-    component: PublisherInaccessibleAssign,
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-publisher" */ "../views/publisher-inaccessible-assign.vue"
+      ),
   },
   {
     path: "/Publisher/InaccessibleTerritories/Import/:id",
@@ -48,16 +56,19 @@ const routes = [
   {
     path: "/Publisher/InaccessibleAssignments",
     name: "PublisherInaccessibleAssignments",
-    component: PublisherInaccessibleAssignments,
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-publisher" */ "../views/publisher-inaccessible-assignments.vue"
+      ),
   },
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  // }
+  {
+    path: "/Admin/TerritoryActivity",
+    name: "AdminTerritoryActivity",
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-admin" */ "../views/admin-territory-activity.vue"
+      ),
+  },
 ];
 
 const router = new VueRouter({

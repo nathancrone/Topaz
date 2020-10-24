@@ -2,6 +2,7 @@
 @inject UserManager<AppUser> UserManager
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,35 +11,39 @@
     <link rel="stylesheet" href="~/css/site.css" />
     @RenderSection("Styles", required: false)
 </head>
+
 <body>
     <header>
         <nav class="navbar navbar-expand-md navbar-toggleable-md navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand d-none d-lg-block" asp-area="" asp-page="/Index">Territory</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-md-inline-flex flex-md-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a> 
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Publisher/InaccessibleAssignments">Assignments</a>
-                            </li> 
+                                <a class="nav-link text-dark" asp-area=""
+    asp-page="/Publisher/InaccessibleAssignments">Assignments</a>
+                            </li>
                             @if (User.IsInRole("Publisher") || User.IsInRole("Administrator"))
                             {
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="dd-activity" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle" href="#" id="dd-activity" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Activity
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dd-activity">
                                         <a class="dropdown-item" asp-area="" asp-page="/Publisher/StreetTerritories">Street</a>
-                                        <a class="dropdown-item" asp-area="" asp-page="/Publisher/InaccessibleTerritories">Inaccessible</a>
+                                        <a class="dropdown-item" asp-area=""
+        asp-page="/Publisher/InaccessibleTerritories">Inaccessible</a>
                                     </div>
                                 </li>
                             }
@@ -46,15 +51,21 @@
                         @if (User.IsInRole("Administrator"))
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="dd-admin" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="dd-admin" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Admin
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="dd-admin">
-                                    <a class="dropdown-item" asp-area="Admin" asp-page="/LetterDoNotContact/Index">Do Not Contact - Letter</a>
-                                    <a class="dropdown-item" asp-area="Admin" asp-page="/PhoneDoNotContact/Index">Do Not Contact - Phone</a>
-                                    <a class="dropdown-item" asp-area="Admin" asp-page="/StreetDoNotContact/Index">Do Not Contact - Street</a>
-                                    <a class="dropdown-item" asp-area="Admin" asp-page="/StreetTerritories/Index">Street Territory</a>
-                                    <a class="dropdown-item" asp-area="Admin" asp-page="/InaccessibleTerritories/Index">Inaccessible Territory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/LetterDoNotContact/Index">Do Not
+                                        Contact - Letter</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/PhoneDoNotContact/Index">Do Not
+                                        Contact - Phone</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/StreetDoNotContact/Index">Do Not
+                                        Contact - Street</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/StreetTerritories/Index">Street
+                                        Territory</a>
+                                    <a class="dropdown-item" asp-area="Admin"
+    asp-page="/InaccessibleTerritories/Index">Inaccessible Territory</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/Users/Index">Users</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/Publishers/Index">Publishers</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/Roles/Index">Roles</a>
@@ -84,4 +95,5 @@
 
     @RenderSection("Scripts", required: false)
 </body>
+
 </html>
