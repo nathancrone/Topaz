@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-using Topaz.Common;
+using Topaz.Common.Extensions;
 using Topaz.Common.Enums;
 using Topaz.Common.Models;
 using Topaz.Data;

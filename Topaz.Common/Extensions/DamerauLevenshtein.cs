@@ -1,6 +1,6 @@
 using System;
 
-namespace Topaz.Common
+namespace Topaz.Common.Extensions
 {
     public static class DamerauLevenshtein
     {
