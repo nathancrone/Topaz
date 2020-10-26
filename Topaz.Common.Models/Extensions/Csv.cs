@@ -7,7 +7,7 @@ namespace Topaz.Common.Models.Extensions
 {
     public static class Csv
     {
-        private static string ToCsv(this InaccessibleContact c)
+        public static string ToCsv(this InaccessibleContact c)
         {
             var line = new string[] {
                 c.FirstName,
@@ -19,7 +19,6 @@ namespace Topaz.Common.Models.Extensions
                 c.MailingAddress2,
                 c.PostalCode
             };
-
             return string.Join(",", line.Select(x => x.CsvEscape()));
         }
     }
