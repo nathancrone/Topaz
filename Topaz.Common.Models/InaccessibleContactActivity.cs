@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Topaz.Common.Models
 {
@@ -7,6 +8,7 @@ namespace Topaz.Common.Models
         public int InaccessibleContactActivityId { get; set; }
         public int InaccessibleContactId { get; set; }
         public int PublisherId { get; set; }
+        public int? InaccessibleTerritoryExportId { get; set; }
         public DateTime? ActivityDate { get; set; }
         public int ContactActivityTypeId { get; set; }
         public bool PhoneCallerIdBlocked { get; set; }
@@ -16,5 +18,6 @@ namespace Topaz.Common.Models
         public ContactActivityType ContactActivityType { get; set; }
         public PhoneResponseType PhoneResponseType { get; set; }
         public Publisher Publisher { get; set; }
+        public List<InaccessibleTerritoryExport> Exports { get; set; }
     }
 }

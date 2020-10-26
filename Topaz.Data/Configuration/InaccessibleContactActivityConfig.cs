@@ -11,6 +11,10 @@ namespace Topaz.Data.Configuration
         {
             builder.HasKey(x => x.InaccessibleContactActivityId);
             builder.Property(x => x.InaccessibleContactActivityId).ValueGeneratedOnAdd();
+
+            builder.HasMany(x => x.Exports)
+            .WithOne(x => x.ContactActivity)
+            .HasForeignKey(x => x.InaccessibleContactActivityId);
         }
     }
 }

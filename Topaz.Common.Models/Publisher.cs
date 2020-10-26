@@ -22,5 +22,6 @@ namespace Topaz.Common.Models
         public List<DoNotContactStreet> StreetDoNotContacts { get; set; }
         public List<DoNotContactLetter> LetterDoNotContacts { get; set; }
         public List<DoNotContactPhone> PhoneDoNotContacts { get; set; }
+        public List<InaccessibleTerritoryExport> Exports { get; set; }
     }
 }

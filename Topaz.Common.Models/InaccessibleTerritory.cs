@@ -14,5 +14,6 @@ namespace Topaz.Common.Models
         public StreetTerritory StreetTerritory { get; set; }
         public List<InaccessibleProperty> InaccessibleProperties { get; set; }
         public List<TerritoryActivity> Activity { get; set; }
+        public List<InaccessibleTerritoryExport> Exports { get; set; }
     }
 }

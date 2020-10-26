@@ -35,6 +35,10 @@ namespace Topaz.Data.Configuration
             builder.HasMany(x => x.PhoneDoNotContacts)
             .WithOne(x => x.Publisher)
             .HasForeignKey(x => x.PublisherId);
+
+            builder.HasMany(x => x.Exports)
+            .WithOne(x => x.Publisher)
+            .HasForeignKey(x => x.PublisherId);
         }
     }
 }
