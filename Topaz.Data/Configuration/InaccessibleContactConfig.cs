@@ -19,9 +19,9 @@ namespace Topaz.Data.Configuration
                         .WithOne(x => x.Contact)
                         .HasForeignKey(x => x.InaccessibleContactId);
 
-            builder.HasMany(x => x.ExportItems)
-                        .WithOne(x => x.Contact)
-                        .HasForeignKey(x => x.InaccessibleContactId);
+            builder.HasOne<InaccessibleTerritoryExportItem>(x => x.ExportItem)
+                .WithOne(x => x.Contact)
+                .HasForeignKey<InaccessibleTerritoryExportItem>(x => x.InaccessibleContactId);
         }
     }
 }

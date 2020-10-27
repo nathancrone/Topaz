@@ -33,6 +33,6 @@ namespace Topaz.Common.Models
         public List<InaccessibleContactActivity> ContactActivity { get; set; }
         public PhoneType PhoneType { get; set; }
         public Publisher AssignPublisher { get; set; }
-        public List<InaccessibleTerritoryExportItem> ExportItems { get; set; }
+        public InaccessibleTerritoryExportItem ExportItem { get; set; }
     }
 }

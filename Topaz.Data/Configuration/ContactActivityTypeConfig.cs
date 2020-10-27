@@ -48,6 +48,12 @@ namespace Topaz.Data.Configuration
                     ContactActivityTypeId = (int)ContactActivityTypeEnum.Text,
                     Name = "Text",
                     Description = "Send a text message to this person."
+                },
+                new ContactActivityType
+                {
+                    ContactActivityTypeId = (int)ContactActivityTypeEnum.Exported,
+                    Name = "Export",
+                    Description = "Contact exported to be worked externally."
                 }
             );
         }

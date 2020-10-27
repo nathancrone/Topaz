@@ -18,6 +18,6 @@ namespace Topaz.Common.Models
         public ContactActivityType ContactActivityType { get; set; }
         public PhoneResponseType PhoneResponseType { get; set; }
         public Publisher Publisher { get; set; }
-        public List<InaccessibleTerritoryExport> Exports { get; set; }
+        public InaccessibleTerritoryExport Export { get; set; }
     }
 }
