@@ -15,6 +15,7 @@ namespace Topaz.Common.Models.Extensions
                 c.MiddleInitial,
                 c.Age.ToString(),
                 c.PhoneNumber,
+                c.PhoneType.Name,
                 c.MailingAddress1,
                 c.MailingAddress2,
                 c.PostalCode

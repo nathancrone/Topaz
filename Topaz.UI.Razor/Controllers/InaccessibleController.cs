@@ -72,11 +72,11 @@ namespace Topaz.UI.Razor.Controllers
             ("LastName", null, true),
             ("MiddleInitial", null, false),
             ("Age", null, false),
+            ("PhoneNumber", null, true),
+            ("PhoneType", null, true),
             ("MailingAddress1", null, true),
             ("MailingAddress2", null, false),
-            ("PostalCode", null, true),
-            ("PhoneNumber", null, true),
-            ("PhoneType", null, true)
+            ("PostalCode", null, true)
         };
 
         private readonly Topaz.Data.TopazDbContext _context;
@@ -348,7 +348,7 @@ namespace Topaz.UI.Razor.Controllers
         [Route("[action]/{id}")]
         public IActionResult GetTerritoryExportContacts(int id)
         {
-            var export = _context.InaccessibleTerritoryExports.Include(x => x.Items).ThenInclude(x => x.Contact).FirstOrDefault(x => x.InaccessibleTerritoryExportId == id);
+            var export = _context.InaccessibleTerritoryExports.Include(x => x.Items).ThenInclude(x => x.Contact).ThenInclude(x => x.PhoneType).FirstOrDefault(x => x.InaccessibleTerritoryExportId == id);
 
             using (MemoryStream memoryStream1 = new MemoryStream())
             using (StreamWriter streamWriter1 = new StreamWriter(memoryStream1))
