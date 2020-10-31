@@ -210,6 +210,33 @@ namespace Topaz.Data.MigrationsApp
                 });
 
             migrationBuilder.CreateTable(
+                name: "InaccessibleTerritoryExports",
+                columns: table => new
+                {
+                    InaccessibleTerritoryExportId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TerritoryId = table.Column<int>(nullable: false),
+                    PublisherId = table.Column<int>(nullable: false),
+                    ExportDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InaccessibleTerritoryExports", x => x.InaccessibleTerritoryExportId);
+                    table.ForeignKey(
+                        name: "FK_InaccessibleTerritoryExports_Publishers_PublisherId",
+                        column: x => x.PublisherId,
+                        principalTable: "Publishers",
+                        principalColumn: "PublisherId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_InaccessibleTerritoryExports_Territories_TerritoryId",
+                        column: x => x.TerritoryId,
+                        principalTable: "Territories",
+                        principalColumn: "TerritoryId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TerritoryActivities",
                 columns: table => new
                 {
@@ -277,6 +304,26 @@ namespace Topaz.Data.MigrationsApp
                 });
 
             migrationBuilder.CreateTable(
+                name: "InaccessibleTerritoryExportItems",
+                columns: table => new
+                {
+                    InaccessibleTerritoryExportItemId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    InaccessibleTerritoryExportId = table.Column<int>(nullable: false),
+                    InaccessibleContactId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InaccessibleTerritoryExportItems", x => x.InaccessibleTerritoryExportItemId);
+                    table.ForeignKey(
+                        name: "FK_InaccessibleTerritoryExportItems_InaccessibleTerritoryExports_InaccessibleTerritoryExportId",
+                        column: x => x.InaccessibleTerritoryExportId,
+                        principalTable: "InaccessibleTerritoryExports",
+                        principalColumn: "InaccessibleTerritoryExportId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "InaccessibleContacts",
                 columns: table => new
                 {
@@ -297,7 +344,8 @@ namespace Topaz.Data.MigrationsApp
                     EmailAddresses = table.Column<string>(nullable: true),
                     AssignPublisherId = table.Column<int>(nullable: true),
                     AssignDate = table.Column<DateTime>(nullable: true),
-                    AssignContactActivityTypeId = table.Column<int>(nullable: true)
+                    AssignContactActivityTypeId = table.Column<int>(nullable: true),
+                    InaccessibleTerritoryExportItemId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -315,6 +363,12 @@ namespace Topaz.Data.MigrationsApp
                         principalColumn: "InaccessibleContactListId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_InaccessibleContacts_InaccessibleTerritoryExportItems_InaccessibleTerritoryExportItemId",
+                        column: x => x.InaccessibleTerritoryExportItemId,
+                        principalTable: "InaccessibleTerritoryExportItems",
+                        principalColumn: "InaccessibleTerritoryExportItemId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_InaccessibleContacts_PhoneType_PhoneTypeId",
                         column: x => x.PhoneTypeId,
                         principalTable: "PhoneType",
@@ -330,6 +384,7 @@ namespace Topaz.Data.MigrationsApp
                         .Annotation("Sqlite:Autoincrement", true),
                     InaccessibleContactId = table.Column<int>(nullable: false),
                     PublisherId = table.Column<int>(nullable: false),
+                    InaccessibleTerritoryExportId = table.Column<int>(nullable: true),
                     ActivityDate = table.Column<DateTime>(nullable: true),
                     ContactActivityTypeId = table.Column<int>(nullable: false),
                     PhoneCallerIdBlocked = table.Column<bool>(nullable: false),
@@ -394,6 +449,11 @@ namespace Topaz.Data.MigrationsApp
                 table: "ContactActivityTypes",
                 columns: new[] { "ContactActivityTypeId", "Description", "Name" },
                 values: new object[] { 6, "Send a text message to this person.", "Text" });
+
+            migrationBuilder.InsertData(
+                table: "ContactActivityTypes",
+                columns: new[] { "ContactActivityTypeId", "Description", "Name" },
+                values: new object[] { 8, "Contact exported to be worked externally.", "Export" });
 
             migrationBuilder.InsertData(
                 table: "PhoneResponseTypes",
@@ -584,6 +644,12 @@ namespace Topaz.Data.MigrationsApp
                 column: "InaccessibleContactListId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InaccessibleContacts_InaccessibleTerritoryExportItemId",
+                table: "InaccessibleContacts",
+                column: "InaccessibleTerritoryExportItemId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InaccessibleContacts_PhoneTypeId",
                 table: "InaccessibleContacts",
                 column: "PhoneTypeId");
@@ -591,6 +657,21 @@ namespace Topaz.Data.MigrationsApp
             migrationBuilder.CreateIndex(
                 name: "IX_InaccessibleProperties_TerritoryId",
                 table: "InaccessibleProperties",
+                column: "TerritoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InaccessibleTerritoryExportItems_InaccessibleTerritoryExportId",
+                table: "InaccessibleTerritoryExportItems",
+                column: "InaccessibleTerritoryExportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InaccessibleTerritoryExports_PublisherId",
+                table: "InaccessibleTerritoryExports",
+                column: "PublisherId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InaccessibleTerritoryExports_TerritoryId",
+                table: "InaccessibleTerritoryExports",
                 column: "TerritoryId");
 
             migrationBuilder.CreateIndex(
@@ -647,16 +728,22 @@ namespace Topaz.Data.MigrationsApp
                 name: "PhoneResponseTypes");
 
             migrationBuilder.DropTable(
-                name: "Publishers");
+                name: "InaccessibleContactLists");
 
             migrationBuilder.DropTable(
-                name: "InaccessibleContactLists");
+                name: "InaccessibleTerritoryExportItems");
 
             migrationBuilder.DropTable(
                 name: "PhoneType");
 
             migrationBuilder.DropTable(
                 name: "InaccessibleProperties");
+
+            migrationBuilder.DropTable(
+                name: "InaccessibleTerritoryExports");
+
+            migrationBuilder.DropTable(
+                name: "Publishers");
 
             migrationBuilder.DropTable(
                 name: "Territories");

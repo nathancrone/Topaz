@@ -81,7 +81,8 @@
                   class="btn btn-sm btn-primary mr-1"
                   :class="{ disabled: !isAssignmentSelected || !selectedAssignee }"
                   href="#"
-                  @click.prevent="assign"
+                  @click.ctrl.prevent.exact="exportContacts"
+                  @click.prevent.exact="assignContacts"
                 >assign</a>
               </div>
             </template>
@@ -123,6 +124,34 @@
       </div>
       <div v-else class="w-100 alert alert-primary" role="alert">no contacts in this category</div>
     </div>
+    <div 
+      v-if="territoryExports.length !== 0 && activeView === availableViews.COMPLETE" 
+      class="row no-gutters"
+      >
+      <div class="col">
+        <h3>Exports</h3>
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Publisher</th>
+              <th scope="col">Export Date</th>
+              <th scope="col"># of Contacts</th>
+              <th scope="col">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="e in territoryExports" :key="`exportRow${e.inaccessibleTerritoryExportId}`">
+              <th scope="row">{{ e.inaccessibleTerritoryExportId }}</th>
+              <td>{{ e.firstName }}&nbsp;{{ e.lastName }}</td>
+              <td>{{ displayDate(e.exportDate) }}</td>
+              <td>{{ e.exportItemCount }}</td>
+              <td><a :href="`/Inaccessible/GetTerritoryExportContacts/${e.inaccessibleTerritoryExportId}`" target="_blank">download</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
     <div
       v-if="availableAssignments.length !== 0"
       class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4"
@@ -139,6 +168,7 @@
 
 <script>
 import { data } from "../shared";
+import { format } from "date-fns";
 import PublisherInaccessibleAssignCard from "../components/publisher-inaccessible-assign-card";
 
 const VIEWS = Object.freeze({
@@ -176,6 +206,7 @@ export default {
       responseTypeSearch: "",
       phoneResponseTypes: [],
       selectedResponseType: undefined,
+      territoryExports: []
     };
   },
   components: {
@@ -231,8 +262,13 @@ export default {
       assignments.forEach(function (a) {
         a.selected = false;
       });
-      //console.log(JSON.stringify(assignments));
       this.availableAssignments = [...assignments];
+
+      if (this.activeView === VIEWS.COMPLETE)
+      {
+        const territoryExports = await data.getTerritoryExports(this.id);
+        this.territoryExports = [...territoryExports];
+      }
     },
     async loadAssignees(token) {
       const assignees = await data.getPublisherSelectOptions(token);
@@ -246,13 +282,25 @@ export default {
       this.activeView = v;
       await this.loadAssignments();
     },
-    async assign() {
+    async assignContacts() {
       const assignments = this.availableAssignments.reduce(
         (a, o) => (o.selected && a.push(o.inaccessibleContactId), a),
         []
       );
       const assignee = this.selectedAssignee.id;
       await data.assignInaccessibleContacts(assignee, assignments);
+      await this.loadAssignments();
+      this.selectedAssignee = undefined;
+      this.assigneeSearch = "";
+      this.availableAssignees = [];
+    },
+    async exportContacts() {
+      const assignments = this.availableAssignments.reduce(
+        (a, o) => (o.selected && a.push(o.inaccessibleContactId), a),
+        []
+      );
+      const assignee = this.selectedAssignee.id;
+      await data.saveInaccessibleContactExportActivities(assignee, assignments);
       await this.loadAssignments();
       this.selectedAssignee = undefined;
       this.assigneeSearch = "";
@@ -324,6 +372,9 @@ export default {
       this.availableAssignments.splice(index, 1, assignment);
       this.availableAssignments = [...this.availableAssignments];
     },
+    displayDate(date) {
+      return format(data.parseDate(date), "MM/dd/yyyy");
+    }
   },
   watch: {
     async assigneeSearch(after) {

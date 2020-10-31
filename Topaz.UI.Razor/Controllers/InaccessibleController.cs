@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using System.IO;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
@@ -18,6 +19,7 @@ using Newtonsoft.Json.Serialization;
 using Topaz.Common.Extensions;
 using Topaz.Common.Enums;
 using Topaz.Common.Models;
+using Topaz.Common.Models.Extensions;
 using Topaz.Data;
 
 namespace Topaz.UI.Razor.Controllers
@@ -209,6 +211,8 @@ namespace Topaz.UI.Razor.Controllers
             if (type == "phone")
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
+                    // has not been exported
+                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
                     // is not a 'do not contact' phone
                     !territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) &&
                     // has phone number
@@ -220,6 +224,8 @@ namespace Topaz.UI.Razor.Controllers
             else if (type == "vm")
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
+                    // has not been exported
+                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
                     // is not a 'do not contact' phone
                     !territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) &&
                     // has phone number
@@ -235,6 +241,8 @@ namespace Topaz.UI.Razor.Controllers
             else if (type == "letter")
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
+                    // has not been exported
+                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
                     // has mailing address
                     !string.IsNullOrEmpty(x.MailingAddress1) &&
                     (
@@ -272,6 +280,8 @@ namespace Topaz.UI.Razor.Controllers
             else
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
+                    // has been exported
+                    x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) ||
                     // is a 'do not contact' phone and a 'do not contact' letter
                     (territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) && territoryDoNotContactLetterContactIds.Contains(x.InaccessibleContactId)) ||
                     (
@@ -319,6 +329,53 @@ namespace Topaz.UI.Razor.Controllers
         }
 
         [HttpGet]
+        [Route("[action]/{id}")]
+        public IEnumerable<Object> GetTerritoryExports(int id)
+        {
+            return _context.InaccessibleTerritoryExports.Where(x => x.TerritoryId == id).Select(x =>
+                    new
+                    {
+                        x.InaccessibleTerritoryExportId,
+                        x.Publisher.FirstName,
+                        x.Publisher.LastName,
+                        x.ExportDate,
+                        ExportItemCount = x.Items.Count()
+                    }
+                ).OrderBy(x => x.ExportDate).ThenBy(x => x.LastName).ThenBy(x => x.FirstName);
+        }
+
+        [HttpGet]
+        [Route("[action]/{id}")]
+        public IActionResult GetTerritoryExportContacts(int id)
+        {
+            var export = _context.InaccessibleTerritoryExports.Include(x => x.Items).ThenInclude(x => x.Contact).FirstOrDefault(x => x.InaccessibleTerritoryExportId == id);
+
+            using (MemoryStream memoryStream1 = new MemoryStream())
+            using (StreamWriter streamWriter1 = new StreamWriter(memoryStream1))
+            {
+                try
+                {
+                    streamWriter1.WriteLine(string.Join(",", columnInformation.Select(x => x.name).ToArray()));
+                    foreach (var contact in export.Items.Select(x => x.Contact))
+                    {
+                        streamWriter1.WriteLine(contact.ToCsv());
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+                finally
+                {
+                    streamWriter1.Flush();
+                    streamWriter1.Close();
+                }
+                Response.Headers.Add("Content-Disposition", "inline; filename=file.csv");
+                return File(memoryStream1.ToArray(), "text/csv", "file.txt");
+            }
+        }
+
+        [HttpGet]
         [Route("[action]/{id:int}")]
         public IEnumerable<Object> GetContactActivity(int id)
         {
@@ -361,6 +418,8 @@ namespace Topaz.UI.Razor.Controllers
             return new
             {
                 PhoneWithoutVoicemail = Assignments.Where(x =>
+                    // has not been exported
+                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
                     // is not a 'do not contact' phone
                     !territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) &&
                     // has phone number
@@ -369,6 +428,8 @@ namespace Topaz.UI.Razor.Controllers
                     x.ContactActivity.All(y => !phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId))
                 ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName),
                 PhoneWithVoicemail = Assignments.Where(x =>
+                    // has not been exported
+                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
                     // is not a 'do not contact' phone
                     !territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId) &&
                     // has phone number
@@ -381,6 +442,8 @@ namespace Topaz.UI.Razor.Controllers
                     x.ContactActivity.All(y => y.ContactActivityTypeId != (int)ContactActivityTypeEnum.PhoneWithVoicemail)
                 ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName),
                 Letter = Assignments.Where(x =>
+                    // has not been exported
+                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
                     // has mailing address
                     !string.IsNullOrEmpty(x.MailingAddress1) &&
                     (
@@ -491,13 +554,17 @@ namespace Topaz.UI.Razor.Controllers
                     // if contact has a phone number and the response is do not contact
                     if (doNotContact.Contains((PhoneReponseTypeEnum)responseTypeId) && !string.IsNullOrEmpty(x.PhoneNumber))
                     {
-                        _context.DoNotContactPhones.Add(new DoNotContactPhone()
+                        var phoneNumber = regexNonDigit.Replace(x.PhoneNumber, "");
+                        if (!_context.DoNotContactPhones.Any(y => y.PhoneNumber == phoneNumber))
                         {
-                            PublisherId = x.AssignPublisherId.Value,
-                            ReportedDate = DateTime.UtcNow,
-                            PhoneNumber = regexNonDigit.Replace(x.PhoneNumber, ""),
-                            Notes = _context.PhoneResponseTypes.Find(responseTypeId).Name
-                        });
+                            _context.DoNotContactPhones.Add(new DoNotContactPhone()
+                            {
+                                PublisherId = x.AssignPublisherId.Value,
+                                ReportedDate = DateTime.UtcNow,
+                                PhoneNumber = phoneNumber,
+                                Notes = _context.PhoneResponseTypes.Find(responseTypeId).Name
+                            });
+                        }
                     }
 
                     x.AssignPublisherId = null;
@@ -524,6 +591,88 @@ namespace Topaz.UI.Razor.Controllers
                     x.AssignPublisherId = null;
                 }
             });
+            return _context.SaveChanges();
+        }
+
+        [HttpPost]
+        [Route("/[controller]/ExportActivities/{assignee:int}")]
+        public int SaveExportActivities(int assignee, [FromBody] int[] assignments)
+        {
+            var contacts = _context.InaccessibleContacts.Include(x => x.ContactActivity).Where(x => assignments.Contains(x.InaccessibleContactId));
+
+            // if there are any contacts to be exported and they are all unassigned
+            if (contacts.Any() && contacts.All(x => !x.AssignPublisherId.HasValue))
+            {
+                var contactsAll = contacts.ToList();
+
+                var contactFirst = contactsAll.Select(x => x.InaccessibleContactId).FirstOrDefault();
+                var territoryId = _context.InaccessibleContacts.Where(x => x.InaccessibleContactId == contactFirst).Select(x => x.ContactList.Property.TerritoryId).FirstOrDefault();
+
+                var export = new InaccessibleTerritoryExport()
+                {
+                    TerritoryId = territoryId,
+                    PublisherId = assignee,
+                    ExportDate = DateTime.UtcNow
+                };
+
+                _context.InaccessibleTerritoryExports.Add(export);
+
+                // save the export (no items yet)
+                _context.SaveChanges();
+
+                contactsAll.ForEach(x =>
+                {
+                    // record an export activity for the contact
+                    var activity = new InaccessibleContactActivity()
+                    {
+                        PublisherId = assignee,
+                        ActivityDate = DateTime.UtcNow,
+                        ContactActivityTypeId = (int)ContactActivityTypeEnum.Export,
+                        InaccessibleTerritoryExportId = export.InaccessibleTerritoryExportId
+                    };
+                    x.ContactActivity.Add(activity);
+
+                    // create an export item for the contact
+                    var exportItem = new InaccessibleTerritoryExportItem()
+                    {
+                        InaccessibleTerritoryExportId = export.InaccessibleTerritoryExportId,
+                        InaccessibleContactId = x.InaccessibleContactId
+                    };
+
+                    // add the export item to the export
+                    _context.InaccessibleTerritoryExportItems.Add(exportItem);
+                });
+
+                // save the export items
+                _context.SaveChanges();
+
+                // associate the export items with contacts
+                _context.Database.ExecuteSqlRaw($@"
+                    UPDATE 
+                    InaccessibleContacts 
+                    SET 
+                    InaccessibleTerritoryExportItemId = (
+                        SELECT 
+                        InaccessibleTerritoryExportItemId 
+                        FROM 
+                        InaccessibleTerritoryExportItems 
+                        WHERE 
+                        InaccessibleTerritoryExportId = {export.InaccessibleTerritoryExportId} AND 
+                        InaccessibleContactId = InaccessibleContacts.InaccessibleContactId 
+                    ) 
+                    WHERE 
+                    EXISTS (
+                        SELECT 
+                        InaccessibleTerritoryExportItemId 
+                        FROM 
+                        InaccessibleTerritoryExportItems 
+                        WHERE 
+                        InaccessibleTerritoryExportId = {export.InaccessibleTerritoryExportId} AND 
+                        InaccessibleContactId = InaccessibleContacts.InaccessibleContactId 
+                    )"
+                );
+            }
+
             return _context.SaveChanges();
         }
 

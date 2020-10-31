@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20201009022245_InitialCreate")]
+    [Migration("20201029163539_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,6 +69,12 @@ namespace Topaz.Data.MigrationsApp
                             ContactActivityTypeId = 6,
                             Description = "Send a text message to this person.",
                             Name = "Text"
+                        },
+                        new
+                        {
+                            ContactActivityTypeId = 8,
+                            Description = "Contact exported to be worked externally.",
+                            Name = "Export"
                         });
                 });
 
@@ -202,6 +208,9 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<int>("InaccessibleContactListId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("InaccessibleTerritoryExportItemId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .HasColumnType("TEXT");
 
@@ -232,6 +241,9 @@ namespace Topaz.Data.MigrationsApp
 
                     b.HasIndex("InaccessibleContactListId");
 
+                    b.HasIndex("InaccessibleTerritoryExportItemId")
+                        .IsUnique();
+
                     b.HasIndex("PhoneTypeId");
 
                     b.ToTable("InaccessibleContacts");
@@ -250,6 +262,9 @@ namespace Topaz.Data.MigrationsApp
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("InaccessibleContactId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("InaccessibleTerritoryExportId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Notes")
@@ -340,6 +355,49 @@ namespace Topaz.Data.MigrationsApp
                     b.HasIndex("TerritoryId");
 
                     b.ToTable("InaccessibleProperties");
+                });
+
+            modelBuilder.Entity("Topaz.Common.Models.InaccessibleTerritoryExport", b =>
+                {
+                    b.Property<int>("InaccessibleTerritoryExportId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ExportDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TerritoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("InaccessibleTerritoryExportId");
+
+                    b.HasIndex("PublisherId");
+
+                    b.HasIndex("TerritoryId");
+
+                    b.ToTable("InaccessibleTerritoryExports");
+                });
+
+            modelBuilder.Entity("Topaz.Common.Models.InaccessibleTerritoryExportItem", b =>
+                {
+                    b.Property<int>("InaccessibleTerritoryExportItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InaccessibleContactId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InaccessibleTerritoryExportId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("InaccessibleTerritoryExportItemId");
+
+                    b.HasIndex("InaccessibleTerritoryExportId");
+
+                    b.ToTable("InaccessibleTerritoryExportItems");
                 });
 
             modelBuilder.Entity("Topaz.Common.Models.PhoneResponseType", b =>
@@ -704,6 +762,10 @@ namespace Topaz.Data.MigrationsApp
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Topaz.Common.Models.InaccessibleTerritoryExportItem", "ExportItem")
+                        .WithOne("Contact")
+                        .HasForeignKey("Topaz.Common.Models.InaccessibleContact", "InaccessibleTerritoryExportItemId");
+
                     b.HasOne("Topaz.Common.Models.PhoneType", "PhoneType")
                         .WithMany("InaccessibleContacts")
                         .HasForeignKey("PhoneTypeId");
@@ -748,6 +810,30 @@ namespace Topaz.Data.MigrationsApp
                     b.HasOne("Topaz.Common.Models.InaccessibleTerritory", "Territory")
                         .WithMany("InaccessibleProperties")
                         .HasForeignKey("TerritoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Topaz.Common.Models.InaccessibleTerritoryExport", b =>
+                {
+                    b.HasOne("Topaz.Common.Models.Publisher", "Publisher")
+                        .WithMany("Exports")
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Topaz.Common.Models.InaccessibleTerritory", "Territory")
+                        .WithMany("Exports")
+                        .HasForeignKey("TerritoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Topaz.Common.Models.InaccessibleTerritoryExportItem", b =>
+                {
+                    b.HasOne("Topaz.Common.Models.InaccessibleTerritoryExport", "Export")
+                        .WithMany("Items")
+                        .HasForeignKey("InaccessibleTerritoryExportId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

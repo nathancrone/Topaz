@@ -16,7 +16,7 @@ namespace Topaz.Common.Enums
         LetterReturned = 4,
         Email = 5,
         Text = 6,
-        Exported = 8
+        Export = 8
     }
 
     public enum PhoneReponseTypeEnum

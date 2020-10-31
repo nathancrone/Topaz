@@ -109,13 +109,16 @@
                 <small>{{ a.phoneResponseType.name }}</small>
               </div>
               <div
-                v-if="a.contactActivityTypeId === 3"
+                v-else 
                 class="mb-1 d-flex w-100"
               >
                 <small>{{ a.contactActivityType.name }}</small>
               </div>
-              <div class="d-flex w-100">
+              <div v-if="a.notes !== ''" class="d-flex w-100">
                 <small class="font-italic">{{ a.notes }}</small>
+              </div>
+              <div v-if="a.inaccessibleTerritoryExportId">
+                <small class="font-italic">export #{{ a.inaccessibleTerritoryExportId }}</small>
               </div>
             </li>
           </template>

@@ -89,6 +89,22 @@ const getAvailableInaccessibleAssignments = async function(territoryId, type) {
   }
 };
 
+const getTerritoryExports = async function(territoryId) {
+  try {
+    const response = await axios.get(
+      `/Inaccessible/GetTerritoryExports/${territoryId}`
+    );
+    let data = parseList(response);
+    const available = data.map((a) => {
+      return a;
+    });
+    return available;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 const getContactActivity = async function(id) {
   try {
     const response = await axios.get(`/Inaccessible/GetContactActivity/${id}`);
@@ -259,6 +275,24 @@ const saveInaccessibleContactLetterActivities = async function(assignments) {
   }
 };
 
+const saveInaccessibleContactExportActivities = async function(
+  assignee,
+  assignments
+) {
+  try {
+    const response = await axios.post(
+      `/Inaccessible/ExportActivities/${assignee}`,
+      assignments
+    );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
 const removePropertyContactList = async function(id) {
   try {
     const response = await axios.post(
@@ -375,6 +409,7 @@ export const data = {
   getPublisherInaccessibleTerritories,
   getAvailableInaccessibleTerritories,
   getAvailableInaccessibleAssignments,
+  getTerritoryExports,
   getContactActivity,
   getPublisherSelectOptions,
   getTerritoryProperties,
@@ -386,6 +421,7 @@ export const data = {
   saveInaccessibleContactPhoneActivities,
   saveInaccessibleContactLetterActivity,
   saveInaccessibleContactLetterActivities,
+  saveInaccessibleContactExportActivities,
   removePropertyContactList,
   uploadContactsCsv,
   uploadContacts,

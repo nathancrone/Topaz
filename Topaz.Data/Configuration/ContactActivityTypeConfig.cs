@@ -51,7 +51,7 @@ namespace Topaz.Data.Configuration
                 },
                 new ContactActivityType
                 {
-                    ContactActivityTypeId = (int)ContactActivityTypeEnum.Exported,
+                    ContactActivityTypeId = (int)ContactActivityTypeEnum.Export,
                     Name = "Export",
                     Description = "Contact exported to be worked externally."
                 }

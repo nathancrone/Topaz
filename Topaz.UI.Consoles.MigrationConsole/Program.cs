@@ -49,6 +49,7 @@ namespace Topaz.UI.Consoles.MigrationConsole
         private Dictionary<string, int> mapLegacyUserTargetPublisher;
         private Dictionary<int, int> mapSourcePublisherTargetPublisher;
         private Dictionary<int, int> mapLegacyTerritoryTargetStreetTerritory;
+        private Dictionary<int, int> mapSourceStreetTerritoryTargetStreetTerritory;
 
         public ConsoleApp(LegacyDbContext legacyDb, SourceDbContext sourceDb, TargetDbContext targetDb)
         {
@@ -229,12 +230,13 @@ namespace Topaz.UI.Consoles.MigrationConsole
                 )"
             );
 
+
             var srcTerritories = _sourceDb.InaccessibleTerritories.Include(x => x.Activity);
 
             foreach (var srcTerritory in srcTerritories)
             {
                 var targetTerritory = _targetDb.InaccessibleTerritories.Where(x => x.TerritoryCode == srcTerritory.TerritoryCode).FirstOrDefault();
-                foreach (var srcActivity in srcTerritory.Activity)
+                foreach (var srcActivity in srcTerritory.Activity.OrderBy(x => x.CheckOutDate))
                 {
                     targetTerritory.Activity.Add(new TerritoryActivity
                     {
@@ -247,6 +249,52 @@ namespace Topaz.UI.Consoles.MigrationConsole
                 _targetDb.SaveChanges();
             }
 
+            mapSourceStreetTerritoryTargetStreetTerritory = new Dictionary<int, int>();
+
+            foreach (var srcStreetTerritory in _sourceDb.StreetTerritories)
+            {
+                var targetStreetTerritory = _targetDb.StreetTerritories.Where(x => x.TerritoryCode == srcStreetTerritory.TerritoryCode).FirstOrDefault();
+                mapSourceStreetTerritoryTargetStreetTerritory.Add(srcStreetTerritory.TerritoryId, targetStreetTerritory.TerritoryId);
+            }
+
+            foreach (var srcDoNotContactLetter in _sourceDb.DoNotContactLetters.OrderBy(x => x.ReportedDate))
+            {
+                _targetDb.DoNotContactLetters.Add(new DoNotContactLetter
+                {
+                    TerritoryId = mapSourceStreetTerritoryTargetStreetTerritory[srcDoNotContactLetter.TerritoryId],
+                    PublisherId = mapSourcePublisherTargetPublisher[srcDoNotContactLetter.PublisherId],
+                    ReportedDate = srcDoNotContactLetter.ReportedDate,
+                    MailingAddress1 = srcDoNotContactLetter.MailingAddress1,
+                    MailingAddress2 = srcDoNotContactLetter.MailingAddress2,
+                    Notes = srcDoNotContactLetter.Notes
+                });
+            }
+
+            foreach (var srcDoNotContactPhone in _sourceDb.DoNotContactPhones.OrderBy(x => x.ReportedDate))
+            {
+                _targetDb.DoNotContactPhones.Add(new DoNotContactPhone
+                {
+                    PublisherId = mapSourcePublisherTargetPublisher[srcDoNotContactPhone.PublisherId],
+                    ReportedDate = srcDoNotContactPhone.ReportedDate,
+                    PhoneNumber = srcDoNotContactPhone.PhoneNumber,
+                    Notes = srcDoNotContactPhone.Notes
+                });
+            }
+
+            foreach (var srcDoNotContactStreet in _sourceDb.DoNotContactStreets.OrderBy(x => x.ReportedDate))
+            {
+                _targetDb.DoNotContactStreets.Add(new DoNotContactStreet
+                {
+                    TerritoryId = mapSourceStreetTerritoryTargetStreetTerritory[srcDoNotContactStreet.TerritoryId],
+                    PublisherId = mapSourcePublisherTargetPublisher[srcDoNotContactStreet.PublisherId],
+                    ReportedDate = srcDoNotContactStreet.ReportedDate,
+                    StreetAddress = srcDoNotContactStreet.StreetAddress,
+                    Coordinates = srcDoNotContactStreet.Coordinates,
+                    Notes = srcDoNotContactStreet.Notes
+                });
+            }
+
+            _targetDb.SaveChanges();
         }
     }
 }
