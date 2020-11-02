@@ -348,7 +348,13 @@ namespace Topaz.UI.Razor.Controllers
         [Route("[action]/{id}")]
         public IActionResult GetTerritoryExportContacts(int id)
         {
-            var export = _context.InaccessibleTerritoryExports.Include(x => x.Items).ThenInclude(x => x.Contact).ThenInclude(x => x.PhoneType).FirstOrDefault(x => x.InaccessibleTerritoryExportId == id);
+            var export = _context.InaccessibleTerritoryExports
+                .Include(x => x.Territory)
+                .Include(x => x.Publisher)
+                .Include(x => x.Items)
+                .ThenInclude(x => x.Contact)
+                .ThenInclude(x => x.PhoneType)
+                .FirstOrDefault(x => x.InaccessibleTerritoryExportId == id);
 
             using (MemoryStream memoryStream1 = new MemoryStream())
             using (StreamWriter streamWriter1 = new StreamWriter(memoryStream1))
@@ -370,8 +376,15 @@ namespace Topaz.UI.Razor.Controllers
                     streamWriter1.Flush();
                     streamWriter1.Close();
                 }
-                Response.Headers.Add("Content-Disposition", "inline; filename=file.csv");
-                return File(memoryStream1.ToArray(), "text/csv", "file.txt");
+
+                var territory = Regex.Replace(export.Territory.TerritoryCode, @"\W", "").ToLower();
+                var firstName = Regex.Replace(export.Publisher.FirstName, @"\W", "").ToLower();
+                var lastName = Regex.Replace(export.Publisher.LastName, @"\W", "").ToLower();
+
+                var fileName = $"{export.InaccessibleTerritoryExportId}-{territory}-{firstName}{lastName}";
+
+                Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}.csv");
+                return File(memoryStream1.ToArray(), "text/csv", $"{fileName}.csv");
             }
         }
 
