@@ -167,43 +167,92 @@ namespace Topaz.UI.Razor.Controllers
                 .Where(x => !string.IsNullOrEmpty(x.MailingAddress1))
                 .Select(x => new { x.InaccessibleContactId, x.MailingAddress1, x.MailingAddress2 }).AsNoTracking().ToList();
 
-            // list of 'do not contact' addresses for this territories associated street territory
+            // list of 'do not contact' addresses for this territory's associated street territory
             var territoryDoNotContactMailingAddresses = _context.DoNotContactLetters.Where(x => x.TerritoryId == streetTerritoryId).Select(x => new { x.MailingAddress1, x.MailingAddress2 }).AsNoTracking().ToList();
 
             // compare the mailing addresses to the list of 'do not contact' addresses
             var territoryDoNotContactLetterContactIds = territoryMailingAddresses.Where((x) =>
             {
+                // validate contact mailing address 1 pattern
                 if (!regexMailingAddress1.IsMatch(x.MailingAddress1))
                     return false;
 
+                // validate contact mailing address 2 pattern if specified
                 if (!string.IsNullOrEmpty(x.MailingAddress2) && !regexMailingAddress2.IsMatch(x.MailingAddress2))
                     return false;
 
                 return territoryDoNotContactMailingAddresses.Any((y) =>
                 {
+                    // validate do not contact mailing address 1 pattern
                     if (!regexMailingAddress1.IsMatch(y.MailingAddress1))
                         return false;
 
-                    var yMailingStreetNumber = regexMailingAddress1.Match(y.MailingAddress1).Groups[1].Value.ToLower();
-                    var xMailingStreetNumber = regexMailingAddress1.Match(x.MailingAddress1).Groups[1].Value.ToLower();
-
+                    // do not contact street name
                     var yMailingStreetName = Regex.Replace(regexMailingAddress1.Match(y.MailingAddress1).Groups[2].Value, @"\W", "").ToLower();
+
+                    // contact street name
                     var xMailingStreetName = Regex.Replace(regexMailingAddress1.Match(x.MailingAddress1).Groups[2].Value, @"\W", "").ToLower();
 
-                    var similarityScore = (xMailingStreetName.Length >= yMailingStreetName.Length) ?
+                    // compare similarity of street names (the lower the number the more similar they are)
+                    var streetNameSimilarityScore = (xMailingStreetName.Length >= yMailingStreetName.Length) ?
                         (double)yMailingStreetName.DamerauLevenshteinDistanceTo(xMailingStreetName) / xMailingStreetName.Length :
                         (double)xMailingStreetName.DamerauLevenshteinDistanceTo(yMailingStreetName) / yMailingStreetName.Length;
 
-                    if (string.IsNullOrEmpty(x.MailingAddress2) && string.IsNullOrEmpty(y.MailingAddress2))
-                        return similarityScore <= .5 && yMailingStreetNumber == xMailingStreetNumber;
-
-                    if (!regexMailingAddress2.IsMatch(y.MailingAddress2))
+                    // street name isn't similar enough between the two records
+                    if (streetNameSimilarityScore > .5)
                         return false;
 
-                    var yMailingAddress2 = regexMailingAddress2.Match(y.MailingAddress2).Value.ToLower();
-                    var xMailingAddress2 = regexMailingAddress2.Match(x.MailingAddress2).Value.ToLower();
+                    // do not contact street number
+                    var yMailingStreetNumber = regexMailingAddress1.Match(y.MailingAddress1).Groups[1].Value.ToLower();
+                    int yMailingStreetNumberNumeric;
 
-                    return similarityScore <= .5 && yMailingStreetNumber == xMailingStreetNumber && yMailingAddress2 == xMailingAddress2;
+                    // contact street number
+                    var xMailingStreetNumber = regexMailingAddress1.Match(x.MailingAddress1).Groups[1].Value.ToLower();
+                    int xMailingStreetNumberNumeric;
+
+                    // check if street numbers match as string
+                    var streetNumbersMatch = yMailingStreetNumber == xMailingStreetNumber;
+
+                    // if street numbers don't match as string and both are numeric then compare as numeric
+                    if (!streetNumbersMatch)
+                        streetNumbersMatch =
+                            int.TryParse(yMailingStreetNumber, out yMailingStreetNumberNumeric) &&
+                            int.TryParse(xMailingStreetNumber, out xMailingStreetNumberNumeric) &&
+                            yMailingStreetNumberNumeric == xMailingStreetNumberNumeric;
+
+                    // if street numbers still don't match
+                    if (!streetNumbersMatch)
+                        return false;
+
+                    // if mailing address 2 specified
+                    if (!string.IsNullOrEmpty(x.MailingAddress2) && string.IsNullOrEmpty(x.MailingAddress2) == string.IsNullOrEmpty(y.MailingAddress2))
+                    {
+                        // validate do not contact mailing address 2 pattern
+                        if (!regexMailingAddress2.IsMatch(y.MailingAddress2))
+                            return false;
+
+                        var yMailingAddress2 = regexMailingAddress2.Match(y.MailingAddress2).Value.ToLower();
+                        int yMailingAddress2Numeric;
+
+                        var xMailingAddress2 = regexMailingAddress2.Match(x.MailingAddress2).Value.ToLower();
+                        int xMailingAddress2Numeric;
+
+                        // check if mailing address 2 match as string
+                        var address2Match = yMailingAddress2 == xMailingAddress2;
+
+                        // if mailing address 2 doesn't match as string and both are numeric then compare as numeric
+                        if (!address2Match)
+                            address2Match =
+                                int.TryParse(yMailingAddress2, out yMailingAddress2Numeric) &&
+                                int.TryParse(xMailingAddress2, out xMailingAddress2Numeric) &&
+                                yMailingAddress2Numeric == xMailingAddress2Numeric;
+
+                        // if mailing address 2 still doesn't match
+                        if (!address2Match)
+                            return false;
+                    }
+
+                    return true;
                 });
             }).Select(x => x.InaccessibleContactId);
 
