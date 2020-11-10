@@ -30,8 +30,7 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area=""
-    asp-page="/Publisher/InaccessibleAssignments">Assignments</a>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Publisher/InaccessibleAssignments">Assignments</a>
                             </li>
                             @if (User.IsInRole("Publisher") || User.IsInRole("Administrator"))
                             {
@@ -42,8 +41,7 @@
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dd-activity">
                                         <a class="dropdown-item" asp-area="" asp-page="/Publisher/StreetTerritories">Street Territory</a>
-                                        <a class="dropdown-item" asp-area=""
-        asp-page="/Publisher/InaccessibleTerritories">Inaccessible Territory</a>
+                                        <a class="dropdown-item" asp-area="" asp-page="/Publisher/InaccessibleTerritories">Inaccessible Territory</a>
                                     </div>
                                 </li>
                             }
@@ -64,8 +62,7 @@
                                         Contact - Street</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/StreetTerritories/Index">Street
                                         Territory</a>
-                                    <a class="dropdown-item" asp-area="Admin"
-    asp-page="/InaccessibleTerritories/Index">Inaccessible Territory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/InaccessibleTerritories/Index">Inaccessible Territory</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/Users/Index">Users</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/Publishers/Index">Publishers</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/Roles/Index">Roles</a>
