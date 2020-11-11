@@ -67,7 +67,7 @@ const routes = [
   {
     path: "/Admin/Territory/:type?",
     name: "AdminTerritory",
-    props: parseProps,
+    props: (r) => ({ type: r.query.type }),
     component: () =>
       import(
         /* webpackChunkName: "chunk-admin" */ "../views/admin-territory.vue"
