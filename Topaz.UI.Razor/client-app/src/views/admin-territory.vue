@@ -140,7 +140,7 @@ export default {
   props: {
     type: {
       type: String,
-      default: "street",
+      required: true,
     },
   },
   data() {

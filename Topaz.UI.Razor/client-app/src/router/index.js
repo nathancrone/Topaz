@@ -65,9 +65,9 @@ const routes = [
       ),
   },
   {
-    path: "/Admin/Territory/:type?",
+    path: "/Admin/Territory/:type",
     name: "AdminTerritory",
-    props: (r) => ({ type: r.query.type }),
+    props: true,
     component: () =>
       import(
         /* webpackChunkName: "chunk-admin" */ "../views/admin-territory.vue"
@@ -86,7 +86,9 @@ const routes = [
 
 const router = new VueRouter({
   mode: "history",
-  base: process.env.BASE_URL,
+  //base: process.env.BASE_URL,
+  // i don't want the public path in the route so i explicitely set the router's base path to root
+  base: "/",
   routes,
 });
 
