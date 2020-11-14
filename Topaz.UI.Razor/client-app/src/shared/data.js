@@ -93,7 +93,7 @@ const getPublisherStreetTerritories = async function() {
       t.checkOutDate =
         t.checkOutDate === null
           ? null
-          : format(parseDate(parseISO(t.checkOutDate)), "MMM dd, yyyy");
+          : format(parseISO(t.checkOutDate), "MMM dd, yyyy");
       return t;
     });
     return territories;
@@ -111,7 +111,7 @@ const getAvailableStreetTerritories = async function() {
       t.checkInDate =
         t.checkInDate === null
           ? null
-          : format(parseDate(parseISO(t.checkInDate)), "MMM dd, yyyy");
+          : format(parseISO(t.checkInDate), "MMM dd, yyyy");
       return t;
     });
     return territories;
@@ -129,7 +129,7 @@ const getPublisherInaccessibleTerritories = async function() {
       t.checkOutDate =
         t.checkOutDate === null
           ? null
-          : format(parseDate(parseISO(t.checkOutDate)), "MMM dd, yyyy");
+          : format(parseISO(t.checkOutDate), "MMM dd, yyyy");
       return t;
     });
     return territories;
@@ -147,7 +147,7 @@ const getAvailableInaccessibleTerritories = async function() {
       t.checkInDate =
         t.checkInDate === null
           ? null
-          : format(parseDate(parseISO(t.checkInDate)), "MMM dd, yyyy");
+          : format(parseISO(t.checkInDate), "MMM dd, yyyy");
       return t;
     });
     return territories;
@@ -470,13 +470,6 @@ const currentUserRework = async function(territory) {
   }
 };
 
-const parseDate = (d) => {
-  var arr = d.split(/\D+/);
-  return new Date(
-    Date.UTC(arr[0], --arr[1], arr[2], arr[3], arr[4], arr[5], arr[6])
-  );
-};
-
 const parseList = (response) => {
   if (response.status !== 200) throw Error(response.message);
   if (!response.data) return [];
@@ -518,5 +511,4 @@ export const data = {
   currentUserCheckout,
   currentUserCheckin,
   currentUserRework,
-  parseDate,
 };
