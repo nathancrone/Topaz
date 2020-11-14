@@ -32,7 +32,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Publisher/InaccessibleAssignments">Assignments</a>
                             </li>
-                            @if (User.IsInRole("Publisher") || User.IsInRole("Administrator"))
+                            @if (User.IsInRole("Administrator") || User.IsInRole("Street Territory Coordinator") || User.IsInRole("Inaccessible Territory Coordinator"))
                             {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="dd-activity" role="button"
@@ -40,8 +40,14 @@
                                         Activity
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dd-activity">
-                                        <a class="dropdown-item" asp-area="" asp-page="/Publisher/StreetTerritories">Street Territory</a>
-                                        <a class="dropdown-item" asp-area="" asp-page="/Publisher/InaccessibleTerritories">Inaccessible Territory</a>
+                                        @if (User.IsInRole("Administrator") || User.IsInRole("Street Territory Coordinator"))
+                                        {
+                                            <a class="dropdown-item" asp-area="" asp-page="/Publisher/StreetTerritories">Street Territory</a>
+                                        }
+                                        @if (User.IsInRole("Administrator") || User.IsInRole("Inaccessible Territory Coordinator"))
+                                        {
+                                            <a class="dropdown-item" asp-area="" asp-page="/Publisher/InaccessibleTerritories">Inaccessible Territory</a>
+                                        }
                                     </div>
                                 </li>
                             }

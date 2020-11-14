@@ -55,61 +55,53 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">N-008</th>
-                <td>Nathan Crone</td>
-                <td>10/10/2020</td>
-                <td>11/10/2020</td>
+              <tr
+                :class="{ 'table-secondary': t.inActive }"
+                v-for="t in territories"
+                :key="t.territoryId"
+              >
+                <th v-if="t.streetTerritoryCode" scope="row">
+                  {{ t.streetTerritoryCode }} / {{ t.territoryCode }}
+                </th>
+                <th v-else scope="row">{{ t.territoryCode }}</th>
+                <template v-if="!t.activity">
+                  <td colspan="3" class="text-center">-</td>
+                </template>
+                <template v-else>
+                  <td>
+                    {{ t.publisher.firstName }} {{ t.publisher.lastName }}
+                  </td>
+                  <td>{{ displayDate(t.activity.checkOutDate) }}</td>
+                  <td v-if="t.activity.checkInDate">
+                    {{ displayDate(t.activity.checkInDate) }}
+                  </td>
+                  <td v-else>-</td>
+                </template>
                 <td class="text-right">
-                  <a
-                    class="btn btn-sm btn-primary mr-1"
-                    href="#"
-                    @click.prevent="isCheckoutModalOpen = true"
-                    >check out</a
-                  >
+                  <template v-if="!t.inActive">
+                    <a
+                      v-if="!t.activity || !t.activity.checkInDate"
+                      class="btn btn-sm btn-primary mr-1"
+                      href="#"
+                      @click.prevent="isCheckoutModalOpen = true"
+                      >check out</a
+                    >
+                    <a
+                      v-else
+                      class="btn btn-sm btn-primary mr-1"
+                      href="#"
+                      @click.prevent="isCheckinModalOpen = true"
+                      >check in</a
+                    >
+                  </template>
                   <router-link
                     tag="a"
                     class="btn btn-sm btn-primary"
                     :to="{
                       name: 'AdminTerritoryActivity',
-                      params: { id: 123 },
+                      params: { id: t.territoryId },
                     }"
                     >activity</router-link
-                  >
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">S-021</th>
-                <td>Beverly Cofer</td>
-                <td>11/10/2020</td>
-                <td>-</td>
-                <td class="text-right">
-                  <a
-                    class="btn btn-sm btn-primary mr-1"
-                    href="#"
-                    @click.prevent="isCheckinModalOpen = true"
-                    >check in</a
-                  >
-                  <router-link
-                    tag="a"
-                    class="btn btn-sm btn-primary"
-                    :to="{
-                      name: 'AdminTerritoryActivity',
-                      params: { id: 123 },
-                    }"
-                    >activity</router-link
-                  >
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">N-010</th>
-                <td colspan="3" class="text-center">-</td>
-                <td class="text-right">
-                  <a
-                    class="btn btn-sm btn-primary mr-1"
-                    href="#"
-                    @click.prevent="isCheckoutModalOpen = true"
-                    >check out</a
                   >
                 </td>
               </tr>
@@ -132,6 +124,8 @@
 </template>
 
 <script>
+import { data } from "../shared";
+import { parseISO, format } from "date-fns";
 import AdminTerritoryCheckinModal from "../components/admin-territory-checkin-modal";
 import AdminTerritoryCheckoutModal from "../components/admin-territory-checkout-modal";
 
@@ -145,6 +139,7 @@ export default {
   },
   data() {
     return {
+      territories: [],
       isCheckinModalOpen: false,
       isCheckoutModalOpen: false,
     };
@@ -153,7 +148,26 @@ export default {
     AdminTerritoryCheckinModal,
     AdminTerritoryCheckoutModal,
   },
+  methods: {
+    async loadTerritories() {
+      this.territories = [];
+      if (this.type === "street") {
+        this.territories = await data.getStreetTerritory();
+      } else if (this.type === "inaccessible") {
+        this.territories = await data.getInaccessibleTerritory();
+      }
+    },
+    displayDate(date) {
+      return format(parseISO(date), "MMM dd, yyyy");
+    },
+  },
   watch: {
+    type: {
+      immediate: true,
+      async handler() {
+        await this.loadTerritories();
+      },
+    },
     isCheckinModalOpen: {
       handler(after) {
         if (after) this.isCheckoutModalOpen = !after;

@@ -42,6 +42,8 @@ namespace Topaz.UI.Razor
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
+                options.AddPolicy("RequireStreetCoordinatorRole", policy => policy.RequireRole("Administrator", "Street Territory Coordinator"));
+                options.AddPolicy("RequireInaccessibleCoordinatorRole", policy => policy.RequireRole("Administrator", "Inaccessible Territory Coordinator"));
                 options.AddPolicy("RequirePublisherRole", policy => policy.RequireRole("Administrator", "Publisher"));
 
                 options.FallbackPolicy = new AuthorizationPolicyBuilder()
@@ -59,7 +61,9 @@ namespace Topaz.UI.Razor
             services.AddRazorPages().AddRazorPagesOptions(options =>
             {
                 options.Conventions.AuthorizeAreaFolder("Admin", "/", "RequireAdministratorRole");
-                options.Conventions.AuthorizeFolder("/Publisher", "RequirePublisherRole");
+                options.Conventions.AuthorizePage("/Publisher/StreetTerritories", "RequireStreetCoordinatorRole");
+                options.Conventions.AuthorizePage("/Publisher/InaccessibleTerritories", "RequireInaccessibleCoordinatorRole");
+                options.Conventions.AuthorizePage("/Publisher/InaccessibleAssignments", "RequirePublisherRole");
             });
 
             services.ConfigureApplicationCookie(options =>

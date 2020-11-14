@@ -1,5 +1,89 @@
 import * as axios from "axios";
-import { format } from "date-fns";
+import { parseISO, format } from "date-fns";
+
+const getStreetTerritory = async function() {
+  try {
+    const response = await axios.get(`/Street/GetTerritory`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getStreetTerritoryOut = async function() {
+  try {
+    const response = await axios.get(`/Street/GetTerritoryOut`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getStreetTerritoryIn = async function() {
+  try {
+    const response = await axios.get(`/Street/GetTerritoryIn`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getInaccessibleTerritory = async function() {
+  try {
+    const response = await axios.get(`/Inaccessible/GetTerritory`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getInaccessibleTerritoryOut = async function() {
+  try {
+    const response = await axios.get(`/Inaccessible/GetTerritoryOut`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getInaccessibleTerritoryIn = async function() {
+  try {
+    const response = await axios.get(`/Inaccessible/GetTerritoryIn`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
 
 const getPublisherStreetTerritories = async function() {
   try {
@@ -9,7 +93,7 @@ const getPublisherStreetTerritories = async function() {
       t.checkOutDate =
         t.checkOutDate === null
           ? null
-          : format(parseDate(t.checkOutDate), "MMM dd, yyyy");
+          : format(parseDate(parseISO(t.checkOutDate)), "MMM dd, yyyy");
       return t;
     });
     return territories;
@@ -27,7 +111,7 @@ const getAvailableStreetTerritories = async function() {
       t.checkInDate =
         t.checkInDate === null
           ? null
-          : format(parseDate(t.checkInDate), "MMM dd, yyyy");
+          : format(parseDate(parseISO(t.checkInDate)), "MMM dd, yyyy");
       return t;
     });
     return territories;
@@ -45,7 +129,7 @@ const getPublisherInaccessibleTerritories = async function() {
       t.checkOutDate =
         t.checkOutDate === null
           ? null
-          : format(parseDate(t.checkOutDate), "MMM dd, yyyy");
+          : format(parseDate(parseISO(t.checkOutDate)), "MMM dd, yyyy");
       return t;
     });
     return territories;
@@ -63,7 +147,7 @@ const getAvailableInaccessibleTerritories = async function() {
       t.checkInDate =
         t.checkInDate === null
           ? null
-          : format(parseDate(t.checkInDate), "MMM dd, yyyy");
+          : format(parseDate(parseISO(t.checkInDate)), "MMM dd, yyyy");
       return t;
     });
     return territories;
@@ -404,6 +488,12 @@ const parseList = (response) => {
 };
 
 export const data = {
+  getStreetTerritory,
+  getStreetTerritoryOut,
+  getStreetTerritoryIn,
+  getInaccessibleTerritory,
+  getInaccessibleTerritoryOut,
+  getInaccessibleTerritoryIn,
   getPublisherStreetTerritories,
   getAvailableStreetTerritories,
   getPublisherInaccessibleTerritories,

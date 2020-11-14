@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
+using System.Threading.Tasks;
 using Topaz.Common.Models;
 using Topaz.Data;
-using System.Security.Claims;
 
 namespace Topaz.UI.Razor.Controllers
 {
@@ -64,5 +69,94 @@ namespace Topaz.UI.Razor.Controllers
                 .AsNoTracking()
                 .ToList();
         }
+
+        [HttpGet]
+        [Route("[action]")]
+        public IEnumerable<Object> GetTerritory()
+        {
+            var result = _context.StreetTerritories.Select(x =>
+                    new
+                    {
+                        x.TerritoryId,
+                        x.TerritoryCode,
+                        x.InActive,
+                        Activity = x.Activity.OrderByDescending(y => y.CheckOutDate).FirstOrDefault()
+                    }
+                ).ToList();
+
+            var publisherIds = result.Where(y => y.Activity != null).Select(y => y.Activity.PublisherId).ToList();
+
+            var publishers = _context.Publishers.Where(x => publisherIds.Contains(x.PublisherId)).Select(x => new { x.PublisherId, x.FirstName, x.LastName }).ToList();
+
+            return result.Select(x => new
+            {
+                x.TerritoryId,
+                x.TerritoryCode,
+                x.InActive,
+                x.Activity,
+                Publisher = x.Activity != null ? publishers.FirstOrDefault(y => y.PublisherId == x.Activity.PublisherId) : null
+            });
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public IEnumerable<Object> GetTerritoryOut()
+        {
+            var result = _context.StreetTerritories.Where(x =>
+                x.Activity.Any(y =>
+                    !y.CheckOutDate.HasValue && y.CheckInDate.HasValue
+                )).Select(x =>
+                    new
+                    {
+                        x.TerritoryId,
+                        x.TerritoryCode,
+                        x.InActive,
+                        Activity = x.Activity.OrderByDescending(y => y.CheckOutDate).FirstOrDefault()
+                    }
+                ).ToList();
+
+            var publisherIds = result.Where(y => y.Activity != null).Select(y => y.Activity.PublisherId).ToList();
+
+            var publishers = _context.Publishers.Where(x => publisherIds.Contains(x.PublisherId)).Select(x => new { x.PublisherId, x.FirstName, x.LastName }).ToList();
+
+            return result.Select(x => new
+            {
+                x.TerritoryId,
+                x.TerritoryCode,
+                x.InActive,
+                x.Activity,
+                Publisher = x.Activity != null ? publishers.FirstOrDefault(y => y.PublisherId == x.Activity.PublisherId) : null
+            });
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public IEnumerable<Object> GetTerritoryIn()
+        {
+            var result = _context.StreetTerritories.Where(x =>
+                !x.Activity.Any() || x.Activity.All(y => y.CheckOutDate.HasValue && y.CheckInDate.HasValue)).Select(x =>
+                    new
+                    {
+                        x.TerritoryId,
+                        x.TerritoryCode,
+                        x.InActive,
+                        Activity = x.Activity.OrderByDescending(y => y.CheckOutDate).FirstOrDefault()
+                    }
+                ).ToList();
+
+            var publisherIds = result.Where(y => y.Activity != null).Select(y => y.Activity.PublisherId).ToList();
+
+            var publishers = _context.Publishers.Where(x => publisherIds.Contains(x.PublisherId)).Select(x => new { x.PublisherId, x.FirstName, x.LastName }).ToList();
+
+            return result.Select(x => new
+            {
+                x.TerritoryId,
+                x.TerritoryCode,
+                x.InActive,
+                x.Activity,
+                Publisher = x.Activity != null ? publishers.FirstOrDefault(y => y.PublisherId == x.Activity.PublisherId) : null
+            });
+        }
+
     }
 }
