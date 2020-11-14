@@ -8,7 +8,8 @@
             :class="{ active: activeView === availableViews.PHONE_WITHOUT_VM }"
             @click.prevent="setActiveView(availableViews.PHONE_WITHOUT_VM)"
             href="#"
-          >{{ availableViews.PHONE_WITHOUT_VM.name }}</a>
+            >{{ availableViews.PHONE_WITHOUT_VM.name }}</a
+          >
         </li>
         <li class="nav-item">
           <a
@@ -16,7 +17,8 @@
             :class="{ active: activeView === availableViews.PHONE_WITH_VM }"
             @click.prevent="setActiveView(availableViews.PHONE_WITH_VM)"
             href="#"
-          >{{ availableViews.PHONE_WITH_VM.name }}</a>
+            >{{ availableViews.PHONE_WITH_VM.name }}</a
+          >
         </li>
         <li class="nav-item">
           <a
@@ -24,7 +26,8 @@
             :class="{ active: activeView === availableViews.LETTER }"
             @click.prevent="setActiveView(availableViews.LETTER)"
             href="#"
-          >{{ availableViews.LETTER.name }}</a>
+            >{{ availableViews.LETTER.name }}</a
+          >
         </li>
         <li class="nav-item">
           <a
@@ -32,37 +35,59 @@
             :class="{ active: activeView === availableViews.COMPLETE }"
             @click.prevent="setActiveView(availableViews.COMPLETE)"
             href="#"
-          >{{ availableViews.COMPLETE.name }}</a>
+            >{{ availableViews.COMPLETE.name }}</a
+          >
         </li>
       </ul>
     </div>
     <div class="row mt-3 no-gutters">
-      <div v-if="availableAssignments.length !== 0" class="d-flex flex-wrap col">
+      <div
+        v-if="availableAssignments.length !== 0"
+        class="d-flex flex-wrap col"
+      >
         <div class="flex-grow-1 mb-2">
-          <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="loadAssignments">refresh</a>
           <a
             class="btn btn-sm btn-primary mr-1"
-            :class="{ disabled: assignmentUnassignedSelectedCount === assignmentUnassignedCount }"
+            href="#"
+            @click.prevent="loadAssignments"
+            >refresh</a
+          >
+          <a
+            class="btn btn-sm btn-primary mr-1"
+            :class="{
+              disabled:
+                assignmentUnassignedSelectedCount === assignmentUnassignedCount,
+            }"
             href="#"
             @click.prevent="selectUnassigned"
-          >select unassigned</a>
+            >select unassigned</a
+          >
           <a
             class="btn btn-sm btn-primary mr-1"
-            :class="{ disabled: assignmentAssignedSelectedCount === assignmentAssignedCount }"
+            :class="{
+              disabled:
+                assignmentAssignedSelectedCount === assignmentAssignedCount,
+            }"
             href="#"
             @click.prevent="selectAssigned"
-          >select assigned</a>
+            >select assigned</a
+          >
           <a
             class="btn btn-sm btn-primary"
             :class="{ disabled: assignmentSelectedCount === 0 }"
             href="#"
             @click.prevent="toggleAll(false)"
-          >deselect all</a>
+            >deselect all</a
+          >
         </div>
         <div class="flex-grow-1 flex-md-grow-0 mb-2">
           <div class="input-group mr-1">
             <template
-              v-if="activeView !== availableViews.COMPLETE && assignmentUnassignedSelectedCount !== 0 && assignmentAssignedSelectedCount === 0"
+              v-if="
+                activeView !== availableViews.COMPLETE &&
+                  assignmentUnassignedSelectedCount !== 0 &&
+                  assignmentAssignedSelectedCount === 0
+              "
             >
               <input
                 type="text"
@@ -74,27 +99,37 @@
                 :disabled="!isAssignmentSelected"
               />
               <datalist id="availableAssigneeList">
-                <option v-for="(match, i) in assigneeMatches" :key="i">{{ match.name }}</option>
+                <option v-for="(match, i) in assigneeMatches" :key="i">{{
+                  match.name
+                }}</option>
               </datalist>
               <div class="input-group-append">
                 <a
                   class="btn btn-sm btn-primary mr-1"
-                  :class="{ disabled: !isAssignmentSelected || !selectedAssignee }"
+                  :class="{
+                    disabled: !isAssignmentSelected || !selectedAssignee,
+                  }"
                   href="#"
                   @click.ctrl.prevent.exact="exportContacts"
                   @click.prevent.exact="assignContacts"
-                >assign</a>
+                  >assign</a
+                >
               </div>
             </template>
             <template
-              v-if="activeView !== availableViews.COMPLETE && assignmentUnassignedSelectedCount === 0 && assignmentAssignedSelectedCount !== 0"
+              v-if="
+                activeView !== availableViews.COMPLETE &&
+                  assignmentUnassignedSelectedCount === 0 &&
+                  assignmentAssignedSelectedCount !== 0
+              "
             >
               <a
                 v-if="activeView === availableViews.LETTER"
                 class="btn btn-sm btn-primary mr-1"
                 href="#"
                 @click.prevent="lettersSent"
-              >letters sent</a>
+                >letters sent</a
+              >
               <template v-else>
                 <input
                   id="phoneResponseType"
@@ -106,28 +141,42 @@
                   list="phoneResponseTypeList"
                 />
                 <datalist id="phoneResponseTypeList">
-                  <option v-for="(type, r) in phoneResponseTypes" :key="r">{{ type.name }}</option>
+                  <option v-for="(type, r) in phoneResponseTypes" :key="r">{{
+                    type.name
+                  }}</option>
                 </datalist>
                 <div class="input-group-append">
                   <a
                     class="btn btn-sm btn-primary mr-1"
-                    :class="{ disabled: !isAssignmentSelected || !selectedResponseType }"
+                    :class="{
+                      disabled: !isAssignmentSelected || !selectedResponseType,
+                    }"
                     href="#"
                     @click.prevent="saveResponses"
-                  >save</a>
+                    >save</a
+                  >
                 </div>
               </template>
-              <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="unassign">unassign</a>
+              <a
+                class="btn btn-sm btn-primary mr-1"
+                href="#"
+                @click.prevent="unassign"
+                >unassign</a
+              >
             </template>
           </div>
         </div>
       </div>
-      <div v-else class="w-100 alert alert-primary" role="alert">no contacts in this category</div>
+      <div v-else class="w-100 alert alert-primary" role="alert">
+        no contacts in this category
+      </div>
     </div>
-    <div 
-      v-if="territoryExports.length !== 0 && activeView === availableViews.COMPLETE" 
+    <div
+      v-if="
+        territoryExports.length !== 0 && activeView === availableViews.COMPLETE
+      "
       class="row no-gutters"
-      >
+    >
       <div class="col">
         <h3>Exports</h3>
         <table class="table table-sm">
@@ -141,12 +190,23 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="e in territoryExports" :key="`exportRow${e.inaccessibleTerritoryExportId}`">
+            <tr
+              v-for="e in territoryExports"
+              :key="`exportRow${e.inaccessibleTerritoryExportId}`"
+            >
               <th scope="row">{{ e.inaccessibleTerritoryExportId }}</th>
               <td>{{ e.firstName }}&nbsp;{{ e.lastName }}</td>
               <td>{{ displayDate(e.exportDate) }}</td>
               <td>{{ e.exportItemCount }}</td>
-              <td><a :href="`/Inaccessible/GetTerritoryExportContacts/${e.inaccessibleTerritoryExportId}`" target="_blank">download</a></td>
+              <td>
+                <a
+                  :href="
+                    `/Inaccessible/GetTerritoryExportContacts/${e.inaccessibleTerritoryExportId}`
+                  "
+                  target="_blank"
+                  >download</a
+                >
+              </td>
             </tr>
           </tbody>
         </table>
@@ -168,7 +228,7 @@
 
 <script>
 import { data } from "../shared";
-import { format } from "date-fns";
+import { parseISO, format } from "date-fns";
 import PublisherInaccessibleAssignCard from "../components/publisher-inaccessible-assign-card";
 
 const VIEWS = Object.freeze({
@@ -206,7 +266,7 @@ export default {
       responseTypeSearch: "",
       phoneResponseTypes: [],
       selectedResponseType: undefined,
-      territoryExports: []
+      territoryExports: [],
     };
   },
   components: {
@@ -259,13 +319,12 @@ export default {
         this.id,
         this.activeView.type
       );
-      assignments.forEach(function (a) {
+      assignments.forEach(function(a) {
         a.selected = false;
       });
       this.availableAssignments = [...assignments];
 
-      if (this.activeView === VIEWS.COMPLETE)
-      {
+      if (this.activeView === VIEWS.COMPLETE) {
         const territoryExports = await data.getTerritoryExports(this.id);
         this.territoryExports = [...territoryExports];
       }
@@ -347,21 +406,23 @@ export default {
     toggleAll(selected) {
       this.availableAssignments
         .filter((x) => x.selected !== selected)
-        .forEach(function (a) {
+        .forEach(function(a) {
           a.selected = selected;
         });
     },
     selectAssigned() {
       this.availableAssignments
         .filter((x) => x.assignPublisher && !x.selected)
-        .forEach(function (a) {
+        .forEach(function(a) {
           a.selected = true;
         });
     },
     selectUnassigned() {
       this.availableAssignments
-        .filter((x) => !x.doNotContactPhone && !x.assignPublisher && !x.selected)
-        .forEach(function (a) {
+        .filter(
+          (x) => !x.doNotContactPhone && !x.assignPublisher && !x.selected
+        )
+        .forEach(function(a) {
           a.selected = true;
         });
     },
@@ -373,8 +434,8 @@ export default {
       this.availableAssignments = [...this.availableAssignments];
     },
     displayDate(date) {
-      return format(data.parseDate(date), "MM/dd/yyyy");
-    }
+      return format(parseISO(date), "MMM dd, yyyy");
+    },
   },
   watch: {
     async assigneeSearch(after) {

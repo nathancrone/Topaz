@@ -2,9 +2,10 @@
   <div class="col mt-3">
     <div class="card shadow-sm rounded">
       <div class="card-header d-flex">
-        <div
-          class="flex-grow-1"
-        >{{ clonedContact.lastName }}, {{ clonedContact.firstName }} {{ clonedContact.middleInitial }}</div>
+        <div class="flex-grow-1">
+          {{ clonedContact.lastName }}, {{ clonedContact.firstName }}
+          {{ clonedContact.middleInitial }}
+        </div>
       </div>
       <div class="card-body">
         <address>
@@ -12,7 +13,10 @@
           <br />
           {{ clonedContact.mailingAddress1 }}
           <template
-            v-if="clonedContact.mailingAddress2 && clonedContact.mailingAddress2 != ''"
+            v-if="
+              clonedContact.mailingAddress2 &&
+                clonedContact.mailingAddress2 != ''
+            "
           >
             <br />
             {{ clonedContact.mailingAddress2 }}
@@ -23,10 +27,17 @@
           <a
             v-if="clonedContact.phoneNumber"
             :href="`tel:${clonedContact.phoneNumber.replace(/\D/g, '')}`"
-          >{{ clonedContact.phoneNumber }}</a>
+            >{{ clonedContact.phoneNumber }}</a
+          >
         </address>
-        <div v-if="contactActivityType === 1 || contactActivityType === 2" class="form-group">
-          <label :for="`phoneResponseType${clonedContact.inaccessibleContactId}`">Response</label>
+        <div
+          v-if="contactActivityType === 1 || contactActivityType === 2"
+          class="form-group"
+        >
+          <label
+            :for="`phoneResponseType${clonedContact.inaccessibleContactId}`"
+            >Response</label
+          >
           <input
             :id="`phoneResponseType${clonedContact.inaccessibleContactId}`"
             type="text"
@@ -47,7 +58,8 @@
           <label
             class="form-check-label"
             :for="`letterSent${clonedContact.inaccessibleContactId}`"
-          >Letter sent?</label>
+            >Letter sent?</label
+          >
         </div>
         <div v-if="selectedResponseType || letterSent" class="form-group">
           <label for="notes">Notes</label>
@@ -65,7 +77,8 @@
           class="btn btn-primary mr-1 mb-4"
           href="#"
           @click.prevent="save"
-        >save</a>
+          >save</a
+        >
         <ul class="list-group">
           <li
             @click.prevent="toggle"
@@ -74,7 +87,10 @@
             <div class="d-flex w-100 justify-content-end">
               <i
                 class="arrow"
-                :class="{ up: contactActivityExpanded, down: !contactActivityExpanded }"
+                :class="{
+                  up: contactActivityExpanded,
+                  down: !contactActivityExpanded,
+                }"
               ></i>
             </div>
           </li>
@@ -93,17 +109,24 @@
               class="list-group-item flex-column align-items-start"
             >
               <div class="mb-1 d-flex w-100">
-                <small
-                  class="font-weight-bold"
-                >{{ displayDate(a.activityDate) }} - {{ a.publisher.firstName }} {{ a.publisher.lastName }}</small>
+                <small class="font-weight-bold"
+                  >{{ displayDate(a.activityDate) }} -
+                  {{ a.publisher.firstName }} {{ a.publisher.lastName }}</small
+                >
               </div>
               <div
-                v-if="a.contactActivityTypeId === 1 || a.contactActivityTypeId === 2 && a.phoneResponseType"
+                v-if="
+                  a.contactActivityTypeId === 1 ||
+                    (a.contactActivityTypeId === 2 && a.phoneResponseType)
+                "
                 class="mb-1 d-flex w-100"
               >
                 <small>{{ a.phoneResponseType.name }}</small>
               </div>
-              <div v-if="a.contactActivityTypeId === 3" class="mb-1 d-flex w-100">
+              <div
+                v-if="a.contactActivityTypeId === 3"
+                class="mb-1 d-flex w-100"
+              >
                 <small>{{ a.contactActivityType.name }}</small>
               </div>
               <div class="d-flex w-100">
@@ -119,7 +142,7 @@
 
 <script>
 import { data } from "../shared";
-import { format } from "date-fns";
+import { parseISO, format } from "date-fns";
 
 export default {
   name: "PublisherInaccessibleAssignmentPhoneCard",
@@ -173,7 +196,7 @@ export default {
       this.contactActivityExpanded = !this.contactActivityExpanded;
     },
     displayDate(date) {
-      return format(data.parseDate(date), "MM/dd/yyyy");
+      return format(parseISO(date), "MMM dd, yyyy");
     },
   },
   watch: {

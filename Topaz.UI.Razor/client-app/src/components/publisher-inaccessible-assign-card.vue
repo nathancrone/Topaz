@@ -2,10 +2,12 @@
   <div class="col mt-3">
     <div
       class="card shadow-sm rounded"
-      :class="{ 
-        'border-warning': clonedContact.doNotContactPhone || clonedContact.doNotContactLetter, 
-        'border-danger': clonedContact.doNotContactPhone && clonedContact.doNotContactLetter
-        }"
+      :class="{
+        'border-warning':
+          clonedContact.doNotContactPhone || clonedContact.doNotContactLetter,
+        'border-danger':
+          clonedContact.doNotContactPhone && clonedContact.doNotContactLetter,
+      }"
     >
       <div class="card-header d-flex">
         <div class="flex-grow-1">
@@ -18,24 +20,36 @@
             class="form-check-input"
             v-model="clonedContact.selected"
             :id="`cb${clonedContact.inaccessibleContactId}`"
-            :disabled="clonedContact.doNotContactPhone && clonedContact.doNotContactLetter"
+            :disabled="
+              clonedContact.doNotContactPhone &&
+                clonedContact.doNotContactLetter
+            "
           />
         </div>
       </div>
       <div class="card-body">
         <div class="d-flex w-100 justify-content-end">
           <span
-            v-if="clonedContact.doNotContactPhone && !clonedContact.doNotContactLetter"
+            v-if="
+              clonedContact.doNotContactPhone &&
+                !clonedContact.doNotContactLetter
+            "
             class="badge badge-warning"
             >Do Not Phone</span
           >
           <span
-            v-if="!clonedContact.doNotContactPhone && clonedContact.doNotContactLetter"
+            v-if="
+              !clonedContact.doNotContactPhone &&
+                clonedContact.doNotContactLetter
+            "
             class="badge badge-warning"
             >Do Not Write</span
           >
           <span
-            v-if="clonedContact.doNotContactPhone && clonedContact.doNotContactLetter"
+            v-if="
+              clonedContact.doNotContactPhone &&
+                clonedContact.doNotContactLetter
+            "
             class="badge badge-danger"
             >Do Not Phone or Write</span
           >
@@ -53,7 +67,7 @@
           <template
             v-if="
               clonedContact.mailingAddress2 &&
-              clonedContact.mailingAddress2 != ''
+                clonedContact.mailingAddress2 != ''
             "
           >
             <br />
@@ -102,23 +116,22 @@
               <div
                 v-if="
                   a.contactActivityTypeId === 1 ||
-                  (a.contactActivityTypeId === 2 && a.phoneResponseType)
+                    (a.contactActivityTypeId === 2 && a.phoneResponseType)
                 "
                 class="mb-1 d-flex w-100"
               >
                 <small>{{ a.phoneResponseType.name }}</small>
               </div>
-              <div
-                v-else 
-                class="mb-1 d-flex w-100"
-              >
+              <div v-else class="mb-1 d-flex w-100">
                 <small>{{ a.contactActivityType.name }}</small>
               </div>
               <div v-if="a.notes !== ''" class="d-flex w-100">
                 <small class="font-italic">{{ a.notes }}</small>
               </div>
               <div v-if="a.inaccessibleTerritoryExportId">
-                <small class="font-italic">export #{{ a.inaccessibleTerritoryExportId }}</small>
+                <small class="font-italic"
+                  >export #{{ a.inaccessibleTerritoryExportId }}</small
+                >
               </div>
             </li>
           </template>
@@ -130,7 +143,7 @@
 
 <script>
 import { data } from "../shared";
-import { format } from "date-fns";
+import { parseISO, format } from "date-fns";
 
 export default {
   name: "PublisherInaccessibleAssignPhoneCard",
@@ -159,7 +172,7 @@ export default {
       this.contactActivity = [...activity];
     },
     displayDate(date) {
-      return format(data.parseDate(date), "MM/dd/yyyy");
+      return format(parseISO(date), "MMM dd, yyyy");
     },
   },
   watch: {
