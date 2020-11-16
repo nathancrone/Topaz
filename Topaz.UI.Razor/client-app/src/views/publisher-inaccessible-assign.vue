@@ -1,5 +1,8 @@
 <template>
   <div>
+    <DownloadContactsForm
+      :contactIds="selectedContactIds"
+    ></DownloadContactsForm>
     <div class="row mt-3">
       <ul class="nav nav-tabs flex-column flex-md-row">
         <li class="nav-item">
@@ -163,6 +166,12 @@
                 @click.prevent="unassign"
                 >unassign</a
               >
+              <a
+                class="btn btn-sm btn-primary"
+                href="#"
+                @click.prevent="download"
+                >download</a
+              >
             </template>
           </div>
         </div>
@@ -246,6 +255,27 @@ const VIEWS = Object.freeze({
   COMPLETE: { type: "none", name: "Done", activityTypeId: null },
 });
 
+let DownloadContactsForm = {
+  props: {
+    contactIds: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  data() {
+    return {};
+  },
+  template: "#download-form-template",
+  methods: {
+    submit: function() {
+      this.$refs.form.submit();
+    },
+  },
+  created() {
+    this.$parent.$on("downloadSubmit", this.submit);
+  },
+};
+
 export default {
   name: "PublisherInaccessibleAssign",
   props: {
@@ -271,6 +301,7 @@ export default {
   },
   components: {
     PublisherInaccessibleAssignCard,
+    DownloadContactsForm,
   },
   async created() {
     await this.loadAssignments();
@@ -311,6 +342,12 @@ export default {
       return this.availableAssignments.filter(
         (x) => !!x.assignPublisher && x.selected
       ).length;
+    },
+    selectedContactIds() {
+      return this.availableAssignments.reduce(
+        (a, o) => (o.selected && a.push(o.inaccessibleContactId), a),
+        []
+      );
     },
   },
   methods: {
@@ -372,6 +409,9 @@ export default {
       );
       await data.unassignInaccessibleContacts(assignments);
       await this.loadAssignments();
+    },
+    download() {
+      this.$emit("downloadSubmit");
     },
     async saveResponses() {
       const assignments = this.availableAssignments.reduce(

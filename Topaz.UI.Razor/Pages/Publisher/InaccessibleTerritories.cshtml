@@ -1,11 +1,22 @@
 ﻿@page "{action?}/{id:int?}"
+@using Microsoft.AspNetCore.Antiforgery
 @inject IOptions<AppSettingsOptions> AppSettings
+@inject IAntiforgery antiforgery
+@{
+    var token = antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
+}
 @model InaccessibleTerritoriesModel
 @{
     ViewData["Title"] = "Publisher's Inaccesible Territories";
 }
 
 <div id="app"></div>
+<script type="text/x-template" id="download-form-template">
+  <form ref="form" method="post" target="_blank">
+      <input type="hidden" name="__RequestVerificationToken" value="@token">
+      <input v-for="(id, index) in contactIds" :key="index" type="hidden" name="InaccessibleContactIds" :value="id">
+  </form>
+</script>
 
 @section Styles {
     <link rel="stylesheet" href="@Url.Content($"~/client-app/css/app.css?i={AppSettings.Value.CacheInvalidator}")" />

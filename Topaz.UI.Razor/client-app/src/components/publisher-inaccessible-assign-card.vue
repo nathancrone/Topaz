@@ -146,7 +146,7 @@ import { data } from "../shared";
 import { parseISO, format } from "date-fns";
 
 export default {
-  name: "PublisherInaccessibleAssignPhoneCard",
+  name: "PublisherInaccessibleAssignCard",
   props: {
     contact: {
       type: Object,
