@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,7 +43,7 @@ namespace Topaz.UI.Razor.Pages.Publisher
 
         public IActionResult OnPost()
         {
-            var download = _context.InaccessibleContacts.Where(x => InaccessibleContactIds.Contains(x.InaccessibleContactId));
+            var download = _context.InaccessibleContacts.Include(x => x.PhoneType).Where(x => InaccessibleContactIds.Contains(x.InaccessibleContactId));
 
             using (MemoryStream memoryStream1 = new MemoryStream())
             using (StreamWriter streamWriter1 = new StreamWriter(memoryStream1))
