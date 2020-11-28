@@ -83,15 +83,15 @@
                       v-if="!t.activity || !t.activity.checkInDate"
                       class="btn btn-sm btn-primary mr-1"
                       href="#"
-                      @click.prevent="isCheckoutModalOpen = true"
-                      >check out</a
+                      @click.prevent="checkIn(t)"
+                      >check in</a
                     >
                     <a
                       v-else
                       class="btn btn-sm btn-primary mr-1"
                       href="#"
-                      @click.prevent="isCheckinModalOpen = true"
-                      >check in</a
+                      @click.prevent="checkOut(t)"
+                      >check out</a
                     >
                   </template>
                   <router-link
@@ -110,14 +110,14 @@
         </div>
       </div>
     </div>
-
     <AdminTerritoryCheckinModal
       @close="isCheckinModalOpen = false"
+      :territory="selectedTerritory"
       :open="isCheckinModalOpen"
     />
-
     <AdminTerritoryCheckoutModal
       @close="isCheckoutModalOpen = false"
+      :territory="selectedTerritory"
       :open="isCheckoutModalOpen"
     />
   </div>
@@ -140,6 +140,7 @@ export default {
   data() {
     return {
       territories: [],
+      selectedTerritory: null,
       isCheckinModalOpen: false,
       isCheckoutModalOpen: false,
     };
@@ -159,6 +160,14 @@ export default {
     },
     displayDate(date) {
       return format(parseISO(date), "MMM dd, yyyy");
+    },
+    checkIn(t) {
+      this.selectedTerritory = t;
+      this.isCheckinModalOpen = true;
+    },
+    checkOut(t) {
+      this.selectedTerritory = t;
+      this.isCheckoutModalOpen = true;
     },
   },
   watch: {

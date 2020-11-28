@@ -13,7 +13,50 @@
         </button>
       </div>
     </div>
-    <h1>hello world</h1>
+    <div class="row no-gutters">
+      <div class="col">
+        <h3>Activity - E-015 / I-1006</h3>
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Publisher</th>
+              <th scope="col">Checked Out</th>
+              <th scope="col">Checked In</th>
+              <th scope="col">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Nathan Crone</td>
+              <td>Oct 08, 2020</td>
+              <td>Nov 14, 2020</td>
+              <td class="text-right">
+                <a class="btn btn-sm btn-primary mr-1" href="#">edit</a>
+                <a class="btn btn-sm btn-primary mr-1" href="#">delete</a>
+              </td>
+            </tr>
+            <tr>
+              <td>Patricia Crone</td>
+              <td>Oct 08, 2019</td>
+              <td>Nov 14, 2019</td>
+              <td class="text-right">
+                <a class="btn btn-sm btn-primary mr-1" href="#">edit</a>
+                <a class="btn btn-sm btn-primary mr-1" href="#">delete</a>
+              </td>
+            </tr>
+            <tr>
+              <td>Dana Crone</td>
+              <td>Oct 08, 2018</td>
+              <td>Nov 14, 2018</td>
+              <td class="text-right">
+                <a class="btn btn-sm btn-primary mr-1" href="#">edit</a>
+                <a class="btn btn-sm btn-primary mr-1" href="#">delete</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </template>
 
