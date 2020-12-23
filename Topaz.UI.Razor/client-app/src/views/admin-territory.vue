@@ -112,11 +112,13 @@
     </div>
     <AdminTerritoryCheckinModal
       @close="isCheckinModalOpen = false"
+      @confirm="checkinConfirm"
       :territory="selectedTerritory"
       :open="isCheckinModalOpen"
     />
     <AdminTerritoryCheckoutModal
       @close="isCheckoutModalOpen = false"
+      @confirm="checkoutConfirm"
       :territory="selectedTerritory"
       :open="isCheckoutModalOpen"
     />
@@ -168,6 +170,18 @@ export default {
     checkOut(t) {
       this.selectedTerritory = t;
       this.isCheckoutModalOpen = true;
+    },
+    async checkinConfirm(args) {
+      await data.userCheckin(args.territoryId, args.checkinDate);
+      this.isCheckinModalOpen = false;
+    },
+    async checkoutConfirm(args) {
+      await data.publisherCheckout(
+        args.territoryId,
+        args.publisherId,
+        args.checkoutDate
+      );
+      this.isCheckoutModalOpen = false;
     },
   },
   watch: {

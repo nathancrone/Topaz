@@ -24,17 +24,26 @@
                 <form>
                   <div class="form-group">
                     <label class="control-label">Publisher</label>
-                    <select class="form-control">
-                      <option value="">-- Select Publisher --</option>
-                      <option value="38">Alexander, Carol</option>
-                    </select>
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="publisherSearch"
+                      autocomplete="off"
+                      placeholder="enter publisher"
+                      list="availablePublisherList"
+                    />
+                    <datalist id="availablePublisherList">
+                      <option v-for="(match, i) in publisherMatches" :key="i">{{
+                        match.name
+                      }}</option>
+                    </datalist>
                   </div>
                   <div class="form-group">
                     <label class="control-label">Date</label>
                     <input
                       class="form-control"
                       type="datetime-local"
-                      v-model="checkOutDate"
+                      v-model="checkoutDate"
                     />
                   </div>
                 </form>
@@ -50,7 +59,10 @@
                 <button
                   type="button"
                   class="btn btn-primary"
-                  @click.prevent="save"
+                  :class="{
+                    disabled: !checkoutDate || !selectedPublisher,
+                  }"
+                  @click.prevent="confirm"
                 >
                   Check Out
                 </button>
@@ -64,7 +76,8 @@
 </template>
 
 <script>
-import { format } from "date-fns";
+import { data } from "../shared";
+import { differenceInDays, parseISO, format } from "date-fns";
 export default {
   name: "AdminTerritoryCheckoutModal",
   props: {
@@ -79,15 +92,40 @@ export default {
   },
   data() {
     return {
-      checkOutDate: null,
+      checkoutDate: null,
+      publisherSearch: "",
+      publisherSearchToken: undefined,
+      availablePublishers: [],
+      selectedPublisher: undefined,
     };
   },
   methods: {
     close() {
       this.$emit("close");
     },
-    save() {
-      this.$emit("close");
+    confirm() {
+      let checkoutDate = parseISO(this.checkoutDate);
+
+      if (checkoutDate) {
+        // difference less than 1 day
+        if (differenceInDays(new Date(), checkoutDate) < 1) {
+          checkoutDate = null;
+        }
+      }
+
+      this.$emit("confirm", {
+        territoryId: this.territory.territoryId,
+        publisherId: this.selectedPublisher.id,
+        checkoutDate: checkoutDate,
+      });
+      this.publisherSearch = "";
+      this.publisherSearchToken = undefined;
+      this.availablePublishers = [];
+      this.selectedPublisher = undefined;
+    },
+    async loadPublishers(token) {
+      const publishers = await data.getPublisherSelectOptions(token);
+      this.availablePublishers = [...publishers];
     },
   },
   watch: {
@@ -95,9 +133,44 @@ export default {
       immediate: true,
       handler(val) {
         if (val) {
-          this.checkOutDate = format(new Date(), "yyyy-MM-dd'T'hh:mm");
+          this.checkoutDate = format(new Date(), "yyyy-MM-dd'T'hh:mm");
         }
       },
+    },
+    async publisherSearch(after) {
+      // find available publisher that exactly matches
+      const publisher = this.availablePublishers.find(
+        ({ name }) => name.toLowerCase() === after.toLowerCase()
+      );
+
+      // if exact match found, set the selected publisher
+      // if not, clear the selected publisher
+      if (publisher) {
+        this.selectedPublisher = Object.assign({}, publisher);
+      } else {
+        this.selectedPublisher = undefined;
+      }
+
+      if (after.length < 3 || this.selectedPublisher) {
+        return;
+      }
+      if (
+        this.publisherSearchToken &&
+        after.indexOf(this.publisherSearchToken) !== -1
+      ) {
+        return;
+      }
+      this.publisherSearchToken = after;
+      await this.loadPublishers(after);
+    },
+  },
+  computed: {
+    publisherMatches() {
+      return this.availablePublishers.filter((p) => {
+        return (
+          p.name.toLowerCase().indexOf(this.publisherSearch.toLowerCase()) >= 0
+        );
+      });
     },
   },
 };

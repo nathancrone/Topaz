@@ -1,15 +1,18 @@
 <template>
   <div>
     <ul class="list-group">
-      <li class="list-group-item list-group-item-action flex-column align-items-start">
+      <li
+        class="list-group-item list-group-item-action flex-column align-items-start"
+      >
         <div class="d-flex w-100 justify-content-end">
           <router-link
             tag="a"
             class="btn btn-primary"
             :to="{
-            name: 'PublisherStreetCheckout'
+              name: 'PublisherStreetCheckout',
             }"
-          >Check Out</router-link>
+            >Check Out</router-link
+          >
         </div>
       </li>
       <li
@@ -19,24 +22,35 @@
       >
         <div class="d-flex w-100 justify-content-between">
           <h5 class="mb-1">{{ t.territoryCode }}</h5>
-          <small>Checked Out: {{ (t.checkOutDate === null) ? "Never" : t.checkOutDate }}</small>
+          <small
+            >Checked Out:
+            {{ t.checkOutDate === null ? "Never" : t.checkOutDate }}</small
+          >
         </div>
         <div class="d-flex w-100 justify-content-end">
           <button
             v-if="t !== checkin && t !== rework"
             class="btn btn-primary mr-1"
             @click.prevent="handleCheckin(t)"
-          >Check In</button>
+          >
+            Check In
+          </button>
           <button
             v-if="t !== checkin && t !== rework"
             class="btn btn-primary"
             @click.prevent="handleRework(t)"
-          >Rework</button>
+          >
+            Rework
+          </button>
           <div v-if="t === checkin || t === rework">
             <span class="mr-1" v-if="checkin">Check in?</span>
             <span class="mr-1" v-if="rework">Rework?</span>
-            <button class="btn btn-success mr-1" @click.prevent="handleConfirm">Confirm</button>
-            <button class="btn btn-danger" @click.prevent="handleCancel">Cancel</button>
+            <button class="btn btn-success mr-1" @click.prevent="handleConfirm">
+              Confirm
+            </button>
+            <button class="btn btn-danger" @click.prevent="handleCancel">
+              Cancel
+            </button>
           </div>
         </div>
       </li>
@@ -65,7 +79,7 @@ export default {
       this.territories = await data.getPublisherStreetTerritories();
     },
     async checkinTerritory(t) {
-      await data.currentUserCheckin(t);
+      await data.userCheckin(t);
       await this.loadTerritories(t);
     },
     async reworkTerritory(t) {

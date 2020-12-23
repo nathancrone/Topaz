@@ -27,7 +27,7 @@
                     <input
                       class="form-control"
                       type="datetime-local"
-                      v-model="checkInDate"
+                      v-model="checkinDate"
                     />
                   </div>
                 </form>
@@ -43,7 +43,10 @@
                 <button
                   type="button"
                   class="btn btn-primary"
-                  @click.prevent="save"
+                  :class="{
+                    disabled: !checkinDate,
+                  }"
+                  @click.prevent="confirm"
                 >
                   Check In
                 </button>
@@ -57,7 +60,7 @@
 </template>
 
 <script>
-import { format } from "date-fns";
+import { differenceInDays, parseISO, format } from "date-fns";
 export default {
   name: "AdminTerritoryCheckinModal",
   props: {
@@ -72,15 +75,27 @@ export default {
   },
   data() {
     return {
-      checkInDate: null,
+      checkinDate: null,
     };
   },
   methods: {
     close() {
       this.$emit("close");
     },
-    save() {
-      this.$emit("close");
+    confirm() {
+      let checkinDate = parseISO(this.checkinDate);
+
+      if (checkinDate) {
+        // difference less than 1 day
+        if (differenceInDays(new Date(), checkinDate) < 1) {
+          checkinDate = null;
+        }
+      }
+
+      this.$emit("confirm", {
+        territoryId: this.territory.territoryId,
+        checkinDate: checkinDate,
+      });
     },
   },
   watch: {
@@ -88,7 +103,7 @@ export default {
       immediate: true,
       handler(val) {
         if (val) {
-          this.checkInDate = format(new Date(), "yyyy-MM-dd'T'hh:mm");
+          this.checkinDate = format(new Date(), "yyyy-MM-dd'T'hh:mm");
         }
       },
     },

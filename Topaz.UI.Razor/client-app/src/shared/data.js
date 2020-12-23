@@ -442,11 +442,30 @@ const currentUserCheckout = async function(territory) {
   }
 };
 
-const currentUserCheckin = async function(territory) {
+const publisherCheckout = async function(
+  territoryId,
+  publisherId,
+  checkoutDate
+) {
   try {
     const response = await axios.post(
-      `/Territory/CurrentUserCheckin/${territory.territoryId}`
+      `/Territory/PublisherCheckout/${territoryId}`,
+      { publisherId, checkoutDate }
     );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return [];
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+const userCheckin = async function(territoryId, checkinDate) {
+  try {
+    const response = await axios.post(`/Territory/UserCheckin/${territoryId}`, {
+      checkinDate,
+    });
     if (response.status !== 200) throw Error(response.message);
     if (!response.data) return [];
     return response.data;
@@ -509,6 +528,7 @@ export const data = {
   uploadContactsCsv,
   uploadContacts,
   currentUserCheckout,
-  currentUserCheckin,
+  publisherCheckout,
+  userCheckin,
   currentUserRework,
 };
