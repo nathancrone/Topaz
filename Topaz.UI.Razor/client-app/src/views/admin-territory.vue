@@ -80,7 +80,7 @@
                 <td class="text-right">
                   <template v-if="!t.inActive">
                     <a
-                      v-if="!t.activity || !t.activity.checkInDate"
+                      v-if="t.activity && !t.activity.checkInDate"
                       class="btn btn-sm btn-primary mr-1"
                       href="#"
                       @click.prevent="checkIn(t)"
@@ -173,6 +173,7 @@ export default {
     },
     async checkinConfirm(args) {
       await data.userCheckin(args.territoryId, args.checkinDate);
+      await this.loadTerritories();
       this.isCheckinModalOpen = false;
     },
     async checkoutConfirm(args) {
@@ -181,6 +182,7 @@ export default {
         args.publisherId,
         args.checkoutDate
       );
+      await this.loadTerritories();
       this.isCheckoutModalOpen = false;
     },
   },
