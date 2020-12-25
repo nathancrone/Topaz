@@ -98,8 +98,8 @@ export default {
       this.territories = await data.getPublisherInaccessibleTerritories();
     },
     async checkinTerritory(t) {
-      await data.userCheckin(t);
-      await this.loadTerritories(t);
+      await data.userCheckin(t.territoryId);
+      await this.loadTerritories();
     },
     handleAssign(t) {
       console.log(t);

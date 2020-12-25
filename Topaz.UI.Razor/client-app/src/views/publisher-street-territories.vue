@@ -79,12 +79,12 @@ export default {
       this.territories = await data.getPublisherStreetTerritories();
     },
     async checkinTerritory(t) {
-      await data.userCheckin(t);
-      await this.loadTerritories(t);
+      await data.userCheckin(t.territoryId);
+      await this.loadTerritories();
     },
     async reworkTerritory(t) {
       await data.currentUserRework(t);
-      await this.loadTerritories(t);
+      await this.loadTerritories();
     },
     handleCheckin(t) {
       this.checkin = t;
