@@ -61,16 +61,36 @@
 </template>
 
 <script>
+import { data } from "../shared";
 export default {
   name: "AdminTerritoryActivity",
   props: {
+    type: {
+      type: String,
+      required: true,
+    },
     id: {
       type: Number,
       default: 0,
     },
   },
   data() {
-    return {};
+    return {
+      territory: null,
+    };
+  },
+  methods: {
+    async loadActivity() {
+      this.territory = null;
+      if (this.type === "street") {
+        this.territory = await data.getStreetActivity(this.id);
+      } else if (this.type === "inaccessible") {
+        this.territory = await data.getInaccessibleActivity(this.id);
+      }
+    },
+  },
+  async created() {
+    await this.loadActivity();
   },
 };
 </script>

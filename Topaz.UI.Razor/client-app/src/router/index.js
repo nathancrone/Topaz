@@ -74,9 +74,9 @@ const routes = [
       ),
   },
   {
-    path: "/Admin/Territory/:id/activity",
+    path: "/Admin/Territory/:type/:id/activity",
     name: "AdminTerritoryActivity",
-    props: parseProps,
+    props: true,
     component: () =>
       import(
         /* webpackChunkName: "chunk-admin" */ "../views/admin-territory-activity.vue"

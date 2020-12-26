@@ -24,6 +24,51 @@ namespace Topaz.UI.Razor.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        [Route("[action]/{id}")]
+        public Object GetStreetActivity(int id)
+        {
+            var result = _context.StreetTerritories.Select(x => new
+            {
+                x.TerritoryId,
+                x.TerritoryCode,
+                x.InActive,
+                Activity = x.Activity.Select(y => new
+                {
+                    y.TerritoryActivityId,
+                    y.TerritoryId,
+                    y.CheckOutDate,
+                    y.CheckInDate,
+                    Publisher = new { y.Publisher.PublisherId, y.Publisher.FirstName, y.Publisher.LastName }
+                }).OrderByDescending(y => y.CheckOutDate).ToList()
+            }).FirstOrDefault(x => x.TerritoryId == id);
+
+            return result;
+        }
+
+        [HttpGet]
+        [Route("[action]/{id}")]
+        public Object GetInaccessibleActivity(int id)
+        {
+            var result = _context.InaccessibleTerritories.Select(x => new
+            {
+                StreetTerritoryCode = x.StreetTerritory.TerritoryCode,
+                x.TerritoryId,
+                x.TerritoryCode,
+                x.InActive,
+                Activity = x.Activity.Select(y => new
+                {
+                    y.TerritoryActivityId,
+                    y.TerritoryId,
+                    y.CheckOutDate,
+                    y.CheckInDate,
+                    Publisher = new { y.Publisher.PublisherId, y.Publisher.FirstName, y.Publisher.LastName }
+                }).OrderByDescending(y => y.CheckOutDate).ToList()
+            }).FirstOrDefault(x => x.TerritoryId == id);
+
+            return result;
+        }
+
         [HttpPost]
         [Route("[action]/{id}")]
         public int CurrentUserCheckout(int id)
@@ -124,22 +169,6 @@ namespace Topaz.UI.Razor.Controllers
             public int PublisherId { get; set; }
             public DateTime? CheckoutDate { get; set; }
         }
-
-        // [HttpPost]
-        // [Route("[action]")]
-        // public int PublisherCheckin(int territoryId)
-        // {
-        //     //only allow the check in if the territory is checked out
-        //     var activity = _context.TerritoryActivities.Where(x =>
-        //         x.TerritoryId == territoryId &&
-        //         x.CheckOutDate != null &&
-        //         x.CheckInDate == null).FirstOrDefault();
-
-        //     activity.CheckInDate = DateTime.UtcNow;
-        //     _context.SaveChanges();
-
-        //     return 0;
-        // }
 
         private bool IsCheckedOut(int territoryId)
         {

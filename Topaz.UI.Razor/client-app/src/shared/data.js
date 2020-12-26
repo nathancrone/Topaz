@@ -43,6 +43,18 @@ const getStreetTerritoryIn = async function() {
   }
 };
 
+const getStreetActivity = async function(id) {
+  try {
+    const response = await axios.get(`/Territory/GetStreetActivity/${id}`);
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 const getInaccessibleTerritory = async function() {
   try {
     const response = await axios.get(`/Inaccessible/GetTerritory`);
@@ -79,6 +91,20 @@ const getInaccessibleTerritoryIn = async function() {
       return a;
     });
     return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getInaccessibleActivity = async function(id) {
+  try {
+    const response = await axios.get(
+      `/Territory/GetInaccessibleActivity/${id}`
+    );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
   } catch (error) {
     console.error(error);
     return [];
@@ -503,9 +529,11 @@ export const data = {
   getStreetTerritory,
   getStreetTerritoryOut,
   getStreetTerritoryIn,
+  getStreetActivity,
   getInaccessibleTerritory,
   getInaccessibleTerritoryOut,
   getInaccessibleTerritoryIn,
+  getInaccessibleActivity,
   getPublisherStreetTerritories,
   getAvailableStreetTerritories,
   getPublisherInaccessibleTerritories,
