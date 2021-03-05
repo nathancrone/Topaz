@@ -4,14 +4,10 @@
       <div class="modal-mask">
         <div class="modal-wrapper">
           <div class="modal-dialog" role="document">
-            <div class="modal-content" v-if="territory">
+            <div class="modal-content">
               <div class="modal-header">
-                <h5 v-if="territory.streetTerritoryCode">
-                  Check In {{ territory.streetTerritoryCode }} /
-                  {{ territory.territoryCode }}
-                </h5>
-                <h5 v-else scope="row">
-                  Check In {{ territory.territoryCode }}
+                <h5 scope="row">
+                  Edit Activity
                 </h5>
                 <button
                   type="button"
@@ -25,12 +21,23 @@
               <div class="modal-body">
                 <form>
                   <div class="form-group">
-                    <label class="control-label">Date</label>
+                    <label class="control-label">Publisher</label>
                     <input
+                      type="text"
                       class="form-control"
-                      type="datetime-local"
-                      v-model="checkinDate"
+                      autocomplete="off"
+                      placeholder="enter publisher"
+                      list="availablePublisherList"
                     />
+                    <datalist id="availablePublisherList"></datalist>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label">Checkout Date</label>
+                    <input class="form-control" type="datetime-local" />
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label">Checkin Date</label>
+                    <input class="form-control" type="datetime-local" />
                   </div>
                 </form>
               </div>
@@ -62,42 +69,24 @@
 </template>
 
 <script>
-import { differenceInDays, parseISO, format } from "date-fns";
+//import { differenceInDays, parseISO, format } from "date-fns";
 export default {
-  name: "AdminTerritoryCheckinModal",
+  name: "AdminTerritoryActivityModal",
   props: {
-    territory: {
-      type: Object,
-      default: null,
-    },
     open: {
       type: Boolean,
       default: () => false,
     },
   },
   data() {
-    return {
-      checkinDate: null,
-    };
+    return {};
   },
   methods: {
     close() {
       this.$emit("close");
     },
     confirm() {
-      let checkinDate = parseISO(this.checkinDate);
-
-      if (checkinDate) {
-        // difference less than 1 day
-        if (differenceInDays(new Date(), checkinDate) < 1) {
-          checkinDate = null;
-        }
-      }
-
-      this.$emit("confirm", {
-        territoryId: this.territory.territoryId,
-        checkinDate: checkinDate,
-      });
+      this.$emit("confirm", {});
     },
   },
   watch: {
@@ -105,7 +94,7 @@ export default {
       immediate: true,
       handler(val) {
         if (val) {
-          this.checkinDate = format(new Date(), "yyyy-MM-dd'T'hh:mm");
+          //this.checkinDate = format(new Date(), "yyyy-MM-dd'T'hh:mm");
         }
       },
     },

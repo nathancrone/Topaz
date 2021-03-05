@@ -10,7 +10,9 @@
                   Check Out {{ territory.streetTerritoryCode }} /
                   {{ territory.territoryCode }}
                 </h5>
-                <h5 v-else scope="row">Check Out {{ t.territoryCode }}</h5>
+                <h5 v-else scope="row">
+                  Check Out {{ territory.territoryCode }}
+                </h5>
                 <button
                   type="button"
                   class="close"

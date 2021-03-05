@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="territory">
     <div class="d-flex">
       <div class="flex-grow-1 mb-2">&nbsp;</div>
       <div class="flex-grow-1 flex-md-grow-0 mb-2">
@@ -15,7 +15,7 @@
     </div>
     <div class="row no-gutters">
       <div class="col">
-        <h3>Activity - E-015 / I-1006</h3>
+        <h3>Activity - {{ territory.territoryCode }}</h3>
         <table class="table table-sm">
           <thead>
             <tr>
@@ -26,30 +26,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Nathan Crone</td>
-              <td>Oct 08, 2020</td>
-              <td>Nov 14, 2020</td>
+            <tr v-for="a in territory.activity" :key="a.territoryActivityId">
+              <td>{{ a.publisher.firstName }} {{ a.publisher.lastName }}</td>
+              <td>{{ displayDate(a.checkOutDate) }}</td>
+              <td v-if="a.checkInDate">{{ displayDate(a.checkInDate) }}</td>
+              <td v-else>-</td>
               <td class="text-right">
-                <a class="btn btn-sm btn-primary mr-1" href="#">edit</a>
-                <a class="btn btn-sm btn-primary mr-1" href="#">delete</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Patricia Crone</td>
-              <td>Oct 08, 2019</td>
-              <td>Nov 14, 2019</td>
-              <td class="text-right">
-                <a class="btn btn-sm btn-primary mr-1" href="#">edit</a>
-                <a class="btn btn-sm btn-primary mr-1" href="#">delete</a>
-              </td>
-            </tr>
-            <tr>
-              <td>Dana Crone</td>
-              <td>Oct 08, 2018</td>
-              <td>Nov 14, 2018</td>
-              <td class="text-right">
-                <a class="btn btn-sm btn-primary mr-1" href="#">edit</a>
+                <a
+                  class="btn btn-sm btn-primary mr-1"
+                  href="#"
+                  @click.prevent="activityEdit(a)"
+                  >edit</a
+                >
                 <a class="btn btn-sm btn-primary mr-1" href="#">delete</a>
               </td>
             </tr>
@@ -57,11 +45,18 @@
         </table>
       </div>
     </div>
+    <AdminTerritoryActivityModal
+      @close="isActivityModalOpen = false"
+      @confirm="activityEditConfirm"
+      :open="isActivityModalOpen"
+    />
   </div>
 </template>
 
 <script>
 import { data } from "../shared";
+import { parseISO, format } from "date-fns";
+import AdminTerritoryActivityModal from "../components/admin-territory-activity-modal";
 export default {
   name: "AdminTerritoryActivity",
   props: {
@@ -77,7 +72,11 @@ export default {
   data() {
     return {
       territory: null,
+      isActivityModalOpen: false,
     };
+  },
+  components: {
+    AdminTerritoryActivityModal,
   },
   methods: {
     async loadActivity() {
@@ -87,6 +86,15 @@ export default {
       } else if (this.type === "inaccessible") {
         this.territory = await data.getInaccessibleActivity(this.id);
       }
+    },
+    displayDate(date) {
+      return format(parseISO(date), "MMM dd, yyyy");
+    },
+    activityEdit() {
+      this.isActivityModalOpen = true;
+    },
+    async activityEditConfirm() {
+      this.isActivityModalOpen = false;
     },
   },
   async created() {
