@@ -118,6 +118,11 @@
                   >assign</a
                 >
               </div>
+              <a
+                class="btn btn-sm btn-primary mr-1"
+                href="#"
+                >make available</a
+              >
             </template>
             <template
               v-if="
@@ -166,13 +171,19 @@
                 @click.prevent="unassign"
                 >unassign</a
               >
-              <a
-                class="btn btn-sm btn-primary"
-                href="#"
-                @click.prevent="download"
-                >download</a
-              >
             </template>
+            <a
+              v-if="assignmentOnlyAvailableItemsSelected"
+              class="btn btn-sm btn-primary mr-1"
+              href="#"
+              >make unavailable</a
+            >
+            <a
+              class="btn btn-sm btn-primary"
+              href="#"
+              @click.prevent="download"
+              >download</a
+            >
           </div>
         </div>
       </div>
@@ -342,6 +353,9 @@ export default {
       return this.availableAssignments.filter(
         (x) => !!x.assignPublisher && x.selected
       ).length;
+    },
+    assignmentOnlyAvailableItemsSelected() {
+      return this.availableAssignments.filter((x) => x.selected).every((x) => x.isAvailable);
     },
     selectedContactIds() {
       return this.availableAssignments.reduce(

@@ -342,6 +342,7 @@ namespace Topaz.Data.MigrationsApp
                     PhoneTypeId = table.Column<int>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
                     EmailAddresses = table.Column<string>(nullable: true),
+                    IsAvailable = table.Column<bool>(nullable: false, defaultValue: false),
                     AssignPublisherId = table.Column<int>(nullable: true),
                     AssignDate = table.Column<DateTime>(nullable: true),
                     AssignContactActivityTypeId = table.Column<int>(nullable: true),

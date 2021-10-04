@@ -24,6 +24,7 @@ namespace Topaz.Common.Models
         public int? PhoneTypeId { get; set; }
         public string PhoneNumber { get; set; }
         public string EmailAddresses { get; set; }
+        public bool IsAvailable { get; set; }
         public int? AssignPublisherId { get; set; }
         public DateTime? AssignDate { get; set; }
         public int? AssignContactActivityTypeId { get; set; }

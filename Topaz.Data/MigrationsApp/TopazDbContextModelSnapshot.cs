@@ -209,6 +209,11 @@ namespace Topaz.Data.MigrationsApp
                     b.Property<int?>("InaccessibleTerritoryExportItemId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("LastName")
                         .HasColumnType("TEXT");
 

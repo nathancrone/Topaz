@@ -326,7 +326,7 @@ namespace Topaz.UI.Razor.Controllers
                     )
                 );
             }
-            else
+            else // if done
             {
                 FilteredAssignments = FilteredAssignments.Where(x =>
                     // has been exported

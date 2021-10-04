@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsApp
 {
     [DbContext(typeof(TopazDbContext))]
-    [Migration("20201031043114_InitialCreate")]
+    [Migration("20211004050423_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -210,6 +210,11 @@ namespace Topaz.Data.MigrationsApp
 
                     b.Property<int?>("InaccessibleTerritoryExportItemId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsAvailable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .HasColumnType("TEXT");

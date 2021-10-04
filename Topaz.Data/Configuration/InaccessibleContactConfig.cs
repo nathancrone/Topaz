@@ -11,6 +11,7 @@ namespace Topaz.Data.Configuration
         {
             builder.HasKey(x => x.InaccessibleContactId);
             builder.Property(x => x.InaccessibleContactId).ValueGeneratedOnAdd();
+            builder.Property(x => x.IsAvailable).HasDefaultValue(false);
 
             builder.Ignore(x => x.DoNotContactPhone);
             builder.Ignore(x => x.DoNotContactLetter);

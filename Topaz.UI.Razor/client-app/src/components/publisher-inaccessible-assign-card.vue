@@ -59,6 +59,7 @@
             >{{ clonedContact.assignPublisher.firstName }}
             {{ clonedContact.assignPublisher.lastName }}</span
           >
+          <span v-if="clonedContact.isAvailable" class="badge badge-success">Available</span>
         </div>
         <address>
           Age: {{ clonedContact.age }}
