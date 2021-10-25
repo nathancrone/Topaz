@@ -9,7 +9,7 @@ using Topaz.Data;
 namespace Topaz.Data.MigrationsAuth
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20211004035544_InitialCreate")]
+    [Migration("20211025010123_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
