@@ -19,10 +19,10 @@
 </script>
 
 @section Styles {
-    <link rel="stylesheet" href="@Url.Content($"~/client-app/css/app.css?i={AppSettings.Value.CacheInvalidator}")" />
+    <link rel="stylesheet" href="@Url.Content($"~/client-app/css/app.css")" asp-append-version="true" />
 }
 
 @section Scripts {
-    <script type="text/javascript" src="@Url.Content($"~/client-app/js/app.js?i={AppSettings.Value.CacheInvalidator}")"></script>
-    <script type="text/javascript" src="@Url.Content($"~/client-app/js/chunk-vendors.js?i={AppSettings.Value.CacheInvalidator}")"></script>
+    <script type="text/javascript" src="@Url.Content($"~/client-app/js/app.js")" asp-append-version="true"></script>
+    <script type="text/javascript" src="@Url.Content($"~/client-app/js/chunk-vendors.js")" asp-append-version="true"></script>
 }
