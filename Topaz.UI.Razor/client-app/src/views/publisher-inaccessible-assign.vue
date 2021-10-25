@@ -181,6 +181,7 @@
               >unflag available</a
             >
             <a
+              v-if="assignmentSelectedCount !== 0"
               class="btn btn-sm btn-primary"
               href="#"
               @click.prevent="download"
