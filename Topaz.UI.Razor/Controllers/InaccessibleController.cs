@@ -537,6 +537,113 @@ namespace Topaz.UI.Razor.Controllers
                 ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName)
             };
         }
+        
+        [HttpPost]
+        [Route("[action]/{type}")]
+        public Object CurrentUserAssignAvailable(string type)
+        {
+            var Claims = (ClaimsIdentity)this.User.Identity;
+            var PublisherId = int.Parse(Claims.FindFirst("PublisherId").Value);
+
+            var contacts = _context.InaccessibleTerritories
+                .Where(x => x.Activity.Any(y => y.CheckOutDate.HasValue && !y.CheckInDate.HasValue))
+                .OrderBy(x => x.Activity.Max(y => y.CheckOutDate))
+                .Include(x => x.InaccessibleProperties)
+                .ThenInclude(x => x.ContactLists)
+                .ThenInclude(x => x.Contacts)
+                .ThenInclude(x => x.AssignPublisher)
+                .Include(x => x.InaccessibleProperties)
+                .ThenInclude(x => x.ContactLists)
+                .ThenInclude(x => x.Contacts)
+                .ThenInclude(x => x.PhoneType)
+                .SelectMany(x => x.InaccessibleProperties)
+                .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId)
+                .SelectMany(y => y.Contacts.Where(z => z.AssignPublisherId == null && z.IsAvailable)));
+            
+            if (type == "phone")
+            {
+                var assign = contacts.Where(x =>
+                    // has not been exported
+                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
+                    // has phone number
+                    !string.IsNullOrEmpty(x.PhoneNumber) &&
+                    // phone has not been attempted
+                    x.ContactActivity.All(y => !phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId))
+                ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName).Take(3);
+
+                foreach (var x in assign)
+                {
+                    x.IsAvailable = false;
+                    x.AssignDate = DateTime.UtcNow;
+                    x.AssignPublisherId = PublisherId;
+                }
+            }
+            else if (type == "vm")
+            {
+                var assign = contacts.Where(x =>
+                    // has not been exported
+                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
+                    // has phone number
+                    !string.IsNullOrEmpty(x.PhoneNumber) &&
+                    // phone has been attempted
+                    x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
+                    // there has been no answer
+                    x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !phoneCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
+                    // phone with voicemail has not been attempted
+                    x.ContactActivity.All(y => y.ContactActivityTypeId != (int)ContactActivityTypeEnum.PhoneWithVoicemail)
+                ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName).Take(3);
+
+                foreach (var x in assign)
+                {
+                    x.IsAvailable = false;
+                    x.AssignDate = DateTime.UtcNow;
+                    x.AssignPublisherId = PublisherId;
+                }
+            }
+            else if (type == "letter")
+            {
+                var assign = contacts.Where(x =>
+                    // has not been exported
+                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
+                    // has mailing address
+                    !string.IsNullOrEmpty(x.MailingAddress1) &&
+                    (
+                        // has no phone number and letter has NOT been sent
+                        (
+                            string.IsNullOrEmpty(x.PhoneNumber) &&
+                            !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
+                        ) ||
+                        (
+                            // has phone number
+                            !string.IsNullOrEmpty(x.PhoneNumber) &&
+                            // phone has been attempted
+                            x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
+                            // there has been no answer
+                            x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !phoneCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
+                            // phone with voicemail has been attempted
+                            x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail) &&
+                            // no voicemail left and no answer
+                            x.ContactActivity.Where(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail).All(y => !voicemailCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
+                            // a letter has NOT been sent
+                            !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
+                        )
+                    )
+                ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName).Take(3);
+                
+                foreach (var x in assign)
+                {
+                    x.IsAvailable = false;
+                    x.AssignDate = DateTime.UtcNow;
+                    x.AssignPublisherId = PublisherId;
+                }
+            }
+
+            return _context.SaveChanges();
+        }
+
+
+
+
 
         [HttpGet]
         [Route("[action]")]
@@ -592,6 +699,20 @@ namespace Topaz.UI.Razor.Controllers
             {
                 x.AssignPublisherId = null;
                 x.AssignDate = null;
+            });
+            return _context.SaveChanges();
+        }
+
+        [HttpPost]
+        [Route("[action]/{isAvailable:bool}")]
+        public int FlagAvailability(bool isAvailable, [FromBody] int[] assignments)
+        {
+            var contacts = _context.InaccessibleContacts.Where(x => assignments.Contains(x.InaccessibleContactId));
+            contacts.ToList().ForEach(x =>
+            {
+                x.AssignPublisherId = null;
+                x.AssignDate = null;
+                x.IsAvailable = isAvailable;
             });
             return _context.SaveChanges();
         }

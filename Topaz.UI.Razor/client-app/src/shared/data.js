@@ -288,6 +288,18 @@ const unassignInaccessibleContacts = async function(assignments) {
   }
 };
 
+const flagAvailabilityInaccessibleContacts = async function(assignments, isAvailable) {
+  try {
+    const response = await axios.post(`/Inaccessible/FlagAvailability/${isAvailable}`, assignments);
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
 const currentUserInaccessibleAssignments = async function() {
   try {
     const response = await axios.get(`/Inaccessible/CurrentUserAssignments`);
@@ -515,6 +527,19 @@ const currentUserRework = async function(territory) {
   }
 };
 
+const currentUserAssignAvailable = async function(type) {
+  try {
+    const response = await axios.post(
+      `/Inaccessible/CurrentUserAssignAvailable/${type}`);
+    if (response.status !== 200) throw Error(response.message);
+    if (response.data === undefined) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
 const parseList = (response) => {
   if (response.status !== 200) throw Error(response.message);
   if (!response.data) return [];
@@ -545,6 +570,7 @@ export const data = {
   getTerritoryProperties,
   assignInaccessibleContacts,
   unassignInaccessibleContacts,
+  flagAvailabilityInaccessibleContacts, 
   currentUserInaccessibleAssignments,
   getPhoneResponseTypes,
   saveInaccessibleContactPhoneActivity,
@@ -559,4 +585,5 @@ export const data = {
   publisherCheckout,
   userCheckin,
   currentUserRework,
+  currentUserAssignAvailable, 
 };

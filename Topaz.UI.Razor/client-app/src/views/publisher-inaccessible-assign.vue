@@ -119,9 +119,11 @@
                 >
               </div>
               <a
-                class="btn btn-sm btn-primary mr-1"
+                v-if="assignmentOnlyUnavailableItemsSelected"
+                class="btn btn-sm btn-success mr-1"
                 href="#"
-                >make available</a
+                @click.prevent="available"
+                >flag available</a
               >
             </template>
             <template
@@ -174,9 +176,9 @@
             </template>
             <a
               v-if="assignmentOnlyAvailableItemsSelected"
-              class="btn btn-sm btn-primary mr-1"
-              href="#"
-              >make unavailable</a
+              class="btn btn-sm btn-outline-success mr-1"
+              @click.prevent="unavailable"
+              >unflag available</a
             >
             <a
               class="btn btn-sm btn-primary"
@@ -354,8 +356,11 @@ export default {
         (x) => !!x.assignPublisher && x.selected
       ).length;
     },
+    assignmentOnlyUnavailableItemsSelected() {
+      return this.availableAssignments.some((x) => x.selected) && this.availableAssignments.filter((x) => x.selected).every((x) => !x.isAvailable && (!x.doNotContactPhone || !x.doNotContactLetter))
+    },
     assignmentOnlyAvailableItemsSelected() {
-      return this.availableAssignments.filter((x) => x.selected).every((x) => x.isAvailable);
+      return this.availableAssignments.some((x) => x.selected) && this.availableAssignments.filter((x) => x.selected).every((x) => x.isAvailable)
     },
     selectedContactIds() {
       return this.availableAssignments.reduce(
@@ -424,6 +429,25 @@ export default {
       await data.unassignInaccessibleContacts(assignments);
       await this.loadAssignments();
     },
+
+    async available() {
+      const assignments = this.availableAssignments.reduce(
+        (a, o) => (o.selected && a.push(o.inaccessibleContactId), a),
+        []
+      );
+      await data.flagAvailabilityInaccessibleContacts(assignments, true);
+      await this.loadAssignments();
+    },
+
+    async unavailable() {
+      const assignments = this.availableAssignments.reduce(
+        (a, o) => (o.selected && a.push(o.inaccessibleContactId), a),
+        []
+      );
+      await data.flagAvailabilityInaccessibleContacts(assignments, false);
+      await this.loadAssignments();
+    },
+
     download() {
       this.$emit("downloadSubmit");
     },
