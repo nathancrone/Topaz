@@ -686,6 +686,7 @@ namespace Topaz.UI.Razor.Controllers
             {
                 x.AssignPublisherId = assignee;
                 x.AssignDate = DateTime.UtcNow;
+                x.IsAvailable = false;
             });
             return _context.SaveChanges();
         }
