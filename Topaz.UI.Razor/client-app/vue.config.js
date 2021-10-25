@@ -1,6 +1,12 @@
 module.exports = {
   outputDir: "../wwwroot/client-app/",
-  filenameHashing: false,
+  filenameHashing: true,
   publicPath: "/client-app/",
-  runtimeCompiler: true,
+  runtimeCompiler: true, 
+  css: {
+    extract: {
+      filename: 'css/[name].css', 
+      chunkFilename: 'css/[name].css'
+    }
+  }
 };

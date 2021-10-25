@@ -8,6 +8,6 @@
 <div id="app"></div>
 
 @section Scripts {
-    <script type="text/javascript" src="@Url.Content($"~/client-app/js/app.js")" asp-append-version="true"></script>
-    <script type="text/javascript" src="@Url.Content($"~/client-app/js/chunk-vendors.js")" asp-append-version="true"></script>
+    <script type="text/javascript" asp-src-include="~/client-app/js/app.*.js"></script>
+    <script type="text/javascript" asp-src-include="~/client-app/js/chunk-vendors.*.js"></script>
 }
