@@ -545,106 +545,101 @@ namespace Topaz.UI.Razor.Controllers
             var Claims = (ClaimsIdentity)this.User.Identity;
             var PublisherId = int.Parse(Claims.FindFirst("PublisherId").Value);
 
-            var contacts = _context.InaccessibleTerritories
-                .Where(x => x.Activity.Any(y => y.CheckOutDate.HasValue && !y.CheckInDate.HasValue))
-                .OrderBy(x => x.Activity.Max(y => y.CheckOutDate))
-                .Include(x => x.InaccessibleProperties)
-                .ThenInclude(x => x.ContactLists)
-                .ThenInclude(x => x.Contacts)
-                .ThenInclude(x => x.AssignPublisher)
-                .Include(x => x.InaccessibleProperties)
-                .ThenInclude(x => x.ContactLists)
-                .ThenInclude(x => x.Contacts)
-                .ThenInclude(x => x.PhoneType)
-                .SelectMany(x => x.InaccessibleProperties)
-                .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId)
-                .SelectMany(y => y.Contacts.Where(z => z.AssignPublisherId == null && z.IsAvailable)));
-            
-            if (type == "phone")
-            {
-                var assign = contacts.Where(x =>
-                    // has not been exported
-                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
-                    // has phone number
-                    !string.IsNullOrEmpty(x.PhoneNumber) &&
-                    // phone has not been attempted
-                    x.ContactActivity.All(y => !phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId))
-                ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName).Take(3);
-
-                foreach (var x in assign)
-                {
-                    x.IsAvailable = false;
-                    x.AssignDate = DateTime.UtcNow;
-                    x.AssignPublisherId = PublisherId;
-                }
-            }
-            else if (type == "vm")
-            {
-                var assign = contacts.Where(x =>
-                    // has not been exported
-                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
-                    // has phone number
-                    !string.IsNullOrEmpty(x.PhoneNumber) &&
-                    // phone has been attempted
-                    x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
-                    // there has been no answer
-                    x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !phoneCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
-                    // phone with voicemail has not been attempted
-                    x.ContactActivity.All(y => y.ContactActivityTypeId != (int)ContactActivityTypeEnum.PhoneWithVoicemail)
-                ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName).Take(3);
-
-                foreach (var x in assign)
-                {
-                    x.IsAvailable = false;
-                    x.AssignDate = DateTime.UtcNow;
-                    x.AssignPublisherId = PublisherId;
-                }
-            }
-            else if (type == "letter")
-            {
-                var assign = contacts.Where(x =>
-                    // has not been exported
-                    !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
-                    // has mailing address
-                    !string.IsNullOrEmpty(x.MailingAddress1) &&
-                    (
-                        // has no phone number and letter has NOT been sent
-                        (
-                            string.IsNullOrEmpty(x.PhoneNumber) &&
-                            !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
-                        ) ||
-                        (
-                            // has phone number
-                            !string.IsNullOrEmpty(x.PhoneNumber) &&
-                            // phone has been attempted
-                            x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
-                            // there has been no answer
-                            x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !phoneCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
-                            // phone with voicemail has been attempted
-                            x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail) &&
-                            // no voicemail left and no answer
-                            x.ContactActivity.Where(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail).All(y => !voicemailCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
-                            // a letter has NOT been sent
-                            !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
-                        )
+            var territories = _context.InaccessibleTerritories.Where(x => 
+                    x.Activity.Any(y => 
+                        y.CheckOutDate.HasValue && 
+                        !y.CheckInDate.HasValue
+                    ) && 
+                    x.InaccessibleProperties.Any(y => 
+                        y.CurrentContactListId.HasValue && 
+                        y.ContactLists.FirstOrDefault(z => z.InaccessibleContactListId == y.CurrentContactListId).Contacts.Any(a => a.IsAvailable)
                     )
-                ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName).Take(3);
-                
-                foreach (var x in assign)
+                ).OrderBy(x => x.Activity.Where(y => y.CheckOutDate.HasValue && !y.CheckInDate.HasValue).Max(y => y.CheckOutDate)).Select(x => x.TerritoryId);
+            
+            var contactIds = new List<int>();
+            foreach (var territoryId in territories)
+            {
+                var available = _context.InaccessibleProperties.Where(x => x.TerritoryId == territoryId && x.CurrentContactListId.HasValue)
+                    .Include(x => x.ContactLists)
+                    .ThenInclude(x => x.Contacts)
+                    .SelectMany(x => x.ContactLists.Where(y => y.InaccessibleContactListId == x.CurrentContactListId).SelectMany(y => y.Contacts.Where(z => z.IsAvailable)))
+                    .AsNoTracking();
+                       
+                if (type == "phone")
                 {
-                    x.IsAvailable = false;
-                    x.AssignDate = DateTime.UtcNow;
-                    x.AssignPublisherId = PublisherId;
+                    contactIds.AddRange(available.Where(x =>
+                        // has not been exported
+                        !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
+                        // has phone number
+                        !string.IsNullOrEmpty(x.PhoneNumber) &&
+                        // phone has not been attempted
+                        x.ContactActivity.All(y => !phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId))
+                    ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName).Select(x => x.InaccessibleContactId).Take(3 - contactIds.Count()));
                 }
+                else if (type == "vm")
+                {
+                    contactIds.AddRange(available.Where(x =>
+                        // has not been exported
+                        !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
+                        // has phone number
+                        !string.IsNullOrEmpty(x.PhoneNumber) &&
+                        // phone has been attempted
+                        x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
+                        // there has been no answer
+                        x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !phoneCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
+                        // phone with voicemail has not been attempted
+                        x.ContactActivity.All(y => y.ContactActivityTypeId != (int)ContactActivityTypeEnum.PhoneWithVoicemail)
+                    ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName).Select(x => x.InaccessibleContactId).Take(3 - contactIds.Count()));
+                }
+                else if (type == "letter")
+                {
+                    contactIds.AddRange(available.Where(x =>
+                        // has not been exported
+                        !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Export) &&
+                        // has mailing address
+                        !string.IsNullOrEmpty(x.MailingAddress1) &&
+                        (
+                            // has no phone number and letter has NOT been sent
+                            (
+                                string.IsNullOrEmpty(x.PhoneNumber) &&
+                                !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
+                            ) ||
+                            (
+                                // has phone number
+                                !string.IsNullOrEmpty(x.PhoneNumber) &&
+                                // phone has been attempted
+                                x.ContactActivity.Any(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)) &&
+                                // there has been no answer
+                                x.ContactActivity.Where(y => phoneActivity.Contains((ContactActivityTypeEnum)y.ContactActivityTypeId)).All(y => !phoneCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
+                                // phone with voicemail has been attempted
+                                x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail) &&
+                                // no voicemail left and no answer
+                                x.ContactActivity.Where(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.PhoneWithVoicemail).All(y => !voicemailCheck.Contains((PhoneReponseTypeEnum)y.PhoneResponseTypeId)) &&
+                                // a letter has NOT been sent
+                                !x.ContactActivity.Any(y => y.ContactActivityTypeId == (int)ContactActivityTypeEnum.Letter)
+                            )
+                        )
+                    ).OrderBy(x => x.MailingAddress1).ThenBy(x => x.MailingAddress2).ThenBy(x => x.LastName).Select(x => x.InaccessibleContactId).Take(3 - contactIds.Count()));
+                }
+                    
+                if (contactIds.Count() >= 3)
+                {
+                    break;
+                }
+            }
+
+            var assign = _context.InaccessibleContacts.Where(x => contactIds.Any(y => y == x.InaccessibleContactId));
+
+            foreach (var x in assign)
+            {
+                x.IsAvailable = false;
+                x.AssignDate = DateTime.UtcNow;
+                x.AssignPublisherId = PublisherId;
             }
 
             return _context.SaveChanges();
         }
-
-
-
-
-
+        
         [HttpGet]
         [Route("[action]")]
         public IEnumerable<Object> GetPhoneResponseTypes()
