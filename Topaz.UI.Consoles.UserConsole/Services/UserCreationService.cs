@@ -23,7 +23,9 @@ namespace Topaz.UI.Consoles.UserConsole.Services
         {
             var roles = new List<AppRole>() {
                 new AppRole { Name = "Administrator", Description = "Application admin role (gives the user all permissions)" },
-                new AppRole { Name = "Publisher", Description = "Can check out territory, check in territory, and view territories checked out to them." }
+                new AppRole { Name = "Publisher", Description = "Can see phone numbers and letters assigned to them." }, 
+                new AppRole { Name = "Street Territory Coordinator", Description = "Can check in and check out street territory." }, 
+                new AppRole { Name = "Inaccessible Territory Coordinator", Description = "Can check in and check out inaccessible territory." }
             };
 
             foreach (var role in roles)
@@ -47,8 +49,7 @@ namespace Topaz.UI.Consoles.UserConsole.Services
         public async Task CreateUser()
         {
             var users = new List<AppUser>() {
-                new AppUser { UserName = "nathan.crone@gmail.com", Email = "nathan.crone@gmail.com" },
-                new AppUser { UserName = "danashelyce123@gmail.com", Email = "danashelyce123@gmail.com" }
+                new AppUser { UserName = "nathan.crone@gmail.com", Email = "nathan.crone@gmail.com" }
             };
 
             foreach (var user in users)

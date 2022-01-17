@@ -802,6 +802,7 @@ namespace Topaz.UI.Razor.Controllers
 
                 contactsAll.ForEach(x =>
                 {
+                    x.IsAvailable = false;
                     // record an export activity for the contact
                     var activity = new InaccessibleContactActivity()
                     {

@@ -358,7 +358,7 @@ export default {
       ).length;
     },
     assignmentOnlyUnavailableItemsSelected() {
-      return this.availableAssignments.some((x) => x.selected) && this.availableAssignments.filter((x) => x.selected).every((x) => !x.isAvailable && (!x.doNotContactPhone || !x.doNotContactLetter))
+      return this.availableAssignments.some((x) => x.selected) && this.availableAssignments.filter((x) => x.selected).every((x) => !x.isAvailable && !x.doNotContactPhone && !x.doNotContactLetter)
     },
     assignmentOnlyAvailableItemsSelected() {
       return this.availableAssignments.some((x) => x.selected) && this.availableAssignments.filter((x) => x.selected).every((x) => x.isAvailable)
