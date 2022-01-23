@@ -15,6 +15,8 @@ namespace Topaz.Data.Configuration
 
             builder.Ignore(x => x.DoNotContactPhone);
             builder.Ignore(x => x.DoNotContactLetter);
+            builder.Ignore(x => x.AssignedDays);
+            builder.Ignore(x => x.ActivityDays);
 
             builder.HasMany(x => x.ContactActivity)
                         .WithOne(x => x.Contact)

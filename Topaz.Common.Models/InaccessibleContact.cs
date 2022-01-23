@@ -31,6 +31,8 @@ namespace Topaz.Common.Models
         public int? InaccessibleTerritoryExportItemId { get; set; }
         public bool DoNotContactPhone { get; set; }
         public bool DoNotContactLetter { get; set; }
+        public int? AssignedDays { get; set; }
+        public int? ActivityDays { get; set; }
         public InaccessibleContactList ContactList { get; set; }
         public List<InaccessibleContactActivity> ContactActivity { get; set; }
         public PhoneType PhoneType { get; set; }
@@ -38,3 +40,4 @@ namespace Topaz.Common.Models
         public InaccessibleTerritoryExportItem ExportItem { get; set; }
     }
 }
+

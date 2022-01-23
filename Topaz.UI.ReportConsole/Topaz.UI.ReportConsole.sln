@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32106.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Topaz.UI.ReportConsole", "Topaz.UI.ReportConsole.csproj", "{CEAB79E7-C17C-491F-BF53-A6D9FC370D58}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Topaz.UI.ReportShared", "..\Topaz.UI.ReportShared\Topaz.UI.ReportShared.csproj", "{04FCD4F4-4462-4523-BD30-8DD58A74DD35}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CEAB79E7-C17C-491F-BF53-A6D9FC370D58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEAB79E7-C17C-491F-BF53-A6D9FC370D58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEAB79E7-C17C-491F-BF53-A6D9FC370D58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEAB79E7-C17C-491F-BF53-A6D9FC370D58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04FCD4F4-4462-4523-BD30-8DD58A74DD35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04FCD4F4-4462-4523-BD30-8DD58A74DD35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04FCD4F4-4462-4523-BD30-8DD58A74DD35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04FCD4F4-4462-4523-BD30-8DD58A74DD35}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6F53CED2-E1F9-4D08-AE25-F3B878A6CF38}
+	EndGlobalSection
+EndGlobal

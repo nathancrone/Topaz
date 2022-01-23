@@ -378,6 +378,9 @@ export default {
       );
       assignments.forEach(function(a) {
         a.selected = false;
+        const isAssignLocked = a.assignPublisherId !== null && a.assignedDays !== null && a.assignedDays > 1 && a.assignedDays <= 30;
+        const isActivityLocked = a.assignPublisherId === null && a.activityDays !== null && a.activityDays < 1;
+        a.isLocked = isAssignLocked || isActivityLocked;
       });
       this.availableAssignments = [...assignments];
 
@@ -491,7 +494,7 @@ export default {
     },
     selectAssigned() {
       this.availableAssignments
-        .filter((x) => x.assignPublisher && !x.selected)
+        .filter((x) => !x.doNotContactPhone && !x.doNotContactLetter && !x.isLocked && x.assignPublisher && !x.selected)
         .forEach(function(a) {
           a.selected = true;
         });
@@ -499,7 +502,7 @@ export default {
     selectUnassigned() {
       this.availableAssignments
         .filter(
-          (x) => !x.doNotContactPhone && !x.assignPublisher && !x.selected
+          (x) => !x.doNotContactPhone && !x.doNotContactLetter && !x.isLocked && !x.assignPublisher && !x.selected
         )
         .forEach(function(a) {
           a.selected = true;

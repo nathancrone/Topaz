@@ -21,8 +21,8 @@
             v-model="clonedContact.selected"
             :id="`cb${clonedContact.inaccessibleContactId}`"
             :disabled="
-              clonedContact.doNotContactPhone &&
-                clonedContact.doNotContactLetter
+              (clonedContact.doNotContactPhone &&
+                clonedContact.doNotContactLetter) || clonedContact.isLocked
             "
           />
         </div>
@@ -62,8 +62,11 @@
           <span v-if="clonedContact.isAvailable" class="badge badge-success">Available</span>
         </div>
         <address>
-          Age: {{ clonedContact.age }}
-          <br />
+          <template
+            v-if="clonedContact.age">
+            Age: {{ clonedContact.age }}
+            <br />
+          </template>
           {{ clonedContact.mailingAddress1 }}
           <template
             v-if="

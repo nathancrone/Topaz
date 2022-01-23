@@ -363,16 +363,24 @@ namespace Topaz.UI.Razor.Controllers
                 );
             }
 
-            var results = FilteredAssignments.ToList();
+            var results = FilteredAssignments.Select(x => new { Contact = x, ActivityDate = x.ContactActivity.Max(y => y.ActivityDate) }).ToList();
 
             // set the do not contact phone flag to true
             results.ForEach((x) =>
             {
-                x.DoNotContactPhone = territoryDoNotContactPhoneContactIds.Contains(x.InaccessibleContactId);
-                x.DoNotContactLetter = territoryDoNotContactLetterContactIds.Contains(x.InaccessibleContactId);
+                x.Contact.DoNotContactPhone = territoryDoNotContactPhoneContactIds.Contains(x.Contact.InaccessibleContactId);
+                x.Contact.DoNotContactLetter = territoryDoNotContactLetterContactIds.Contains(x.Contact.InaccessibleContactId);
+                if (x.Contact.AssignPublisherId.HasValue && x.Contact.AssignDate.HasValue)
+                {
+                    x.Contact.AssignedDays = (DateTime.UtcNow - x.Contact.AssignDate.Value).Days;
+                }
+                if (x.ActivityDate.HasValue)
+                {
+                    x.Contact.ActivityDays = (DateTime.UtcNow - x.ActivityDate.Value).Days;
+                }
             });
 
-            return results
+            return results.Select(x => x.Contact)
                 .OrderBy(x => x.MailingAddress1)
                 .ThenBy(x => x.MailingAddress2)
                 .ThenBy(x => x.LastName);
