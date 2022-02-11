@@ -115,9 +115,62 @@ namespace Topaz.UI.Razor.Controllers
         [Route("[action]/{take?}")]
         public IEnumerable<Object> GetAvailableTerritory(int? take = null)
         {
+            var sql = @"
+                SELECT t2.TerritoryId
+                FROM Territories t1
+                    INNER JOIN Territories t2 ON t1.TerritoryId = t2.Inaccessible_StreetTerritoryId
+                    INNER JOIN TerritoryActivities a1 ON t1.TerritoryId = a1.TerritoryId
+                    INNER JOIN TerritoryActivities a2 ON t2.TerritoryId = a2.TerritoryId
+                    INNER JOIN (
+                        SELECT t2_.TerritoryId,
+                            MIN(l.CreateDate) CreateDate
+                        FROM Territories t2_
+                            INNER JOIN InaccessibleProperties p ON t2_.TerritoryId = p.TerritoryId
+                            INNER JOIN InaccessibleContactLists l ON p.CurrentContactListId = l.InaccessibleContactListId
+                        WHERE t2_.Discriminator = 'InaccessibleTerritory'
+                        GROUP BY t2_.TerritoryId
+                    ) cd ON t2.TerritoryId = cd.TerritoryId
+                WHERE t1.Discriminator = 'StreetTerritory'
+                    AND t2.Discriminator = 'InaccessibleTerritory'
+                    AND a1.CheckInDate IS NULL
+                    AND NOT EXISTS(
+                        SELECT NULL
+                        FROM TerritoryActivities a2
+                        WHERE t2.TerritoryId = a2.TerritoryId
+                            AND a2.CheckInDate IS NULL
+                    )
+                    AND EXISTS(
+                        SELECT NULL
+                        FROM InaccessibleProperties p
+                        WHERE t2.TerritoryId = p.TerritoryId
+                    )
+                    AND NOT EXISTS(
+                        SELECT NULL
+                        FROM InaccessibleProperties p
+                        WHERE t2.TerritoryId = p.TerritoryId
+                            AND p.CurrentContactListId IS NULL
+                    )
+                GROUP BY t2.TerritoryId
+                HAVING MAX(a1.CheckOutDate) < cd.CreateDate
+                    AND MAX(a2.CheckInDate) < cd.CreateDate";
+
+            var availableTerritoryIds = new List<long>();
+            using (var command = _context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = sql;
+                _context.Database.OpenConnection();
+                using (var results = command.ExecuteReader())
+                {
+                    while (results.Read())
+                    {
+                        availableTerritoryIds.Add((long)results["TerritoryId"]);
+                    }
+                }
+            }
+
             var LinqResult = _context.InaccessibleTerritories.Where(x => !x.InActive && !x.Activity.Any());
 
-            LinqResult = LinqResult.Union(_context.InaccessibleTerritories.Where(x => !x.InActive && !x.Activity.Any(y => y.CheckInDate == null)));
+            LinqResult = LinqResult.Union(_context.InaccessibleTerritories.Where(x => availableTerritoryIds.Contains(x.TerritoryId) && !x.InActive && !x.Activity.Any(y => y.CheckInDate == null)));
 
             return LinqResult
                 .Select(x => new
