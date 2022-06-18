@@ -40,13 +40,17 @@
                                         Activity
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dd-activity">
-                                        @if (User.IsInRole("Administrator") || User.IsInRole("Street Territory Coordinator"))
+                                        @if (User.IsInRole("Administrator") || User.IsInRole("Business Territory Coordinator"))
                                         {
-                                            <a class="dropdown-item" asp-area="" asp-page="/Publisher/StreetTerritories">Street Territory</a>
+                                            <a class="dropdown-item" asp-area="" asp-page="/Publisher/BusinessTerritories">Business Territory</a>
                                         }
                                         @if (User.IsInRole("Administrator") || User.IsInRole("Inaccessible Territory Coordinator"))
                                         {
                                             <a class="dropdown-item" asp-area="" asp-page="/Publisher/InaccessibleTerritories">Inaccessible Territory</a>
+                                        }
+                                        @if (User.IsInRole("Administrator") || User.IsInRole("Street Territory Coordinator"))
+                                        {
+                                            <a class="dropdown-item" asp-area="" asp-page="/Publisher/StreetTerritories">Street Territory</a>
                                         }
                                     </div>
                                 </li>
@@ -66,9 +70,9 @@
                                         Contact - Phone</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/StreetDoNotContact/Index">Do Not
                                         Contact - Street</a>
-                                    <a class="dropdown-item" asp-area="Admin" asp-page="/StreetTerritories/Index">Street
-                                        Territory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/BusinessTerritories/Index">Business Territory</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/InaccessibleTerritories/Index">Inaccessible Territory</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/StreetTerritories/Index">Street Territory</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/Users/Index">Users</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/Publishers/Index">Publishers</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/Roles/Index">Roles</a>

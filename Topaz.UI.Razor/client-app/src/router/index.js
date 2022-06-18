@@ -23,6 +23,22 @@ const routes = [
       ),
   },
   {
+    path: "/Publisher/BusinessTerritories",
+    name: "PublisherBusinessTerritories",
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-publisher" */ "../views/publisher-business-territories.vue"
+      ),
+  },
+  {
+    path: "/Publisher/BusinessTerritories/Checkout",
+    name: "PublisherBusinessCheckout",
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-publisher" */ "../views/publisher-business-checkout.vue"
+      ),
+  },
+  {
     path: "/Publisher/InaccessibleTerritories",
     name: "PublisherInaccessibleTerritories",
     component: () =>

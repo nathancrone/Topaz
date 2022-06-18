@@ -55,6 +55,60 @@ const getStreetActivity = async function(id) {
   }
 };
 
+const getBusinessTerritory = async function() {
+  try {
+    const response = await axios.get(`/Business/GetTerritory`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getBusinessTerritoryOut = async function() {
+  try {
+    const response = await axios.get(`/Business/GetTerritoryOut`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getBusinessTerritoryIn = async function() {
+  try {
+    const response = await axios.get(`/Business/GetTerritoryIn`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getBusinessActivity = async function(id) {
+  try {
+    const response = await axios.get(`/Territory/GetBusinessActivity/${id}`);
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 const getInaccessibleTerritory = async function() {
   try {
     const response = await axios.get(`/Inaccessible/GetTerritory`);
@@ -132,6 +186,42 @@ const getPublisherStreetTerritories = async function() {
 const getAvailableStreetTerritories = async function() {
   try {
     const response = await axios.get(`/Street/GetAvailableTerritory`);
+    let data = parseList(response);
+    const territories = data.map((t) => {
+      t.checkInDate =
+        t.checkInDate === null
+          ? null
+          : format(parseISO(t.checkInDate), "MMM dd, yyyy");
+      return t;
+    });
+    return territories;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getPublisherBusinessTerritories = async function() {
+  try {
+    const response = await axios.get(`/Business/GetCurrentTerritory`);
+    let data = parseList(response);
+    const territories = data.map((t) => {
+      t.checkOutDate =
+        t.checkOutDate === null
+          ? null
+          : format(parseISO(t.checkOutDate), "MMM dd, yyyy");
+      return t;
+    });
+    return territories;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getAvailableBusinessTerritories = async function() {
+  try {
+    const response = await axios.get(`/Business/GetAvailableTerritory`);
     let data = parseList(response);
     const territories = data.map((t) => {
       t.checkInDate =
@@ -555,12 +645,18 @@ export const data = {
   getStreetTerritoryOut,
   getStreetTerritoryIn,
   getStreetActivity,
+  getBusinessTerritory,
+  getBusinessTerritoryOut,
+  getBusinessTerritoryIn,
+  getBusinessActivity,
   getInaccessibleTerritory,
   getInaccessibleTerritoryOut,
   getInaccessibleTerritoryIn,
   getInaccessibleActivity,
   getPublisherStreetTerritories,
   getAvailableStreetTerritories,
+  getPublisherBusinessTerritories,
+  getAvailableBusinessTerritories,
   getPublisherInaccessibleTerritories,
   getAvailableInaccessibleTerritories,
   getAvailableInaccessibleAssignments,

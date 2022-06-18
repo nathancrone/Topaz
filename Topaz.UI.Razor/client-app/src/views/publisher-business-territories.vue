@@ -9,7 +9,7 @@
             tag="a"
             class="btn btn-primary"
             :to="{
-              name: 'PublisherStreetCheckout',
+              name: 'PublisherBusinessCheckout',
             }"
             >Check Out</router-link
           >
@@ -19,7 +19,7 @@
         v-if="territories.length === 0"
         class="list-group-item list-group-item-action flex-column align-items-start"
       >
-        You currently have no street territories checked out.
+        You currently have no business territories checked out.
       </li>
       <li
         v-for="t in territories"
@@ -68,7 +68,7 @@
 import { data } from "../shared";
 
 export default {
-  name: "PublisherStreetTerritories",
+  name: "PublisherBusinessTerritories",
   data() {
     return {
       territories: [],
@@ -82,7 +82,7 @@ export default {
   methods: {
     async loadTerritories() {
       this.territories = [];
-      this.territories = await data.getPublisherStreetTerritories();
+      this.territories = await data.getPublisherBusinessTerritories();
     },
     async checkinTerritory(t) {
       await data.userCheckin(t.territoryId);
