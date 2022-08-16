@@ -11,6 +11,12 @@
           <small>Last Check In: {{ (t.checkInDate === null) ? "Never" : t.checkInDate }}</small>
         </div>
         <div class="d-flex w-100 justify-content-end">
+          <a
+            v-if="t !== checkout && t.mapLocation && t.mapLocation !== ''"
+            class="btn btn-secondary mr-1"
+            :href="t.mapLocation"
+            target="_blank"
+          >View</a>
           <button
             v-if="t !== checkout"
             class="btn btn-primary"
@@ -45,6 +51,7 @@ export default {
     async loadTerritories() {
       this.territories = [];
       this.territories = await data.getAvailableStreetTerritories();
+      console.log(this.territories);
     },
     async checkoutTerritory(t) {
       await data.currentUserCheckout(t);

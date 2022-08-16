@@ -3,6 +3,31 @@
 
 @{
     ViewData["Title"] = "Index";
+
+    var result = Model.InaccessibleTerritory.Select((x) => { 
+
+        DateTime? checkInDate = null;
+        if (Model.DateLookup.ContainsKey(x.TerritoryId))
+        {
+            checkInDate = Model.DateLookup[x.TerritoryId].CheckInDate;
+        }
+
+        DateTime? createDate = null;
+        if (Model.DateLookup.ContainsKey(x.TerritoryId))
+        {
+            createDate = Model.DateLookup[x.TerritoryId].CreateDate;
+        }
+
+        return new { 
+            x.TerritoryId, 
+            x.TerritoryCode, 
+            x.StreetTerritory, 
+            x.InActive, 
+            CheckInDate = checkInDate, 
+            CreateDate = createDate 
+        }; 
+    });
+
 }
 
 <h1>Index</h1>
@@ -20,18 +45,17 @@
                 @Html.DisplayNameFor(model => model.InaccessibleTerritory[0].StreetTerritory)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InaccessibleTerritory[0].Notes)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.InaccessibleTerritory[0].InActive)
             </th>
+            <th>Last Checked In</th>
+            <th>Last Researched</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.InaccessibleTerritory)
+        @foreach (var item in result.OrderBy(x => x.CheckInDate))
         {
-            <tr>
+            <tr class="@(@item.CreateDate < item.CheckInDate ? "table-warning" : "")">
                 <td>
                     @Html.DisplayFor(modelItem => item.TerritoryCode)
                 </td>
@@ -39,11 +63,10 @@
                     @Html.DisplayFor(modelItem => item.StreetTerritory.TerritoryCode)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Notes)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.InActive)
                 </td>
+                <td>@Html.DisplayFor(modelItem => item.CheckInDate)</td>
+                <td>@Html.DisplayFor(modelItem => item.CreateDate)</td>
                 <td>
                     <a asp-page="./Edit" asp-route-id="@item.TerritoryId">Edit</a> |
                     <a asp-page="./Details" asp-route-id="@item.TerritoryId">Details</a> |

@@ -34,6 +34,12 @@
           >
         </div>
         <div class="d-flex w-100 justify-content-end">
+          <a
+            v-if="t !== checkin && t !== rework && t.mapLocation && t.mapLocation !== ''"
+            class="btn btn-secondary mr-1"
+            :href="t.mapLocation"
+            target="_blank"
+          >View</a>
           <button
             v-if="t !== checkin && t !== rework"
             class="btn btn-primary mr-1"

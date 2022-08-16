@@ -18,6 +18,14 @@
             >Inaccessible</router-link
           >
         </li>
+        <li class="nav-item">
+          <router-link
+            tag="a"
+            :class="{ 'nav-link': true, active: type === 'business' }"
+            :to="{ name: 'AdminTerritory', params: { type: 'business' } }"
+            >Business</router-link
+          >
+        </li>
       </ul>
     </div>
     <div class="row mt-3 no-gutters">
@@ -158,6 +166,8 @@ export default {
         this.territories = await data.getStreetTerritory();
       } else if (this.type === "inaccessible") {
         this.territories = await data.getInaccessibleTerritory();
+      } else if (this.type === "business") {
+        this.territories = await data.getBusinessTerritory();
       }
     },
     displayDate(date) {

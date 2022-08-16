@@ -43,6 +43,7 @@ namespace Topaz.UI.Razor.Controllers
                     x.TerritoryActivityId,
                     x.BusinessTerritory.TerritoryId,
                     x.BusinessTerritory.TerritoryCode,
+                    x.BusinessTerritory.MapLocation,
                     x.CheckOutDate
                 })
                 .AsNoTracking()
@@ -62,6 +63,7 @@ namespace Topaz.UI.Razor.Controllers
                 {
                     x.TerritoryId,
                     x.TerritoryCode,
+                    x.MapLocation, 
                     CheckInDate = x.Activity.Max(y => y.CheckInDate)
                 })
                 .OrderBy(x => x.CheckInDate)
