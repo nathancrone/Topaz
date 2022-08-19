@@ -235,14 +235,23 @@ namespace Topaz.UI.Consoles.MigrationConsole
 
             //this will set the current contact list for the property
             _targetDb.Database.ExecuteSqlRaw(@"
-                UPDATE 
-                InaccessibleProperties 
-                SET 
-                CurrentContactListId = (
-                    SELECT MAX(InaccessibleContactListId)
-                    FROM InaccessibleContactLists i
-                    WHERE i.InaccessiblePropertyId = InaccessibleProperties.InaccessiblePropertyId 
-                )"
+                UPDATE InaccessibleProperties
+                SET CurrentContactListId = (
+                        SELECT InaccessibleContactListId
+                        FROM (
+                                SELECT a.InaccessiblePropertyId,
+                                    a.InaccessibleContactListId
+                                FROM InaccessibleContactLists a
+                                    INNER JOIN (
+                                        SELECT InaccessiblePropertyId,
+                                            MAX(CreateDate) CreateDate
+                                        FROM InaccessibleContactLists i
+                                        GROUP BY InaccessiblePropertyId
+                                    ) b ON a.InaccessiblePropertyId = b.InaccessiblePropertyId
+                                    AND a.CreateDate = b.CreateDate
+                            ) i
+                        WHERE i.InaccessiblePropertyId = InaccessibleProperties.InaccessiblePropertyId
+                    )"
             );
 
             var srcTerritories = _sourceDb.InaccessibleTerritories.Include(x => x.Activity);
