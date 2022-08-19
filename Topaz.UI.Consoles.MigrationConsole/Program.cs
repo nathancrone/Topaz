@@ -160,14 +160,14 @@ namespace Topaz.UI.Consoles.MigrationConsole
                         Description = p.Description
                     };
 
-                    foreach (var l in p.ContactLists)
+                    foreach (var l in p.ContactLists.OrderBy(x => x.InaccessibleContactListId))
                     {
                         var list = new InaccessibleContactList
                         {
                             CreateDate = l.CreateDate
                         };
 
-                        foreach (var c in l.Contacts)
+                        foreach (var c in l.Contacts.OrderBy(x => x.InaccessibleContactId))
                         {
                             int? assign = null;
                             if (c.AssignPublisherId.HasValue)
@@ -193,7 +193,7 @@ namespace Topaz.UI.Consoles.MigrationConsole
                                 EmailAddresses = c.EmailAddresses,
                             };
 
-                            foreach (var a in c.ContactActivity)
+                            foreach (var a in c.ContactActivity.OrderBy(x => x.ActivityDate).ThenBy(x => x.InaccessibleContactActivityId))
                             {
                                 int pub = mapSourcePublisherTargetPublisher[a.PublisherId];
 
@@ -215,7 +215,22 @@ namespace Topaz.UI.Consoles.MigrationConsole
                 }
                 _targetDb.Add(territory);
             }
+            
+            var businessTerritories = _sourceDb.BusinessTerritories
+                .AsNoTracking()
+                .ToList();
 
+            foreach (var t in businessTerritories)
+            {
+                var territory = new BusinessTerritory
+                {
+                    TerritoryCode = t.TerritoryCode,
+                    InActive = t.InActive
+                };
+                
+                _targetDb.Add(territory);
+            }
+            
             _targetDb.SaveChanges();
 
             //this will set the current contact list for the property
@@ -230,12 +245,29 @@ namespace Topaz.UI.Consoles.MigrationConsole
                 )"
             );
 
-
             var srcTerritories = _sourceDb.InaccessibleTerritories.Include(x => x.Activity);
 
             foreach (var srcTerritory in srcTerritories)
             {
                 var targetTerritory = _targetDb.InaccessibleTerritories.Where(x => x.TerritoryCode == srcTerritory.TerritoryCode).FirstOrDefault();
+                foreach (var srcActivity in srcTerritory.Activity.OrderBy(x => x.CheckOutDate))
+                {
+                    targetTerritory.Activity.Add(new TerritoryActivity
+                    {
+                        PublisherId = mapSourcePublisherTargetPublisher[srcActivity.PublisherId],
+                        CheckOutDate = srcActivity.CheckOutDate,
+                        CheckInDate = srcActivity.CheckInDate,
+                        Notes = srcActivity.Notes
+                    });
+                }
+                _targetDb.SaveChanges();
+            }
+
+            var businessTerritories1 = _sourceDb.BusinessTerritories.Include(x => x.Activity);
+
+            foreach (var srcTerritory in businessTerritories1)
+            {
+                var targetTerritory = _targetDb.BusinessTerritories.Where(x => x.TerritoryCode == srcTerritory.TerritoryCode).FirstOrDefault();
                 foreach (var srcActivity in srcTerritory.Activity.OrderBy(x => x.CheckOutDate))
                 {
                     targetTerritory.Activity.Add(new TerritoryActivity
