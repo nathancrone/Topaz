@@ -191,6 +191,7 @@ namespace Topaz.UI.Consoles.MigrationConsole
                                 PhoneTypeId = c.PhoneTypeId,
                                 PhoneNumber = c.PhoneNumber,
                                 EmailAddresses = c.EmailAddresses,
+                                IsAvailable = c.IsAvailable
                             };
 
                             foreach (var a in c.ContactActivity.OrderBy(x => x.ActivityDate).ThenBy(x => x.InaccessibleContactActivityId))
