@@ -17,8 +17,8 @@
     },
     "Topaz.UI.Razor": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "launchBrowser": false,
+      "applicationUrl": "https://tpz.loc.al",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

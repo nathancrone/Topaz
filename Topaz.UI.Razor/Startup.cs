@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +29,8 @@ namespace Topaz.UI.Razor
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appSettings = Configuration.GetSection(AppSettingsOptions.AppSettings).Get<AppSettingsOptions>();
+
             services.Configure<AppSettingsOptions>(Configuration.GetSection(AppSettingsOptions.AppSettings));
 
             // adding the context for the app
@@ -38,6 +41,12 @@ namespace Topaz.UI.Razor
 
             // add the auth stores for identity
             services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AuthDbContext>().AddClaimsPrincipalFactory<AppUserClaimsPrincipalFactory>().AddDefaultTokenProviders();
+
+            services.AddAuthentication().AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = appSettings.GoogleClientId;
+                googleOptions.ClientSecret = appSettings.GoogleClientSecret;
+            });
 
             services.AddAuthorization(options =>
             {
