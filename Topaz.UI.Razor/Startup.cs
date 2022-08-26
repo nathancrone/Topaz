@@ -42,11 +42,14 @@ namespace Topaz.UI.Razor
             // add the auth stores for identity
             services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AuthDbContext>().AddClaimsPrincipalFactory<AppUserClaimsPrincipalFactory>().AddDefaultTokenProviders();
 
-            services.AddAuthentication().AddGoogle(googleOptions =>
+            if (appSettings.GoogleClientId != "")
             {
-                googleOptions.ClientId = appSettings.GoogleClientId;
-                googleOptions.ClientSecret = appSettings.GoogleClientSecret;
-            });
+                services.AddAuthentication().AddGoogle(googleOptions =>
+                {
+                    googleOptions.ClientId = appSettings.GoogleClientId;
+                    googleOptions.ClientSecret = appSettings.GoogleClientSecret;
+                });
+            }
 
             services.AddAuthorization(options =>
             {
