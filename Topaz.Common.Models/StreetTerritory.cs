@@ -19,5 +19,6 @@ namespace Topaz.Common.Models
         public List<TerritoryActivity> Activity { get; set; }
         public List<DoNotContactStreet> StreetDoNotContacts { get; set; }
         public List<DoNotContactLetter> LetterDoNotContacts { get; set; }
+        public List<StreetTerritoryAddressBlock> AddressBlocks { get; set; }
     }
 }

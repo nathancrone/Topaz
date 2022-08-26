@@ -31,6 +31,10 @@ namespace Topaz.Data.Configuration
             builder.HasMany(x => x.LetterDoNotContacts)
                 .WithOne(x => x.Territory)
                 .HasForeignKey(x => x.TerritoryId);
+
+            builder.HasMany(x => x.AddressBlocks)
+                .WithOne(x => x.Territory)
+                .HasForeignKey(x => x.TerritoryId);
         }
     }
 }

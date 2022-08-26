@@ -23,6 +23,15 @@ const routes = [
       ),
   },
   {
+    path: "/Publisher/StreetTerritories/Details/:id",
+    name: "PublisherStreetDetails",
+    props: parseProps,
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-publisher" */ "../views/publisher-street-details.vue"
+      ),
+  },
+  {
     path: "/Publisher/BusinessTerritories",
     name: "PublisherBusinessTerritories",
     component: () =>

@@ -1,5 +1,18 @@
 <template>
   <div>
+    <div class="d-flex">
+      <div class="flex-grow-1 mb-2">&nbsp;</div>
+      <div class="flex-grow-1 flex-md-grow-0 mb-2">
+        <button
+          @click="$router.go(-1)"
+          type="button"
+          class="close"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
     <ul class="list-group">
       <li
         v-for="t in territoryRows"

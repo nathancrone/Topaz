@@ -27,6 +27,7 @@ namespace Topaz.Data
             modelBuilder.ApplyConfiguration(new PhoneTypeConfig());
             modelBuilder.ApplyConfiguration(new PublisherConfig());
             modelBuilder.ApplyConfiguration(new StreetTerritoryConfig());
+            modelBuilder.ApplyConfiguration(new StreetTerritoryAddressBlockConfig());
             modelBuilder.ApplyConfiguration(new TerritoryActivityConfig());
             modelBuilder.ApplyConfiguration(new TerritoryConfig());
             modelBuilder.ApplyConfiguration(new InaccessibleTerritoryExportConfig());
@@ -53,5 +54,6 @@ namespace Topaz.Data
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<InaccessibleTerritoryExport> InaccessibleTerritoryExports { get; set; }
         public DbSet<InaccessibleTerritoryExportItem> InaccessibleTerritoryExportItems { get; set; }
+        public DbSet<StreetTerritoryAddressBlock> StreetTerritoryAddressBlocks { get; set; }
     }
 }

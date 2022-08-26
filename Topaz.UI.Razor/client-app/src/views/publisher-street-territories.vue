@@ -39,7 +39,13 @@
             class="btn btn-secondary mr-1"
             :href="t.mapLocation"
             target="_blank"
-          >View</a>
+          >Map</a>
+          <router-link
+            tag="a"
+            :class="{ 'btn': true, 'btn-secondary': true, 'mr-1': true }"
+            :to="{ name: 'PublisherStreetDetails', params: { id: t.territoryId } }"
+            >Details
+          </router-link>
           <button
             v-if="t !== checkin && t !== rework"
             class="btn btn-primary mr-1"

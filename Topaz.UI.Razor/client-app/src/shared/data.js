@@ -55,6 +55,30 @@ const getStreetActivity = async function(id) {
   }
 };
 
+const getStreetTerritoryAddressBlocks = async function(id) {
+  try {
+    const response = await axios.get(`/Street/GetAddressBlocks/${id}`);
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getStreetTerritoryLocked = async function(id) {
+  try {
+    const response = await axios.get(`/Street/GetLocked/${id}`);
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 const getBusinessTerritory = async function() {
   try {
     const response = await axios.get(`/Business/GetTerritory`);
@@ -645,6 +669,8 @@ export const data = {
   getStreetTerritoryOut,
   getStreetTerritoryIn,
   getStreetActivity,
+  getStreetTerritoryAddressBlocks, 
+  getStreetTerritoryLocked, 
   getBusinessTerritory,
   getBusinessTerritoryOut,
   getBusinessTerritoryIn,

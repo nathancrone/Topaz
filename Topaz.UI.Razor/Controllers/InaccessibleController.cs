@@ -438,7 +438,13 @@ namespace Topaz.UI.Razor.Controllers
         [Route("[action]/{id}")]
         public IEnumerable<Object> GetTerritoryExports(int id)
         {
-            return _context.InaccessibleTerritoryExports.Where(x => x.TerritoryId == id).Select(x =>
+            DateTime? checkOutDate = null;
+            if (_context.TerritoryActivities.Any(x => x.TerritoryId == id))
+            {
+                checkOutDate = _context.TerritoryActivities.Where(x => x.TerritoryId == id).Max(x => x.CheckOutDate);
+            }
+
+            return _context.InaccessibleTerritoryExports.Where(x => x.TerritoryId == id && (checkOutDate == null || x.ExportDate >= checkOutDate.Value)).Select(x =>
                     new
                     {
                         x.InaccessibleTerritoryExportId,

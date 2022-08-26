@@ -160,5 +160,19 @@ namespace Topaz.UI.Razor.Controllers
             });
         }
 
+
+        [HttpGet]
+        [Route("[action]/{id}")]
+        public IEnumerable<Object> GetAddressBlocks(int id)
+        {
+            return _context.StreetTerritoryAddressBlocks.Where(x => x.TerritoryId == id).AsNoTracking().ToList();
+        }
+
+        [HttpGet]
+        [Route("[action]/{id}")]
+        public IEnumerable<Object> GetLocked(int id)
+        {
+            return _context.InaccessibleTerritories.Where(x => !x.InActive && x.StreetTerritoryId == id).SelectMany(x => x.InaccessibleProperties);
+        }
     }
 }
