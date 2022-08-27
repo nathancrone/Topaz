@@ -237,6 +237,28 @@ namespace Topaz.Data.MigrationsApp
                 });
 
             migrationBuilder.CreateTable(
+                name: "StreetTerritoryAddressBlocks",
+                columns: table => new
+                {
+                    StreetTerritoryAddressBlockId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TerritoryId = table.Column<int>(nullable: false),
+                    StreetNumbers = table.Column<string>(nullable: true),
+                    Street = table.Column<string>(nullable: true),
+                    EstimatedDwellingCount = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StreetTerritoryAddressBlocks", x => x.StreetTerritoryAddressBlockId);
+                    table.ForeignKey(
+                        name: "FK_StreetTerritoryAddressBlocks_Territories_TerritoryId",
+                        column: x => x.TerritoryId,
+                        principalTable: "Territories",
+                        principalColumn: "TerritoryId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TerritoryActivities",
                 columns: table => new
                 {
@@ -676,6 +698,11 @@ namespace Topaz.Data.MigrationsApp
                 column: "TerritoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_StreetTerritoryAddressBlocks_TerritoryId",
+                table: "StreetTerritoryAddressBlocks",
+                column: "TerritoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Territories_Apartment_StreetTerritoryId",
                 table: "Territories",
                 column: "Apartment_StreetTerritoryId");
@@ -715,6 +742,9 @@ namespace Topaz.Data.MigrationsApp
 
             migrationBuilder.DropTable(
                 name: "InaccessibleContactActivities");
+
+            migrationBuilder.DropTable(
+                name: "StreetTerritoryAddressBlocks");
 
             migrationBuilder.DropTable(
                 name: "TerritoryActivities");

@@ -591,6 +591,31 @@ namespace Topaz.Data.MigrationsApp
                     b.ToTable("Publishers");
                 });
 
+            modelBuilder.Entity("Topaz.Common.Models.StreetTerritoryAddressBlock", b =>
+                {
+                    b.Property<int>("StreetTerritoryAddressBlockId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EstimatedDwellingCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Street")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StreetNumbers")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TerritoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("StreetTerritoryAddressBlockId");
+
+                    b.HasIndex("TerritoryId");
+
+                    b.ToTable("StreetTerritoryAddressBlocks");
+                });
+
             modelBuilder.Entity("Topaz.Common.Models.Territory", b =>
                 {
                     b.Property<int>("TerritoryId")
@@ -837,6 +862,15 @@ namespace Topaz.Data.MigrationsApp
                     b.HasOne("Topaz.Common.Models.InaccessibleTerritoryExport", "Export")
                         .WithMany("Items")
                         .HasForeignKey("InaccessibleTerritoryExportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Topaz.Common.Models.StreetTerritoryAddressBlock", b =>
+                {
+                    b.HasOne("Topaz.Common.Models.StreetTerritory", "Territory")
+                        .WithMany("AddressBlocks")
+                        .HasForeignKey("TerritoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
