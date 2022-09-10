@@ -9,6 +9,15 @@ using Topaz.Common.Models;
 using Topaz.Data;
 using System.Security.Claims;
 
+
+
+
+
+
+
+using Microsoft.AspNetCore.Authorization;
+
+
 namespace Topaz.UI.Razor.Controllers
 {
     [ApiController]
@@ -67,6 +76,40 @@ namespace Topaz.UI.Razor.Controllers
             }).FirstOrDefault(x => x.TerritoryId == id);
 
             return result;
+        }
+
+        [HttpGet]
+        [Route("[action]/{id}")]
+        public Object GetBusinessActivity(int id)
+        {
+            var result = _context.BusinessTerritories.Select(x => new
+            {
+                x.TerritoryId,
+                x.TerritoryCode,
+                x.InActive,
+                Activity = x.Activity.Select(y => new
+                {
+                    y.TerritoryActivityId,
+                    y.TerritoryId,
+                    y.CheckOutDate,
+                    y.CheckInDate,
+                    Publisher = new { y.Publisher.PublisherId, y.Publisher.FirstName, y.Publisher.LastName }
+                }).OrderByDescending(y => y.CheckOutDate).ToList()
+            }).FirstOrDefault(x => x.TerritoryId == id);
+
+            return result;
+        }
+
+        [Authorize(Roles = "Administrator")]
+        [HttpPost]
+        [Route("[action]/{id}")]
+        public int DeleteActivity(int id)
+        {
+            var activity = new TerritoryActivity () { TerritoryActivityId = id };
+            _context.TerritoryActivities.Attach(activity);
+            _context.TerritoryActivities.Remove(activity);
+            _context.SaveChanges();
+            return 0;
         }
 
         [HttpPost]

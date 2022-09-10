@@ -38,7 +38,7 @@
                   @click.prevent="activityEdit(a)"
                   >edit</a
                 >
-                <a class="btn btn-sm btn-primary mr-1" href="#">delete</a>
+                <a class="btn btn-sm btn-primary mr-1" href="#" @click.prevent="activityDelete(a)">delete</a>
               </td>
             </tr>
           </tbody>
@@ -85,6 +85,8 @@ export default {
         this.territory = await data.getStreetActivity(this.id);
       } else if (this.type === "inaccessible") {
         this.territory = await data.getInaccessibleActivity(this.id);
+      } else if (this.type === "business") {
+        this.territory = await data.getBusinessActivity(this.id);
       }
     },
     displayDate(date) {
@@ -95,6 +97,10 @@ export default {
     },
     async activityEditConfirm() {
       this.isActivityModalOpen = false;
+    },
+    async activityDelete(x) {
+      await data.deleteTerritoryActivity(x.territoryActivityId);
+      await this.loadActivity();
     },
   },
   async created() {

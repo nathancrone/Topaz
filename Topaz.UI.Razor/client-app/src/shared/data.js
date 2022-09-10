@@ -641,6 +641,20 @@ const currentUserRework = async function(territory) {
   }
 };
 
+const deleteTerritoryActivity = async function(id) {
+  try {
+    const response = await axios.post(
+      `/Territory/DeleteActivity/${id}`
+    );
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return [];
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
 const currentUserAssignAvailable = async function(type) {
   try {
     const response = await axios.post(
@@ -708,4 +722,5 @@ export const data = {
   userCheckin,
   currentUserRework,
   currentUserAssignAvailable, 
+  deleteTerritoryActivity
 };
