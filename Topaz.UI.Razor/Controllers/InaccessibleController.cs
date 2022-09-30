@@ -11,11 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic.FileIO;
+using Microsoft.AspNetCore.Authorization;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
+using Topaz.UI.ReportShared;
 using Topaz.Common.Extensions;
 using Topaz.Common.Enums;
 using Topaz.Common.Models;
@@ -1318,6 +1320,26 @@ namespace Topaz.UI.Razor.Controllers
                 x.Activity,
                 Publisher = x.Activity != null ? publishers.FirstOrDefault(y => y.PublisherId == x.Activity.PublisherId) : null
             });
+        }
+
+        [Authorize(Roles = "Administrator")]
+        [HttpGet]
+        [Route("[action]")]
+        public IEnumerable<Object> GetReport()
+        {
+            return _context.InaccessibleTerritories.Where(x => !x.InActive).Select(x => new ReportTerritory() {
+                TerritoryId = x.TerritoryId, 
+                TerritoryCode = x.StreetTerritory.TerritoryCode + " / " + x.TerritoryCode, 
+                Activity = x.Activity.Select(y => new ReportActivity() {
+                    TerritoryActivityId = y.TerritoryActivityId, 
+                    TerritoryId = y.TerritoryId, 
+                    PublisherId = y.PublisherId, 
+                    FirstName = y.Publisher.FirstName, 
+                    LastName = y.Publisher.LastName, 
+                    CheckOutDate = y.CheckOutDate.Value, 
+                    CheckInDate = y.CheckInDate
+                }).OrderBy(y => y.CheckOutDate)
+            }).OrderBy(x => x.TerritoryCode);
         }
     }
 

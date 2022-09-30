@@ -6,7 +6,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
+
+using Topaz.UI.ReportShared;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -173,6 +176,26 @@ namespace Topaz.UI.Razor.Controllers
         public IEnumerable<Object> GetLocked(int id)
         {
             return _context.InaccessibleTerritories.Where(x => !x.InActive && x.StreetTerritoryId == id).SelectMany(x => x.InaccessibleProperties);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        [HttpGet]
+        [Route("[action]")]
+        public IEnumerable<Object> GetReport()
+        {
+            return _context.StreetTerritories.Where(x => !x.InActive).Select(x => new ReportTerritory() {
+                TerritoryId = x.TerritoryId, 
+                TerritoryCode = x.TerritoryCode, 
+                Activity = x.Activity.Select(y => new ReportActivity() {
+                    TerritoryActivityId = y.TerritoryActivityId, 
+                    TerritoryId = y.TerritoryId, 
+                    PublisherId = y.PublisherId, 
+                    FirstName = y.Publisher.FirstName, 
+                    LastName = y.Publisher.LastName, 
+                    CheckOutDate = y.CheckOutDate.Value, 
+                    CheckInDate = y.CheckInDate
+                }).OrderBy(y => y.CheckOutDate)
+            }).OrderBy(x => x.TerritoryCode);
         }
     }
 }

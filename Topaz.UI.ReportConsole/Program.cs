@@ -18,7 +18,10 @@ namespace Topaz.UI.ReportConsole
             using (FileStream readStream = File.OpenRead(@"report.json"))
             {
                 var pageSize = 5;
-                var data = JsonSerializer.Deserialize<List<ReportTerritory>>(readStream);
+                var data = JsonSerializer.Deserialize<List<ReportTerritory>>(readStream, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                });
 
                 for (var skip = 0; skip <= data.Count(); skip += pageSize)
                 {
@@ -90,7 +93,7 @@ namespace Topaz.UI.ReportConsole
                     string mimeType = string.Empty;
                     string encoding = string.Empty;
                     string extension = string.Empty;
-                    byte[] bytes = viewer.LocalReport.Render("PDF", null, out mimeType, out encoding, out extension, out streamIds, out warnings);
+                    byte[] bytes = viewer.LocalReport.Render("PDF", "<DeviceInfo><EmbedFonts>None</EmbedFonts></DeviceInfo>", out mimeType, out encoding, out extension, out streamIds, out warnings);
 
                     MemoryStream PdfStream = new MemoryStream();
 

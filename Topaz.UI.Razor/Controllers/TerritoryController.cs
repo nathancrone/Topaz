@@ -8,15 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Topaz.Common.Models;
 using Topaz.Data;
 using System.Security.Claims;
-
-
-
-
-
-
-
 using Microsoft.AspNetCore.Authorization;
-
 
 namespace Topaz.UI.Razor.Controllers
 {
