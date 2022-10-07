@@ -32,7 +32,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Publisher/InaccessibleAssignments">Assignments</a>
                             </li>
-                            @if (User.IsInRole("Administrator") || User.IsInRole("Street Territory Coordinator") || User.IsInRole("Inaccessible Territory Coordinator"))
+                            @if (User.IsInRole("Administrator") || User.IsInRole("Street Territory Coordinator") || User.IsInRole("Inaccessible Territory Coordinator") || User.IsInRole("Business Territory Coordinator") || User.IsInRole("Apartment Territory Coordinator"))
                             {
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="dd-activity" role="button"
