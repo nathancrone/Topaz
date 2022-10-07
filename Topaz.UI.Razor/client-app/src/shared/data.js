@@ -79,6 +79,60 @@ const getStreetTerritoryLocked = async function(id) {
   }
 };
 
+const getApartmentTerritory = async function() {
+  try {
+    const response = await axios.get(`/Apartment/GetTerritory`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getApartmentTerritoryOut = async function() {
+  try {
+    const response = await axios.get(`/Apartment/GetTerritoryOut`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getApartmentTerritoryIn = async function() {
+  try {
+    const response = await axios.get(`/Apartment/GetTerritoryIn`);
+    let data = parseList(response);
+    const result = data.map((a) => {
+      return a;
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getApartmentActivity = async function(id) {
+  try {
+    const response = await axios.get(`/Territory/GetApartmentActivity/${id}`);
+    if (response.status !== 200) throw Error(response.message);
+    if (!response.data) return;
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 const getBusinessTerritory = async function() {
   try {
     const response = await axios.get(`/Business/GetTerritory`);
@@ -210,6 +264,42 @@ const getPublisherStreetTerritories = async function() {
 const getAvailableStreetTerritories = async function() {
   try {
     const response = await axios.get(`/Street/GetAvailableTerritory`);
+    let data = parseList(response);
+    const territories = data.map((t) => {
+      t.checkInDate =
+        t.checkInDate === null
+          ? null
+          : format(parseISO(t.checkInDate), "MMM dd, yyyy");
+      return t;
+    });
+    return territories;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getPublisherApartmentTerritories = async function() {
+  try {
+    const response = await axios.get(`/Apartment/GetCurrentTerritory`);
+    let data = parseList(response);
+    const territories = data.map((t) => {
+      t.checkOutDate =
+        t.checkOutDate === null
+          ? null
+          : format(parseISO(t.checkOutDate), "MMM dd, yyyy");
+      return t;
+    });
+    return territories;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+const getAvailableApartmentTerritories = async function() {
+  try {
+    const response = await axios.get(`/Apartment/GetAvailableTerritory`);
     let data = parseList(response);
     const territories = data.map((t) => {
       t.checkInDate =
@@ -685,6 +775,10 @@ export const data = {
   getStreetActivity,
   getStreetTerritoryAddressBlocks, 
   getStreetTerritoryLocked, 
+  getApartmentTerritory,
+  getApartmentTerritoryOut,
+  getApartmentTerritoryIn,
+  getApartmentActivity,
   getBusinessTerritory,
   getBusinessTerritoryOut,
   getBusinessTerritoryIn,
@@ -695,6 +789,8 @@ export const data = {
   getInaccessibleActivity,
   getPublisherStreetTerritories,
   getAvailableStreetTerritories,
+  getPublisherApartmentTerritories,
+  getAvailableApartmentTerritories,
   getPublisherBusinessTerritories,
   getAvailableBusinessTerritories,
   getPublisherInaccessibleTerritories,

@@ -1,0 +1,13 @@
+﻿@page
+@inject IOptions<AppSettingsOptions> AppSettings
+@model BusinessTerritoriesModel
+@{
+    ViewData["Title"] = "Publisher's Apartment Territories";
+}
+
+<div id="app"></div>
+
+@section Scripts {
+    <script type="text/javascript" asp-src-include="~/client-app/js/app.*.js"></script>
+    <script type="text/javascript" asp-src-include="~/client-app/js/chunk-vendors.*.js"></script>
+}

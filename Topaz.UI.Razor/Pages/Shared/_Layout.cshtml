@@ -40,6 +40,10 @@
                                         Activity
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="dd-activity">
+                                        @if (User.IsInRole("Administrator") || User.IsInRole("Apartment Territory Coordinator"))
+                                        {
+                                            <a class="dropdown-item" asp-area="" asp-page="/Publisher/ApartmentTerritories">Apartment Territory</a>
+                                        }
                                         @if (User.IsInRole("Administrator") || User.IsInRole("Business Territory Coordinator"))
                                         {
                                             <a class="dropdown-item" asp-area="" asp-page="/Publisher/BusinessTerritories">Business Territory</a>
@@ -70,6 +74,7 @@
                                         Contact - Phone</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/StreetDoNotContact/Index">Do Not
                                         Contact - Street</a>
+                                    <a class="dropdown-item" asp-area="Admin" asp-page="/ApartmentTerritories/Index">Apartment Territory</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/BusinessTerritories/Index">Business Territory</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/InaccessibleTerritories/Index">Inaccessible Territory</a>
                                     <a class="dropdown-item" asp-area="Admin" asp-page="/StreetTerritories/Index">Street Territory</a>

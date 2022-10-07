@@ -31,6 +31,27 @@ const routes = [
         /* webpackChunkName: "chunk-publisher" */ "../views/publisher-street-details.vue"
       ),
   },
+
+
+  {
+    path: "/Publisher/ApartmentTerritories",
+    name: "PublisherApartmentTerritories",
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-publisher" */ "../views/publisher-apartment-territories.vue"
+      ),
+  },
+  {
+    path: "/Publisher/ApartmentTerritories/Checkout",
+    name: "PublisherApartmentCheckout",
+    component: () =>
+      import(
+        /* webpackChunkName: "chunk-publisher" */ "../views/publisher-apartment-checkout.vue"
+      ),
+  },
+
+
+
   {
     path: "/Publisher/BusinessTerritories",
     name: "PublisherBusinessTerritories",
