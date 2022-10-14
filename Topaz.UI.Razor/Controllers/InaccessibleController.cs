@@ -481,7 +481,7 @@ namespace Topaz.UI.Razor.Controllers
                         streamWriter1.WriteLine(contact.ToCsv());
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
 
                 }

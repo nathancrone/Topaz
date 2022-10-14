@@ -56,7 +56,7 @@ namespace Topaz.UI.Razor.Pages.Publisher
                         streamWriter1.WriteLine(contact.ToCsv());
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
 
                 }
